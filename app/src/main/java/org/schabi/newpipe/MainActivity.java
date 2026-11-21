@@ -66,12 +66,12 @@ import org.schabi.newpipe.extractor.ServiceInstance;
 import org.schabi.newpipe.extractor.ServiceInstances;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.fragments.BackPressable;
 import org.schabi.newpipe.fragments.MainFragment;
 import org.schabi.newpipe.fragments.detail.VideoDetailFragment;
 import org.schabi.newpipe.fragments.list.search.SearchFragment;
 import org.schabi.newpipe.local.feed.notifications.NotificationWorker;
+import org.schabi.newpipe.plugin.MissingPluginHelper;
 import org.schabi.newpipe.player.Player;
 import org.schabi.newpipe.player.PlayerIntentConstants;
 import org.schabi.newpipe.player.event.DetailPlayerEvents;
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             dialog1.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    if((storedVersionCode / 100 < 1110 && currentTime - lastShowDonationTime > 14 * 24 * 60 * 60 * 1000)
+                    if((storedVersionCode / 100 < 1111 && currentTime - lastShowDonationTime > 14 * 24 * 60 * 60 * 1000)
                             || currentTime - lastShowDonationTime > 30L * 24 * 60 * 60 * 1000) {
                         prefs.edit().putLong("last_show_donation_time", currentTime).apply();
                         dialog2.show();
@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
             dialog1.show();
             prefs.edit().putInt("version_code", currentVersionCode).apply();
         }
+        MissingPluginHelper.checkOnStart(this);
         String lastAnnouncementId = prefs.getString("last_announcement_id", null);
         try {
             NewPipe.getDownloader().getAsync("https://github.com/InfinityLoop1308/PipePipe/wiki/Announcement", resp -> {

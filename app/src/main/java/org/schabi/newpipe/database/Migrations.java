@@ -1,5 +1,6 @@
 package org.schabi.newpipe.database;
 
+import android.database.Cursor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ public final class Migrations {
     public static final int DB_VER_900 = 900;
     public static final int DB_VER_901 = 901;
     public static final int DB_VER_902 = 902;
+    public static final int DB_VER_903 = 903;
 
     private static final String TAG = Migrations.class.getName();
     public static final boolean DEBUG = MainActivity.DEBUG;
@@ -444,6 +446,31 @@ public final class Migrations {
         }
     };
 
+    public static final Migration MIGRATION_902_903 = new Migration(DB_VER_902, DB_VER_903) {
+        @Override
+        public void migrate(@NonNull final SupportSQLiteDatabase database) {
+            // The All Features and upstream 902 databases have different schemas.
+            // Upstream backups need the feed columns; All Features already has them.
+            boolean hasContentSelection = false;
+            try (Cursor columns = database.query("PRAGMA table_info(`feed_group`)")) {
+                final int nameColumn = columns.getColumnIndexOrThrow("name");
+                while (columns.moveToNext()) {
+                    if ("content_selection".equals(columns.getString(nameColumn))) {
+                        hasContentSelection = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasContentSelection) {
+                MIGRATION_901_902.migrate(database);
+            }
+
+            database.execSQL("CREATE TABLE IF NOT EXISTS `plugin_services` ("
+                    + "`service_id` INTEGER NOT NULL, `plugin_id` TEXT NOT NULL, "
+                    + "`name` TEXT NOT NULL, `repository_url` TEXT NOT NULL, "
+                    + "PRIMARY KEY(`service_id`))");
+        }
+    };
 
     private Migrations() {
     }

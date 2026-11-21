@@ -13,6 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.schabi.newpipe.database.Migrations.MIGRATION_901_902
+import org.schabi.newpipe.database.Migrations.MIGRATION_902_903
 import org.schabi.newpipe.database.feed.model.FeedContentSelection
 import org.schabi.newpipe.extractor.localization.DateWrapper
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
@@ -98,6 +99,55 @@ class FeedContentMigrationTest {
     }
 
     @Test
+    fun allFeatures902KeepsSavedContentRules() {
+        migrationHelper.createDatabase(TEST_DATABASE, 902).use { database ->
+            database.execSQL(
+                "INSERT INTO feed_group (uid, name, icon_id, sort_order, content_selection) " +
+                    "VALUES (1, 'Shorts', 0, 0, 2)"
+            )
+        }
+
+        migrationHelper.runMigrationsAndValidate(
+            TEST_DATABASE, 903, true, MIGRATION_902_903
+        ).use { database ->
+            database.query("SELECT content_selection FROM feed_group WHERE uid = 1").use {
+                assertEquals(true, it.moveToFirst())
+                assertEquals(2, it.getInt(0))
+            }
+        }
+    }
+
+    @Test
+    fun upstream902KeepsSavedPluginServices() {
+        migrationHelper.createDatabase(TEST_DATABASE, 901).use { database ->
+            database.execSQL(
+                "CREATE TABLE plugin_services (service_id INTEGER NOT NULL PRIMARY KEY, " +
+                    "plugin_id TEXT NOT NULL, name TEXT NOT NULL, repository_url TEXT NOT NULL)"
+            )
+            database.execSQL(
+                "INSERT INTO plugin_services VALUES (100, 'test.plugin', 'Test Plugin', 'repo')"
+            )
+            database.execSQL(
+                "INSERT INTO feed_group (uid, name, icon_id, sort_order) VALUES (1, 'Group', 0, 0)"
+            )
+            database.version = 902
+        }
+
+        migrationHelper.runMigrationsAndValidate(
+            TEST_DATABASE, 903, true, MIGRATION_902_903
+        ).use { database ->
+            database.query("SELECT plugin_id FROM plugin_services WHERE service_id = 100").use {
+                assertEquals(true, it.moveToFirst())
+                assertEquals("test.plugin", it.getString(0))
+            }
+            database.query("SELECT content_selection FROM feed_group WHERE uid = 1").use {
+                assertEquals(true, it.moveToFirst())
+                assertEquals(7, it.getInt(0))
+            }
+        }
+    }
+
+    @Test
     fun completeRefreshRepairsMigratedAndPreviouslyCombinedShorts() {
         migrationHelper.createDatabase(TEST_DATABASE, 901).use { database ->
             database.execSQL(
@@ -117,7 +167,7 @@ class FeedContentMigrationTest {
             database.execSQL("INSERT INTO feed (stream_id, subscription_id) VALUES (1, 1)")
         }
         migrationHelper.runMigrationsAndValidate(
-            TEST_DATABASE, 902, true, MIGRATION_901_902
+            TEST_DATABASE, 903, true, MIGRATION_901_902, MIGRATION_902_903
         ).close()
         val database = Room.databaseBuilder(
             ApplicationProvider.getApplicationContext<Context>(),
