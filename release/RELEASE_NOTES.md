@@ -1,7 +1,7 @@
-# PipePipe All Features 5.6.0-beta1-unofficial.19
+# PipePipe All Features 5.6.0-unofficial.20
 
-- Long-press Background or Popup on a video detail page to append the displayed video.
-- Long-press Play all, Background or Popup on a list header to append the loaded items.
-- Enqueue keeps the current item and player mode. A normal tap still starts playback in the selected mode.
+- Update to PipePipe 5.6.0, including plugin recovery for existing subscriptions, playback fixes, and lower memory use during feed refresh.
+- Keep All Features playback controls and per-group feed rules.
+- Keep existing feed rules and plugin records when upgrading either 902 database layout to 903.
 
-This updates .18 in place using the same All Features app identity and signing key. Android 7.0 or later is required.
+The signed release variant uses the existing All Features app identity and requires Android 7.0 or later.

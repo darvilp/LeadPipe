@@ -12,7 +12,8 @@ From the directory containing the downloaded manifest:
 
 ```bash
 git clone https://github.com/darvilp/PipePipeClient.git PipePipeClient
-git clone https://github.com/darvilp/PipePipeExtractor.git PipePipeExtractor
+extractor_repository=$(python3 -c 'import json; print(json.load(open("source-manifest.json"))["extractor_repository"])')
+git clone "$extractor_repository" PipePipeExtractor
 client_revision=$(python3 -c 'import json; print(json.load(open("source-manifest.json"))["client_commit"])')
 extractor_revision=$(python3 -c 'import json; print(json.load(open("source-manifest.json"))["extractor_commit"])')
 git -C PipePipeClient checkout --detach "$client_revision"

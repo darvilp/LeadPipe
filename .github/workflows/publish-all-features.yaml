@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - unofficial/all-features
+      - integration/pipepipe-5.6.0
     tags:
       - all-features/v*
 
@@ -24,18 +25,25 @@ jobs:
       - name: Test release entry point
         run: python3 PipePipeClient/tools/test_release.py
 
-      - name: Read pinned extractor revision
+      - name: Read pinned extractor source
         id: source
         shell: bash
         run: |
           set -euo pipefail
-          revision=$(python3 -c 'import json; print(json.load(open("PipePipeClient/release/source-manifest.json"))["extractor_commit"])')
-          echo "extractor_commit=$revision" >> "$GITHUB_OUTPUT"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("PipePipeClient/release/source-manifest.json").read_text())
+          repository = manifest["extractor_repository"].removeprefix("https://github.com/").removesuffix(".git")
+          print(f"extractor_repository={repository}")
+          print(f"extractor_commit={manifest['extractor_commit']}")
+          PY
 
       - name: Checkout extractor
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          repository: darvilp/PipePipeExtractor
+          repository: ${{ steps.source.outputs.extractor_repository }}
           ref: ${{ steps.source.outputs.extractor_commit }}
           path: PipePipeExtractor
 
