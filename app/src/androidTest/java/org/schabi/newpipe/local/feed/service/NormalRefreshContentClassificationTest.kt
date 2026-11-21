@@ -17,7 +17,6 @@ import org.schabi.newpipe.extractor.downloader.CancellableCall
 import org.schabi.newpipe.extractor.downloader.Downloader
 import org.schabi.newpipe.extractor.downloader.Request
 import org.schabi.newpipe.extractor.downloader.Response
-import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import org.schabi.newpipe.local.feed.FeedDatabaseManager
 import org.schabi.newpipe.local.subscription.FeedGroupIcon
 import java.io.IOException
@@ -40,6 +39,9 @@ class NormalRefreshContentClassificationTest {
         val oldDownloader = NewPipe.getDownloader()
         val localization = NewPipe.getPreferredLocalization()
         val country = NewPipe.getPreferredContentCountry()
+        val outcomes = FeedEventManager.events()
+            .ofType(FeedEventManager.Event.SuccessResultEvent::class.java)
+            .test()
         val channelId = "UC0000000000000000000000"
         val channel = "https://www.youtube.com/channel/$channelId"
         val service = ServiceList.YouTube.serviceId
@@ -90,12 +92,11 @@ class NormalRefreshContentClassificationTest {
                     "content":{"richGridRenderer":{"contents":[${video(1, true)},${video(2, false)}]}}
                 }}]}},"microformat":{"microformatDataRenderer":{"tags":[]}}
             }"""
-            YoutubeParsingHelper.resetClientVersion()
             NewPipe.init(object : Downloader() {
                 override fun execute(request: Request): Response {
                     val url = request.url()
                     val body = when {
-                        url == "https://www.youtube.com/sw.js" ->
+                        url == "https://www.youtube.com/sw.js_data" ->
                             """{"INNERTUBE_CONTEXT_CLIENT_VERSION":"2.20261105.00.00"}"""
                         url.startsWith("https://www.youtube.com/youtubei/v1/browse?") -> channelJson
                         else -> throw IOException("Unexpected fixture URL: $url")
@@ -106,13 +107,12 @@ class NormalRefreshContentClassificationTest {
                     throw UnsupportedOperationException("Normal channel extraction is synchronous")
                 }
             }, localization, country)
-            val results = FeedLoadManager(context).startLoading(groupIds[0], true)
+            val previousOutcomes = outcomes.values().size
+            FeedLoadManager(context).startLoading(groupIds[0], true)
                 .timeout(30, TimeUnit.SECONDS).blockingGet()
-            assertEquals(1, results.size)
-            assertTrue("Normal refresh must finish without an extraction error", results[0].isOnNext)
-            assertTrue("Controlled extraction must have no parser errors: ${results[0].value!!.errors}",
-                results[0].value!!.errors.isEmpty())
-            assertEquals(2, results[0].value!!.streams.size)
+            outcomes.assertValueCount(previousOutcomes + 1)
+            val errors = outcomes.values().last().itemsErrors
+            assertTrue("Controlled extraction must have no parser errors: $errors", errors.isEmpty())
             assertEquals("Live-only group must retain the extracted live entry",
                 listOf("Live fixture"), manager.getStreams(groupIds[0]).blockingGet(emptyList())
                     .map { it.stream.title })
@@ -120,8 +120,8 @@ class NormalRefreshContentClassificationTest {
                 listOf("Video fixture"), manager.getStreams(groupIds[1]).blockingGet(emptyList())
                     .map { it.stream.title })
         } finally {
+            outcomes.cancel()
             NewPipe.init(oldDownloader, localization, country)
-            YoutubeParsingHelper.resetClientVersion()
             names.forEach { sqlite.execSQL("DELETE FROM feed_group WHERE name = ?", arrayOf(it)) }
             if (subscription >= 0) sqlite.execSQL("DELETE FROM subscriptions WHERE uid = ?", arrayOf(subscription))
             preferences.edit().apply {
