@@ -2,6 +2,11 @@
 
 The release channel is `unofficial/all-features` in `darvilp/PipePipeClient`, with a clean sibling `PipePipeExtractor`. The release runbook is [release/README.md](release/README.md); source pins and identity are in [release/source-manifest.json](release/source-manifest.json).
 
+## Upstream pull requests
+
+- Keep regression tests on the fork or local test branches. Leave test files and test fixtures out of upstream pull requests.
+- Submit a single squashed commit. Before pushing the submission branch, check the diff against its upstream base for test changes and verify that it contains exactly one commit.
+
 ## Use one release entry point
 
 - Use `python3 tools/release.py --check` for preflight and `python3 tools/release.py` for a signed local candidate. GitHub Actions uses the same entry point. See `--help` for the output override.
