@@ -161,8 +161,8 @@
 <string name="just_once">Yalnızca bir defa</string>
 <string name="file">Dosya</string>
 <string name="notifications">Bildirimler</string>
-<string name="notification_channel_name">PipePipe bildirimi</string>
-<string name="notification_channel_description">PipePipe oynatıcısı için bildirimler</string>
+<string name="notification_channel_name">LeadPipe bildirimi</string>
+<string name="notification_channel_description">LeadPipe oynatıcısı için bildirimler</string>
 <string name="app_update_notification_channel_name">Uygulama güncelleme bildirimi</string>
 <string name="app_update_notification_channel_description_new">Yeni PipePipe sürümleri için bildirimler</string>
 <string name="hash_channel_name">Video hash bildirimi</string>
@@ -181,7 +181,7 @@
 <string name="recaptcha_cookies_cleared">reCAPTCHA çerezleri temizlendi</string>
 <string name="import_data_summary">Mevcut geçmişinizi, aboneliklerinizi, çalma listelerinizi ve (isteğe bağlı olarak) ayarlarınızı geçersiz kılar</string>
 <string name="export_data_summary">Geçmişi, abonelikleri, çalma listelerini ve ayarları dışa aktar</string>
-<string name="clear_cookie_summary_new">Bir reCAPTCHA çözdüğünüzde PipePipe\'ın sakladığı çerezleri temizleyin</string>
+<string name="clear_cookie_summary_new">Bir reCAPTCHA çözdüğünüzde LeadPipe\'ın sakladığı çerezleri temizleyin</string>
 <string name="clear_views_history_title">İzleme geçmişini temizle</string>
 <string name="clear_views_history_summary">Oynatılan akışların geçmişini ve oynatma konumlarını siler</string>
 <string name="delete_view_history_alert">Tüm izleme geçmişi silinsin mi?</string>
@@ -224,7 +224,7 @@
 <string name="restore_defaults_confirmation">Varsayılanları geri yüklemek istiyor musunuz?</string>
 <string name="permission_display_over_apps">Diğer uygulamaların üzerinde gösterme izni verin</string>
 <!-- error activity -->
-<string name="error_report_notification_title_new">PipePipe bir hatayla karşılaştı, bildirmek için dokunun</string>
+<string name="error_report_notification_title_new">LeadPipe bir hatayla karşılaştı, bildirmek için dokunun</string>
 <string name="error_report_notification_toast">Bir hata oluştu, bildirime bakın</string>
 <string name="sorry_string">Üzgünüz, bu olmamalıydı.</string>
 <string name="error_report_button_text">Bu hatayı e-posta ile bildir</string>
@@ -303,7 +303,7 @@
 <string name="msg_name">Dosya adı</string>
 <string name="msg_threads">İş Parçacıkları</string>
 <string name="msg_error">Hata</string>
-<string name="msg_running_new">PipePipe İndiriyor</string>
+<string name="msg_running_new">LeadPipe İndiriyor</string>
 <string name="msg_running_detail">Ayrıntılar için dokunun</string>
 <string name="msg_calculating_hash">Hash hesaplanıyor</string>
 <string name="msg_wait">Lütfen bekleyin…</string>
@@ -553,7 +553,7 @@
 <string name="error_http_unsupported_range">Sunucu çok iş parçacıklı indirmeleri kabul etmiyor, @string/msg_threads = 1 ile tekrar deneyin</string>
 <string name="error_http_not_found">Bulunamadı</string>
 <string name="error_postprocessing_failed">İşlem sonrası başarısız oldu</string>
-<string name="error_postprocessing_stopped_new">Dosya üzerinde çalışılırken PipePipe kapatıldı</string>
+<string name="error_postprocessing_stopped_new">Dosya üzerinde çalışılırken LeadPipe kapatıldı</string>
 <string name="error_insufficient_storage">Cihazda boş alan kalmadı</string>
 <string name="error_progress_lost">İlerleme kaybedildi, çünkü dosya silindi</string>
 <string name="error_timeout">Bağlantı zaman aşımı</string>
@@ -732,7 +732,7 @@
 <string name="sponsor_block_manual_skip_button">Atla</string>
 <string name="sponsor_block_show_manual_skip_title">Manuel düğmeleri göster</string>
 <string name="sponsor_block_show_manual_skip_summary">Bölümleri manuel olarak atlamak/geri almak için ekranda düğmeleri göster. SponsorBlock Kategorilerini manuel olarak atlanacak şekilde yapılandırdığınızda bunun etkinleştirilmesi önerilir.</string>
-<string name="content_not_supported_new">Bu içerik henüz PipePipe tarafından desteklenmiyor.\n\nGelecek bir sürümde desteklenmesi umuluyor.</string>
+<string name="content_not_supported_new">Bu içerik henüz LeadPipe tarafından desteklenmiyor.\n\nGelecek bir sürümde desteklenmesi umuluyor.</string>
 <string name="detail_sub_channel_thumbnail_view_description">Kanalın avatar küçük resmi</string>
 <string name="channel_created_by">%s tarafından oluşturuldu</string>
 <string name="video_detail_by">%s tarafından</string>
@@ -747,13 +747,13 @@
 <string name="no_appropriate_file_manager_message_android_10">Bu eylem için uygun bir dosya yöneticisi bulunamadı.
 \nLütfen Depolama Erişim Çerçevesi (SAF) uyumlu bir dosya yöneticisi yükleyin</string>
 <string name="georestricted_content">Bu içerik ülkenizde mevcut değil.</string>
-<string name="soundcloud_go_plus_content_new">Bu bir SoundCloud Go+ parçasıdır, en azından ülkenizde, bu yüzden PipePipe tarafından yayınlanamaz veya indirilemez.</string>
-<string name="private_content_new">Bu içerik özeldir, bu yüzden PipePipe tarafından yayınlanamaz veya indirilemez.</string>
-<string name="youtube_music_premium_content_new">Bu video yalnızca YouTube Music Premium üyelerine açıktır, bu yüzden PipePipe tarafından yayınlanamaz veya indirilemez.</string>
+<string name="soundcloud_go_plus_content_new">Bu bir SoundCloud Go+ parçasıdır, en azından ülkenizde, bu yüzden LeadPipe tarafından yayınlanamaz veya indirilemez.</string>
+<string name="private_content_new">Bu içerik özeldir, bu yüzden LeadPipe tarafından yayınlanamaz veya indirilemez.</string>
+<string name="youtube_music_premium_content_new">Bu video yalnızca YouTube Music Premium üyelerine açıktır, bu yüzden LeadPipe tarafından yayınlanamaz veya indirilemez.</string>
 <string name="live_not_started">Canlı yayın henüz başlamadı.</string>
 <string name="account_terminated">Hesap kapatıldı</string>
 <string name="service_provides_reason">%s bu nedeni sunuyor:</string>
-<string name="paid_content_new">Bu içerik yalnızca ödeme yapan kullanıcılar tarafından kullanılabilir, bu yüzden PipePipe tarafından yayınlanamaz veya indirilemez.</string>
+<string name="paid_content_new">Bu içerik yalnızca ödeme yapan kullanıcılar tarafından kullanılabilir, bu yüzden LeadPipe tarafından yayınlanamaz veya indirilemez.</string>
 <string name="featured">Öne Çıkan</string>
 <string name="radio">Radyo</string>
 <string name="auto_device_theme_title">Otomatik (cihaz teması)</string>
@@ -899,10 +899,10 @@
 <string name="donation_dialog_message">PipePipe\'ı kullandığınız için teşekkürler! Yararlı bulduysanız, lütfen Ko-Fi üzerinden destekçi olmayı düşünün. Desteğiniz benim için önemlidir ve daha fazla heyecan verici yeni özellik eklememe yardımcı olur. Her katkı önemlidir! 😇</string>
 <string name="fullscreen_gesture_control_summary">Tam ekrana girmek / çıkmak için jestleri kullan</string>
 <string name="fullscreen_gesture_control_title">Tam ekran jest kontrolü</string>
-<string name="require_audio_focus_summary">Yalnızca PipePipe\'ın ses çaldığından emin ol</string>
+<string name="require_audio_focus_summary">Yalnızca LeadPipe\'ın ses çaldığından emin ol</string>
 <string name="require_audio_focus_title">Ses odağı gerektir</string>
 <string name="decoder_init_failure">Kod çözücü başlatma başarısız oldu</string>
-<string name="unable_to_decode_summary">Cihazınız gerekli donanım kod çözücülerinden yoksun, bu yüzden bu videoyu PipePipe\'ta oynatamazsınız.\nLütfen indirin ve VLC\'de oynatın.</string>
+<string name="unable_to_decode_summary">Cihazınız gerekli donanım kod çözücülerinden yoksun, bu yüzden bu videoyu LeadPipe\'ta oynatamazsınız.\nLütfen indirin ve VLC\'de oynatın.</string>
 <string name="settings_category_gestures_summary">Jest Ayarları</string>
 <string name="settings_category_backup_title">Yedekleme</string>
 <string name="settings_category_advanced_title">Gelişmiş</string>

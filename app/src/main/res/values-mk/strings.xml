@@ -81,8 +81,8 @@
     <string name="always">Секогаш</string>
     <string name="just_once">Само еднаш</string>
     <string name="file">Датотека</string>
-    <string name="notification_channel_name">Известување од NewPipe</string>
-    <string name="notification_channel_description">NewPipe Известувања за подпрозорчето и заднинското пуштање</string>
+    <string name="notification_channel_name">Известување од LeadPipe</string>
+    <string name="notification_channel_description">LeadPipe Известувања за подпрозорчето и заднинското пуштање</string>
     <string name="unknown_content">[Непознато]</string>
     <string name="switch_to_background">Пушти во позадина</string>
     <string name="switch_to_popup">Пушти во подпрозорче</string>

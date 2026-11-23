@@ -102,8 +102,8 @@
     <string name="clear">Vyčistit</string>
     <string name="best_resolution">Nejlepší rozlišení</string>
     <string name="undo">Vrátit</string>
-    <string name="notification_channel_name">Oznámení NewPipe</string>
-    <string name="notification_channel_description">Oznámení pro NewPipe přehrávač</string>
+    <string name="notification_channel_name">Oznámení LeadPipe</string>
+    <string name="notification_channel_description">Oznámení pro LeadPipe přehrávač</string>
     <string name="search_no_results">Žádné výsledky</string>
     <string name="empty_subscription_feed_subtitle">Je tu sranda jak v márnici</string>
     <string name="short_billion">mld.</string>

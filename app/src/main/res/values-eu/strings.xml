@@ -111,11 +111,11 @@
     <string name="enable_search_history_summary">Gorde bilaketak lokalki</string>
     <string name="enable_watch_history_title">Ikustaldien historiala</string>
     <string name="enable_watch_history_summary">Gorde ikusitako bideoen historiala</string>
-    <string name="notification_channel_name">NewPipe jakinarazpena</string>
+    <string name="notification_channel_name">LeadPipe jakinarazpena</string>
     <string name="settings_category_player_title">Erreproduzigailua</string>
     <string name="settings_category_history_title">Historia eta cache-a</string>
     <string name="undo">Desegin</string>
-    <string name="notification_channel_description">NewPipe erreproduzigailuaren jakinarazpenak</string>
+    <string name="notification_channel_description">LeadPipe erreproduzigailuaren jakinarazpenak</string>
     <string name="search_no_results">Emaitzarik ez</string>
     <string name="empty_subscription_feed_subtitle">Kilkerrak besterik ez daude hemen</string>
     <string name="no_subscribers">Harpidedunik ez</string>

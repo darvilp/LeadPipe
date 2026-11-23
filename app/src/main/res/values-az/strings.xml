@@ -103,7 +103,7 @@
     <string name="unknown_content">[Bilinməyən]</string>
     <string name="app_update_notification_channel_description">Yeni \"NewPipe\" versiyası üçün bildirişlər</string>
     <string name="app_update_notification_channel_name">Tətbiq Yeniləmə Bildirişi</string>
-    <string name="notification_channel_description">Fon və ani pəncərə pleyerləri üçün \"NewPipe\" bildirişləri</string>
+    <string name="notification_channel_description">Fon və ani pəncərə pleyerləri üçün \"LeadPipe\" bildirişləri</string>
     <string name="all">Hamısı</string>
     <string name="error_report_title">Xəta hesabatı</string>
     <string name="downloads_title">Yükləmələr</string>
@@ -131,7 +131,7 @@
     <string name="feed_notification_loading">Axın yüklənir…</string>
     <string name="feed_subscription_not_loaded_count">Yüklənmədi: %d</string>
     <string name="playlist_page_summary">Oxutma siyahısı səhifəsi</string>
-    <string name="notification_channel_name">\"Newpipe\" Bildirişi</string>
+    <string name="notification_channel_name">\"LeadPipe\" Bildirişi</string>
     <string name="file">Fayl</string>
     <string name="just_once">Yalnız Bir Dəfə</string>
     <string name="always">Həmişə</string>

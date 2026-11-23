@@ -132,8 +132,8 @@
     <string name="hash_channel_name">Dîtina Agahdariya Vîdyoyê</string>
     <string name="app_update_notification_channel_description">Notifications ji bo guhertoya nû ya NewPipe</string>
     <string name="app_update_notification_channel_name">Nûvekirina Agahdariyê Appê</string>
-    <string name="notification_channel_description">Agahdarî ji bo lîstikvanên paşnav û popup ên NewPipe</string>
-    <string name="notification_channel_name">Agahdariya NewPipe</string>
+    <string name="notification_channel_description">Agahdarî ji bo lîstikvanên paşnav û popup ên LeadPipe</string>
+    <string name="notification_channel_name">Agahdariya LeadPipe</string>
     <string name="file">Dosî</string>
     <string name="just_once">Tenê Carek</string>
     <string name="always">Herdem</string>

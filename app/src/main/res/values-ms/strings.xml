@@ -94,8 +94,8 @@
     <string name="always">Sentiasa</string>
     <string name="just_once">Hanya sekali</string>
     <string name="file">Fail</string>
-    <string name="notification_channel_name">Pemberitahuan NewPipe</string>
-    <string name="notification_channel_description">Pemberitahuan untuk pemain latar belakang dan pemain popup NewPipe</string>
+    <string name="notification_channel_name">Pemberitahuan LeadPipe</string>
+    <string name="notification_channel_description">Pemberitahuan untuk pemain latar belakang dan pemain popup LeadPipe</string>
     <string name="app_update_notification_channel_name">Pemberitahuan Kemas Kini App</string>
     <string name="app_update_notification_channel_description">Pemberitahuan untuk versi NewPipe baru</string>
     <string name="unknown_content">[Tidak diketahui]</string>

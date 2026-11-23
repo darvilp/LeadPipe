@@ -81,7 +81,7 @@
     <string name="always">Sempre</string>
     <string name="just_once">Solo un vice</string>
     <string name="file">File</string>
-    <string name="notification_channel_name">Notification de NewPipe</string>
+    <string name="notification_channel_name">Notification de LeadPipe</string>
     <string name="app_update_notification_channel_name">Notification de actualisation del application</string>
     <string name="app_update_notification_channel_description">Notificationes de nove versiones de NewPipe</string>
     <string name="unknown_content">[Incognite]</string>

@@ -81,8 +81,8 @@
     <string name="always">ਹਮੇਸ਼ਾ</string>
     <string name="just_once">ਸਿਰਫ਼ ਇਸ ਬਾਰ</string>
     <string name="file">ਫਾਈਲ</string>
-    <string name="notification_channel_name">NewPipe ਨੋਟੀਫਿਕੇਸ਼ਨ</string>
-    <string name="notification_channel_description">NewPipe ਬੈਕਗ੍ਰਾਉਂਡ ਅਤੇ ਪੌਪ-ਅਪ ਪਲੇਅਰਾਂ ਲਈ ਸੂਚਨਾਵਾਂ</string>
+    <string name="notification_channel_name">LeadPipe ਨੋਟੀਫਿਕੇਸ਼ਨ</string>
+    <string name="notification_channel_description">LeadPipe ਬੈਕਗ੍ਰਾਉਂਡ ਅਤੇ ਪੌਪ-ਅਪ ਪਲੇਅਰਾਂ ਲਈ ਸੂਚਨਾਵਾਂ</string>
     <string name="unknown_content">ਅਣਜਾਣ</string>
     <string name="switch_to_background">ਬੈਕਗਰਾਊਂਡ ਵਿੱਚ ਬਦਲੋ</string>
     <string name="switch_to_popup">ਪੌਪ-ਅਪ ਵਿੱਚ ਬਦਲੋ</string>

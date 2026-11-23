@@ -98,8 +98,8 @@
     <string name="always">सधैं</string>
     <string name="just_once">केवल एकपटक</string>
     <string name="file">फाइल</string>
-    <string name="notification_channel_name">NewPipe सूचना</string>
-    <string name="notification_channel_description">NewPipe पृष्ठभूमि र पपअप प्लेयरहरू लागि सूचनाहरू</string>
+    <string name="notification_channel_name">LeadPipe सूचना</string>
+    <string name="notification_channel_description">LeadPipe पृष्ठभूमि र पपअप प्लेयरहरू लागि सूचनाहरू</string>
     <string name="app_update_notification_channel_name">एप अपडेट सूचना</string>
     <string name="app_update_notification_channel_description">नयाँ NewPipe संस्करण लागि सूचनाहरू</string>
     <string name="unknown_content">[अज्ञात]</string>

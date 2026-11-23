@@ -104,8 +104,8 @@
     <string name="play_all">Відтворити все</string>
     <string name="always">Завжди</string>
     <string name="just_once">Лише раз</string>
-    <string name="notification_channel_name">Сповіщення NewPipe</string>
-    <string name="notification_channel_description">Сповіщення для програвачів NewPipe</string>
+    <string name="notification_channel_name">Сповіщення LeadPipe</string>
+    <string name="notification_channel_description">Сповіщення для програвачів LeadPipe</string>
     <string name="unknown_content">[Невідомо]</string>
     <string name="switch_to_background">Перейти у фоновий режим</string>
     <string name="switch_to_popup">Перемкнути у вікно</string>

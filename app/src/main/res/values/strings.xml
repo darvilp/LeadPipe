@@ -165,8 +165,8 @@
 <string name="just_once">Just Once</string>
 <string name="file">File</string>
 <string name="notifications">Notifications</string>
-<string name="notification_channel_name">PipePipe notification</string>
-<string name="notification_channel_description">Notifications for PipePipe\'s player</string>
+<string name="notification_channel_name">LeadPipe notification</string>
+<string name="notification_channel_description">Notifications for LeadPipe\'s player</string>
 <string name="app_update_notification_channel_name">App update notification</string>
 <string name="app_update_notification_channel_description_new">Notifications for new PipePipe versions</string>
 <string name="hash_channel_name">Video hash notification</string>
@@ -185,7 +185,7 @@
 <string name="recaptcha_cookies_cleared">reCAPTCHA cookies have been cleared</string>
 <string name="import_data_summary">Overrides your current history, subscriptions, playlists and (optionally) settings</string>
 <string name="export_data_summary">Export history, subscriptions, playlists and settings</string>
-<string name="clear_cookie_summary_new">Clear cookies that PipePipe stores when you solve a reCAPTCHA</string>
+<string name="clear_cookie_summary_new">Clear cookies that LeadPipe stores when you solve a reCAPTCHA</string>
 <string name="clear_views_history_title">Clear watch history</string>
 <string name="clear_views_history_summary">Deletes the history of played streams and the playback positions</string>
 <string name="delete_view_history_alert">Delete entire watch history?</string>
@@ -228,7 +228,7 @@
 <string name="restore_defaults_confirmation">Do you want to restore defaults?</string>
 <string name="permission_display_over_apps">Give permission to display over other apps</string>
 <!-- error activity -->
-<string name="error_report_notification_title_new">PipePipe encountered an error, tap to report</string>
+<string name="error_report_notification_title_new">LeadPipe encountered an error, tap to report</string>
 <string name="error_report_notification_toast">An error occurred, see the notification</string>
 <string name="sorry_string">Sorry, that should not have happened.</string>
 <string name="error_report_button_text">Report this error via e-mail</string>
@@ -307,7 +307,7 @@
 <string name="msg_name">Filename</string>
 <string name="msg_threads">Threads</string>
 <string name="msg_error">Error</string>
-<string name="msg_running_new">PipePipe Downloading</string>
+<string name="msg_running_new">LeadPipe Downloading</string>
 <string name="msg_running_detail">Tap for details</string>
 <string name="msg_calculating_hash">Calculating hash</string>
 <string name="msg_wait">Please wait…</string>
@@ -569,7 +569,7 @@
 <string name="error_http_unsupported_range">The server does not accept multi-threaded downloads, retry with @string/msg_threads = 1</string>
 <string name="error_http_not_found">Not found</string>
 <string name="error_postprocessing_failed">Post-processing failed</string>
-<string name="error_postprocessing_stopped_new">PipePipe was closed while working on the file</string>
+<string name="error_postprocessing_stopped_new">LeadPipe was closed while working on the file</string>
 <string name="error_insufficient_storage">No space left on device</string>
 <string name="error_progress_lost">Progress lost, because the file was deleted</string>
 <string name="error_timeout">Connection timeout</string>
@@ -769,7 +769,7 @@
 <string name="sponsor_block_manual_skip_button">Skip</string>
 <string name="sponsor_block_show_manual_skip_title">Show manual buttons</string>
 <string name="sponsor_block_show_manual_skip_summary">Show buttons on-screen to manually skip/unskip segments. Enabling this is recommended when configuring SponsorBlock Categories to be skipped manually.</string>
-<string name="content_not_supported_new">This content is not yet supported by PipePipe.\n\nIt will hopefully be supported in a future version.</string>
+<string name="content_not_supported_new">This content is not yet supported by LeadPipe.\n\nIt will hopefully be supported in a future version.</string>
 <string name="detail_sub_channel_thumbnail_view_description">Channel\'s avatar thumbnail</string>
 <string name="channel_created_by">Created by %s</string>
 <string name="video_detail_by">By %s</string>
@@ -784,13 +784,13 @@
 <string name="no_appropriate_file_manager_message_android_10">No appropriate file manager was found for this action.
 \nPlease install a Storage Access Framework compatible file manager</string>
 <string name="georestricted_content">This content is not available in your country.</string>
-<string name="soundcloud_go_plus_content_new">This is a SoundCloud Go+ track, at least in your country, so it cannot be streamed or downloaded by PipePipe.</string>
-<string name="private_content_new">This content is private, so it cannot be streamed or downloaded by PipePipe.</string>
-<string name="youtube_music_premium_content_new">This video is available only to YouTube Music Premium members, so it cannot be streamed or downloaded by PipePipe.</string>
+<string name="soundcloud_go_plus_content_new">This is a SoundCloud Go+ track, at least in your country, so it cannot be streamed or downloaded by LeadPipe.</string>
+<string name="private_content_new">This content is private, so it cannot be streamed or downloaded by LeadPipe.</string>
+<string name="youtube_music_premium_content_new">This video is available only to YouTube Music Premium members, so it cannot be streamed or downloaded by LeadPipe.</string>
 <string name="live_not_started">The live is not started yet.</string>
 <string name="account_terminated">Account terminated</string>
 <string name="service_provides_reason">%s provides this reason:</string>
-<string name="paid_content_new">This content is only available to users who have paid, so it cannot be streamed or downloaded by PipePipe.</string>
+<string name="paid_content_new">This content is only available to users who have paid, so it cannot be streamed or downloaded by LeadPipe.</string>
 <string name="featured">Featured</string>
 <string name="radio">Radio</string>
 <string name="auto_device_theme_title">Automatic (device theme)</string>
@@ -951,10 +951,10 @@
 <string name="donation_dialog_message">Thank you for using PipePipe! If you find it useful, please consider becoming a supporter on Ko-Fi. Your support is important to me and helps me add more exciting new features. Every bit counts! 😇</string>
 <string name="fullscreen_gesture_control_summary">Use gestures to enter / exit fullscreen. Disables playback speed gesture control</string>
 <string name="fullscreen_gesture_control_title">Fullscreen gesture control</string>
-<string name="require_audio_focus_summary">Make sure only PipePipe is playing audio</string>
+<string name="require_audio_focus_summary">Make sure only LeadPipe is playing audio</string>
 <string name="require_audio_focus_title">Require audio focus</string>
 <string name="decoder_init_failure">Decoder initialization failed</string>
-<string name="unable_to_decode_summary">Your device lacks the required hardware decoders, so you cannot play this video in PipePipe.\nPlease download and play it in VLC.</string>
+<string name="unable_to_decode_summary">Your device lacks the required hardware decoders, so you cannot play this video in LeadPipe.\nPlease download and play it in VLC.</string>
 <string name="settings_category_gestures_summary">Gestures</string>
 <string name="settings_category_bullet_comments_summary">Danmaku Settings</string>
 <string name="settings_category_backup_title">Backup</string>
@@ -1111,7 +1111,7 @@
 <string name="import_soundcloud_subscriptions_title">Import from SoundCloud</string>
 <string name="import_soundcloud_subscriptions_summary">Import subscriptions from a SoundCloud profile</string>
 <string name="clear_subscriptions_title">Clear subscriptions</string>
-<string name="clear_subscriptions_summary">Remove all subscribed channels from PipePipe</string>
+<string name="clear_subscriptions_summary">Remove all subscribed channels from LeadPipe</string>
 <string name="clear_subscriptions_confirmation">Clear all subscriptions? This cannot be undone.</string>
 <string name="subscriptions_cleared">Subscriptions cleared</string>
 <string name="fetch_subscription_details_title">Fetch channel details?</string>
@@ -1252,9 +1252,9 @@
 <string name="title_most_played_ascending">Most Played (fewest first)</string>
 <string name="plugins">Plugins</string>
 <string name="plugins_enable_title">Allow plugins</string>
-<string name="plugins_enable_summary">Plugins are downloaded from third party repositories and run with the same permissions as PipePipe</string>
+<string name="plugins_enable_summary">Plugins are downloaded from third party repositories and run with the same permissions as LeadPipe</string>
 <string name="plugins_warning_title">Enable plugins?</string>
-<string name="plugins_warning_message">Plugins are code downloaded from the repositories you add. They are not reviewed by PipePipe or by the store you installed PipePipe from (such as F-Droid), and run with the same permissions and data access as PipePipe, including your logins.
+<string name="plugins_warning_message">Plugins are code downloaded from the repositories you add. They are not reviewed by LeadPipe or by the store you installed LeadPipe from (such as F-Droid), and run with the same permissions and data access as LeadPipe, including your logins.
 
 Only add repositories you trust.</string>
 <string name="plugins_warning_accept">Enable</string>
@@ -1272,12 +1272,12 @@ Only add repositories you trust.</string>
 <string name="plugin_installing">Installing %s…</string>
 <string name="plugin_install_failed">Could not install %1$s: %2$s</string>
 <string name="plugin_repository_failed">Could not load %1$s: %2$s</string>
-<string name="plugin_restart_required">Restart PipePipe to apply plugin changes</string>
+<string name="plugin_restart_required">Restart LeadPipe to apply plugin changes</string>
 <string name="plugin_restart">Restart</string>
 <string name="plugin_status_loaded">Version %s</string>
 <string name="plugin_status_pending">Version %s, active after restart</string>
 <string name="plugin_status_error">Version %1$s, failed to load: %2$s</string>
-<string name="plugin_incompatible">Requires a newer PipePipe</string>
+<string name="plugin_incompatible">Requires a newer LeadPipe</string>
 <string name="plugin_key_changed">The plugin is now signed with a different key. Uninstall it first if you trust the new publisher.</string>
 <string name="plugin_settings_title">%s settings</string>
 <string name="plugin_uninstall_confirm">Uninstall %s? Your subscriptions and history for it are kept.</string>
@@ -1290,19 +1290,19 @@ Only add repositories you trust.</string>
 <string name="plugins_show_nsfw_title">Show NSFW plugins</string>
 <string name="plugins_show_nsfw_summary">List plugins marked as NSFW in the available plugins</string>
 <string name="plugin_installed_other_publisher">Published by someone else. Uninstall %1$s first to install this one.</string>
-<string name="cast_to_pipepipe">Cast to PipePipe</string>
-<string name="cast_searching">Searching for PipePipe devices on this network…</string>
+<string name="cast_to_pipepipe">Cast to a compatible device</string>
+<string name="cast_searching">Searching for compatible devices on this network…</string>
 <string name="cast_enter_pin">Enter the code shown on %1$s</string>
 <string name="cast_wrong_pin">Wrong code</string>
-<string name="cast_locked">Too many wrong codes. Restart PipePipe on the receiving device to try again.</string>
+<string name="cast_locked">Too many wrong codes. Restart the app on the receiving device to try again.</string>
 <string name="cast_disconnect">Disconnect</string>
 <string name="cast_pairing_code_toast">%1$s wants to cast here. Pairing code: %2$s</string>
-<string name="cast_receiver_title">Receive casts from other PipePipe devices</string>
-<string name="cast_receiver_summary">Keeps a local network listener running while PipePipe is open, which uses some battery. Enabled by default on TVs.</string>
+<string name="cast_receiver_title">Receive casts from compatible devices</string>
+<string name="cast_receiver_summary">Keeps a local network listener running while LeadPipe is open, which uses some battery. Enabled by default on TVs.</string>
 <string name="cast_plugin_missing">%2$s does not have the %1$s plugin installed, so it cannot play this video.</string>
 <string name="cast_service_unsupported">%1$s does not support this video\'s service.</string>
 <string name="cast_play_failed">%1$s could not load this video.</string>
-<string name="cast_remote_menu">PipePipe remote control</string>
+<string name="cast_remote_menu">LeadPipe remote control</string>
 <string name="cast_reconnect">Reconnect</string>
 <string name="cast_reconnecting">Reconnecting…</string>
 <string name="cast_disconnected">Disconnected</string>
@@ -1337,12 +1337,12 @@ Only add repositories you trust.</string>
 <item quantity="other">%d playlists</item>
 </plurals>
 <string name="logout_keep_webview_session_title">Keep web session on logout</string>
-<string name="logout_keep_webview_session_summary">Logging out only removes the account from PipePipe and keeps the website session, so logging in again is faster</string>
+<string name="logout_keep_webview_session_summary">Logging out only removes the account from LeadPipe and keeps the website session, so logging in again is faster</string>
 <string name="login_expired_toast">%1$s login has expired, you have been logged out</string>
 <string name="error_report_plugin_button">Report to plugin author</string>
 <string name="error_report_plugin_title">Plugin failure</string>
-<string name="error_report_plugin_message">This failure comes from the %1$s plugin, so it is not a PipePipe issue. Report it at %2$s</string>
-<string name="error_report_plugin_no_tracker">This failure comes from the %1$s plugin, so it is not a PipePipe issue. The plugin declares no issue tracker, so copy the report and send it to its author, %2$s.</string>
+<string name="error_report_plugin_message">This failure comes from the %1$s plugin, so it is not a LeadPipe issue. Report it at %2$s</string>
+<string name="error_report_plugin_no_tracker">This failure comes from the %1$s plugin, so it is not a LeadPipe issue. The plugin declares no issue tracker, so copy the report and send it to its author, %2$s.</string>
 <string name="error_report_plugin_open">Open tracker</string>
 <string name="anti_bot_hint">%1$s is limiting requests from your network. Try again later or switch to a different network.</string>
 <string name="anti_bot_login_hint">%1$s flagged requests from your network as unusual. Log in to continue, or try again later.</string>

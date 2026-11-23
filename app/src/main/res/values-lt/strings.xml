@@ -111,8 +111,8 @@
     <string name="settings_category_history_title">Istorija ir podėlis</string>
     <string name="undo">Atgal</string>
     <string name="play_all">Groti viską</string>
-    <string name="notification_channel_name">NewPipe pranešimai</string>
-    <string name="notification_channel_description">NewPipe grotuvo pranešimai</string>
+    <string name="notification_channel_name">LeadPipe pranešimai</string>
+    <string name="notification_channel_description">LeadPipe grotuvo pranešimai</string>
     <string name="unknown_content">[Nežinoma]</string>
     <string name="player_stream_failure">Srauto atkurti nepavyko</string>
     <string name="player_unrecoverable_failure">Įvyko nepataisoma grotuvo klaida</string>

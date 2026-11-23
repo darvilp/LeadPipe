@@ -214,8 +214,8 @@
     <string name="unknown_content">[Nezināms]</string>
     <string name="app_update_notification_channel_description">Notifikācijas priekš NewPipe versijas</string>
     <string name="app_update_notification_channel_name">Aplikācijas Atjauninājuma Notifikācija</string>
-    <string name="notification_channel_description">Notifikācijas priekš NewPipe fona un popup atskaņotājiem</string>
-    <string name="notification_channel_name">NewPipe Notifikācija</string>
+    <string name="notification_channel_description">Notifikācijas priekš LeadPipe fona un popup atskaņotājiem</string>
+    <string name="notification_channel_name">LeadPipe Notifikācija</string>
     <string name="file">Fails</string>
     <string name="just_once">Tikai Vienreiz</string>
     <string name="always">Vienmēr</string>

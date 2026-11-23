@@ -318,8 +318,8 @@
     <string name="hash_channel_description">Ogaysiisyada heerka uu marayo baddalida muuqaalka</string>
     <string name="app_update_notification_channel_description">Ogaysiisyada nooca cusub ee NewPipe</string>
     <string name="app_update_notification_channel_name">Ogaysiiska Cusbonaysiinta appka</string>
-    <string name="notification_channel_description">Ogaysiisyada NewPipe markuu gadaal iyo xaga daaqada wax ka daarayo</string>
-    <string name="notification_channel_name">Ogaysiisyada NewPipe</string>
+    <string name="notification_channel_description">Ogaysiisyada LeadPipe markuu gadaal iyo xaga daaqada wax ka daarayo</string>
+    <string name="notification_channel_name">Ogaysiisyada LeadPipe</string>
     <string name="just_once">Markan uun</string>
     <string name="always">Marwalba</string>
     <string name="play_all">Wada Daar</string>

@@ -81,8 +81,8 @@
     <string name="always">Altijd</string>
     <string name="just_once">Eenmalig</string>
     <string name="file">Bestand</string>
-    <string name="notification_channel_name">NewPipe-melding</string>
-    <string name="notification_channel_description">Meldingen voor NewPipe-achtergrond- en pop-upspelers</string>
+    <string name="notification_channel_name">LeadPipe-melding</string>
+    <string name="notification_channel_description">Meldingen voor LeadPipe-achtergrond- en pop-upspelers</string>
     <string name="unknown_content">[Onbekend]</string>
     <string name="switch_to_background">Verplaatsen naar achtergrond</string>
     <string name="switch_to_popup">Verplaatsen naar pop-up</string>

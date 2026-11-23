@@ -97,7 +97,7 @@
     <string name="always">Altid</string>
     <string name="just_once">Kun én gang</string>
     <string name="file">Fil</string>
-    <string name="notification_channel_name">NewPipe-notifikation</string>
+    <string name="notification_channel_name">LeadPipe-notifikation</string>
     <string name="notification_channel_description">Notifikationer for NewPipes baggrunds- og pop op-afspillere</string>
     <string name="app_update_notification_channel_name">Notifikation om opdatering af app</string>
     <string name="app_update_notification_channel_description">Notifikationer for nye NewPipe-versioner</string>

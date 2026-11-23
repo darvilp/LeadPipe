@@ -100,8 +100,8 @@
     <string name="enable_watch_history_summary">Ukladať históriu pozretých videí</string>
     <string name="resume_on_audio_focus_gain_title">Pokračovať v prehrávaní</string>
     <string name="resume_on_audio_focus_gain_summary">Pokračovať po prerušeniach (napr. telefonát)</string>
-    <string name="notification_channel_name">NewPipe oznámenia</string>
-    <string name="notification_channel_description">Notifikácie NewPipe prehrávača</string>
+    <string name="notification_channel_name">LeadPipe oznámenia</string>
+    <string name="notification_channel_description">Notifikácie LeadPipe prehrávača</string>
     <string name="settings_category_downloads_title">Preberanie</string>
     <string name="settings_file_charset_title">Povolené znaky v názvoch súborov</string>
     <string name="charset_letters_and_digits">Písmená a číslice</string>

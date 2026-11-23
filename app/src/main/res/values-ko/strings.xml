@@ -87,8 +87,8 @@
     <string name="best_resolution">최대 해상도</string>
     <string name="undo">되돌리기</string>
     <string name="play_all">전부 재생</string>
-    <string name="notification_channel_name">NewPipe 알림</string>
-    <string name="notification_channel_description">NewPipe 플레이어 알림</string>
+    <string name="notification_channel_name">LeadPipe 알림</string>
+    <string name="notification_channel_description">LeadPipe 플레이어 알림</string>
     <string name="unknown_content">[알 수 없음]</string>
     <string name="app_ui_crash">앱/UI 충돌</string>
     <string name="player_stream_failure">이 스트림을 재생할 수 없습니다</string>

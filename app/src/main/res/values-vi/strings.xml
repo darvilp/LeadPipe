@@ -170,8 +170,8 @@ của YouTube
 <string name="just_once">Chỉ một lần</string>
 <string name="file">Tệp</string>
 <string name="notifications">Thông báo</string>
-<string name="notification_channel_name">Thông báo PipePipe</string>
-<string name="notification_channel_description">Thông báo cho trình phát của PipePipe</string>
+<string name="notification_channel_name">Thông báo LeadPipe</string>
+<string name="notification_channel_description">Thông báo cho trình phát của LeadPipe</string>
 <string name="app_update_notification_channel_name">Thông báo cập nhật ứng dụng</string>
 <string name="app_update_notification_channel_description_new">Thông báo về phiên bản PipePipe mới</string>
 <string name="hash_channel_name">Thông báo băm băng hình</string>
@@ -190,7 +190,7 @@ của YouTube
 <string name="recaptcha_cookies_cleared">Đã xóa cookie reCAPTCHA</string>
 <string name="import_data_summary">Ghi đè lịch sử, đăng ký, danh sách phát và thiết đặt (tùy chọn) hiện tại của bạn</string>
 <string name="export_data_summary">Xuất lịch sử, đăng ký, danh sách phát và thiết đặt</string>
-<string name="clear_cookie_summary_new">Xóa cookie mà PipePipe lưu trữ khi bạn giải reCAPTCHA</string>
+<string name="clear_cookie_summary_new">Xóa cookie mà LeadPipe lưu trữ khi bạn giải reCAPTCHA</string>
 <string name="clear_views_history_title">Xóa lịch sử xem</string>
 <string name="clear_views_history_summary">Xóa lịch sử các luồng đã phát và vị trí phát lại</string>
 <string name="delete_view_history_alert">Xóa toàn bộ lịch sử xem?</string>
@@ -234,7 +234,7 @@ của YouTube
 <string name="permission_display_over_apps">Cấp quyền hiển thị trên các ứng dụng khác</string>
 <string name="invalid_color_toast">Màu không hợp lệ</string>
 <!-- error activity -->
-<string name="error_report_notification_title_new">PipePipe gặp lỗi, nhấn để báo cáo</string>
+<string name="error_report_notification_title_new">LeadPipe gặp lỗi, nhấn để báo cáo</string>
 <string name="error_report_notification_toast">Đã xảy ra lỗi, hãy xem thông báo</string>
 <string name="sorry_string">Xin lỗi, điều đó lẽ ra không nên xảy ra.</string>
 <string name="error_report_button_text">Báo cáo lỗi này qua e-mail</string>
@@ -313,7 +313,7 @@ của YouTube
 <string name="msg_name">Tên tệp</string>
 <string name="msg_threads">Chủ đề</string>
 <string name="msg_error">Lỗi</string>
-<string name="msg_running_new">Đang tải xuống PipePipe</string>
+<string name="msg_running_new">Đang tải xuống LeadPipe</string>
 <string name="msg_running_detail">Nhấn để biết chi tiết</string>
 <string name="msg_calculating_hash">Đang tính hàm băm</string>
 <string name="msg_wait">Xin vui lòng đợi…</string>
@@ -561,7 +561,7 @@ của YouTube
 <string name="error_http_unsupported_range">Máy chủ không chấp nhận tải đa luồng, thử lại với @string/msg_threads = 1</string>
 <string name="error_http_not_found">Không tìm thấy</string>
 <string name="error_postprocessing_failed">Xử lý hậu kỳ không được</string>
-<string name="error_postprocessing_stopped_new">PipePipe đã bị đóng khi đang làm việc trên tệp</string>
+<string name="error_postprocessing_stopped_new">LeadPipe đã bị đóng khi đang làm việc trên tệp</string>
 <string name="error_insufficient_storage">Không còn chỗ trống trên thiết bị</string>
 <string name="error_progress_lost">Tiến trình bị mất vì tệp đã bị xóa</string>
 <string name="error_timeout">Hết thời gian kết nối</string>
@@ -679,7 +679,7 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="sponsor_block_skip_filler_toast">Đã bỏ qua phần bổ sung</string>
 <string name="sponsor_block_confirm_reset_colors">Bạn có chắc chắn muốn đặt lại màu danh mục không?</string>
 <!--End -->
-<string name="content_not_supported_new">Nội dung này chưa được PipePipe hỗ trợ.\n\nHy vọng nó sẽ được hỗ trợ trong phiên bản tương lai.</string>
+<string name="content_not_supported_new">Nội dung này chưa được LeadPipe hỗ trợ.\n\nHy vọng nó sẽ được hỗ trợ trong phiên bản tương lai.</string>
 <string name="detail_sub_channel_thumbnail_view_description">Hình thu nhỏ hình đại diện của kênh</string>
 <string name="channel_created_by">Được tạo bởi %s</string>
 <string name="video_detail_by">Bởi %s</string>
@@ -694,13 +694,13 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="no_appropriate_file_manager_message_android_10">Không tìm thấy trình quản lý tệp thích hợp cho tác vụ này.
 \nHãy cài đặt trình quản lý tệp tương thích với Khung truy cập lưu trữ</string>
 <string name="georestricted_content">Nội dung này không có ở quốc gia của bạn.</string>
-<string name="soundcloud_go_plus_content_new">Đây là bản nhạc SoundCloud Go+, ít nhất là ở quốc gia của bạn, vì vậy PipePipe không thể phát trực tuyến hoặc tải xuống bản nhạc này.</string>
-<string name="private_content_new">Nội dung này là riêng tư nên PipePipe không thể phát trực tuyến hoặc tải xuống.</string>
-<string name="youtube_music_premium_content_new">Băng hình này chỉ dành cho thành viên YouTube Music Premium nên PipePipe không thể phát trực tuyến hoặc tải xuống.</string>
+<string name="soundcloud_go_plus_content_new">Đây là bản nhạc SoundCloud Go+, ít nhất là ở quốc gia của bạn, vì vậy LeadPipe không thể phát trực tuyến hoặc tải xuống bản nhạc này.</string>
+<string name="private_content_new">Nội dung này là riêng tư nên LeadPipe không thể phát trực tuyến hoặc tải xuống.</string>
+<string name="youtube_music_premium_content_new">Băng hình này chỉ dành cho thành viên YouTube Music Premium nên LeadPipe không thể phát trực tuyến hoặc tải xuống.</string>
 <string name="live_not_started">Buổi phát trực tiếp vẫn chưa bắt đầu.</string>
 <string name="account_terminated">Tài khoản bị chấm dứt</string>
 <string name="service_provides_reason">%s cung cấp lý do này:</string>
-<string name="paid_content_new">Nội dung này chỉ dành cho những người dùng đã trả phí nên PipePipe không thể phát trực tuyến hoặc tải xuống nội dung này.</string>
+<string name="paid_content_new">Nội dung này chỉ dành cho những người dùng đã trả phí nên LeadPipe không thể phát trực tuyến hoặc tải xuống nội dung này.</string>
 <string name="featured">Nổi bật</string>
 <string name="radio">Đài phát thanh</string>
 <string name="auto_device_theme_title">Tự động (chủ đề thiết bị)</string>
@@ -853,10 +853,10 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="donation_dialog_message">Cảm ơn bạn đã sử dụng PipePipe! Nếu bạn thấy nó hữu ích, hãy xem xét trở thành người ủng hộ trên Ko-Fi. Sự ủng hộ của bạn rất quan trọng đối với tôi và giúp tôi bổ sung thêm nhiều tính năng mới thú vị. Mỗi sự hỗ trợ đều có ý nghĩa! 😇</string>
 <string name="fullscreen_gesture_control_summary">Sử dụng cử chỉ để vào / thoát toàn màn hình</string>
 <string name="fullscreen_gesture_control_title">Điều khiển cử chỉ toàn màn hình</string>
-<string name="require_audio_focus_summary">Đảm bảo chỉ có PipePipe đang phát âm thanh</string>
+<string name="require_audio_focus_summary">Đảm bảo chỉ có LeadPipe đang phát âm thanh</string>
 <string name="require_audio_focus_title">Yêu cầu tiêu điểm âm thanh</string>
 <string name="decoder_init_failure">Khởi tạo bộ giải mã thất bại</string>
-<string name="unable_to_decode_summary">Thiết bị của bạn thiếu các bộ giải mã phần cứng cần thiết, vì vậy bạn không thể phát video này trong PipePipe. \nVui lòng tải xuống và phát nó trong VLC.</string>
+<string name="unable_to_decode_summary">Thiết bị của bạn thiếu các bộ giải mã phần cứng cần thiết, vì vậy bạn không thể phát video này trong LeadPipe. \nVui lòng tải xuống và phát nó trong VLC.</string>
 <string name="settings_category_gestures_summary">Cài đặt cử chỉ</string>
 <string name="settings_category_bullet_comments_summary">Cài đặt Danmaku</string>
 <string name="settings_category_backup_title">Sao lưu</string>
@@ -1088,7 +1088,7 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="import_soundcloud_subscriptions_title">Nhập từ SoundCloud</string>
 <string name="import_soundcloud_subscriptions_summary">Nhập các đăng ký từ một hồ sơ SoundCloud</string>
 <string name="clear_subscriptions_title">Xóa đăng ký</string>
-<string name="clear_subscriptions_summary">Xóa tất cả các kênh đã đăng ký khỏi PipePipe</string>
+<string name="clear_subscriptions_summary">Xóa tất cả các kênh đã đăng ký khỏi LeadPipe</string>
 <string name="clear_subscriptions_confirmation">Xóa tất cả đăng ký? Hành động này không thể hoàn tác.</string>
 <string name="subscriptions_cleared">Đã xóa đăng ký</string>
 <string name="fetch_subscription_details_title">Lấy thông tin chi tiết kênh?</string>
@@ -1210,9 +1210,9 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="title_most_played_ascending">Phát nhiều nhất (ít nhất trước)</string>
 <string name="plugins">Plugin</string>
 <string name="plugins_enable_title">Cho phép plugin</string>
-<string name="plugins_enable_summary">Các plugin được tải xuống từ các kho lưu trữ của bên thứ ba và chạy với cùng quyền hạn như PipePipe</string>
+<string name="plugins_enable_summary">Các plugin được tải xuống từ các kho lưu trữ của bên thứ ba và chạy với cùng quyền hạn như LeadPipe</string>
 <string name="plugins_warning_title">Bật plugin?</string>
-<string name="plugins_warning_message">Plugin là mã được tải xuống từ các kho lưu trữ mà bạn thêm vào. Chúng không được kiểm duyệt bởi PipePipe hoặc bởi cửa hàng bạn đã cài đặt PipePipe (chẳng hạn như F-Droid), và chạy với cùng quyền hạn và quyền truy cập dữ liệu như PipePipe, bao gồm cả thông tin đăng nhập của bạn.\n\nChỉ thêm các kho lưu trữ mà bạn tin tưởng.</string>
+<string name="plugins_warning_message">Plugin là mã được tải xuống từ các kho lưu trữ mà bạn thêm vào. Chúng không được kiểm duyệt bởi LeadPipe hoặc bởi cửa hàng bạn đã cài đặt LeadPipe (chẳng hạn như F-Droid), và chạy với cùng quyền hạn và quyền truy cập dữ liệu như LeadPipe, bao gồm cả thông tin đăng nhập của bạn.\n\nChỉ thêm các kho lưu trữ mà bạn tin tưởng.</string>
 <string name="plugins_warning_accept">Bật</string>
 <string name="plugins_repositories">Kho lưu trữ</string>
 <string name="plugins_add_repository">Thêm kho lưu trữ</string>
@@ -1228,12 +1228,12 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="plugin_installing">Đang cài đặt %s…</string>
 <string name="plugin_install_failed">Không thể cài đặt %1$s: %2$s</string>
 <string name="plugin_repository_failed">Không thể tải %1$s: %2$s</string>
-<string name="plugin_restart_required">Khởi động lại PipePipe để áp dụng các thay đổi của plugin</string>
+<string name="plugin_restart_required">Khởi động lại LeadPipe để áp dụng các thay đổi của plugin</string>
 <string name="plugin_restart">Khởi động lại</string>
 <string name="plugin_status_loaded">Phiên bản %s</string>
 <string name="plugin_status_pending">Phiên bản %s, hoạt động sau khi khởi động lại</string>
 <string name="plugin_status_error">Phiên bản %1$s, không thể tải: %2$s</string>
-<string name="plugin_incompatible">Yêu cầu phiên bản PipePipe mới hơn</string>
+<string name="plugin_incompatible">Yêu cầu phiên bản LeadPipe mới hơn</string>
 <string name="plugin_key_changed">Plugin hiện được ký bằng một khóa khác. Hãy gỡ cài đặt nó trước nếu bạn tin tưởng nhà phát hành mới.</string>
 <string name="plugin_settings_title">Cài đặt %s</string>
 <string name="plugin_uninstall_confirm">Gỡ cài đặt %s? Các đăng ký và lịch sử của nó sẽ được giữ lại.</string>
@@ -1246,19 +1246,19 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="plugins_show_nsfw_title">Hiển thị các plugin NSFW</string>
 <string name="plugins_show_nsfw_summary">Liệt kê các plugin được đánh dấu là NSFW trong danh sách plugin có sẵn</string>
 <string name="plugin_installed_other_publisher">Được phát hành bởi người khác. Vui lòng gỡ cài đặt %1$s trước khi cài đặt plugin này.</string>
-<string name="cast_to_pipepipe">Truyền tới PipePipe</string>
-<string name="cast_searching">Đang tìm kiếm các thiết bị PipePipe trên mạng này…</string>
+<string name="cast_to_pipepipe">Truyền tới LeadPipe / PipePipe</string>
+<string name="cast_searching">Đang tìm kiếm các thiết bị LeadPipe / PipePipe trên mạng này…</string>
 <string name="cast_enter_pin">Nhập mã được hiển thị trên %1$s</string>
 <string name="cast_wrong_pin">Mã không đúng</string>
-<string name="cast_locked">Sai mã quá nhiều lần. Khởi động lại PipePipe trên thiết bị nhận để thử lại.</string>
+<string name="cast_locked">Sai mã quá nhiều lần. Khởi động lại LeadPipe / PipePipe trên thiết bị nhận để thử lại.</string>
 <string name="cast_disconnect">Ngắt kết nối</string>
 <string name="cast_pairing_code_toast">%1$s muốn truyền tới đây. Mã ghép nối: %2$s</string>
-<string name="cast_receiver_title">Nhận bản truyền từ các thiết bị PipePipe khác</string>
-<string name="cast_receiver_summary">Giữ trình nghe mạng cục bộ chạy trong khi PipePipe đang mở, điều này sẽ tiêu tốn một chút pin. Được bật theo mặc định trên TV.</string>
+<string name="cast_receiver_title">Nhận bản truyền từ các thiết bị LeadPipe / PipePipe khác</string>
+<string name="cast_receiver_summary">Giữ trình nghe mạng cục bộ chạy trong khi LeadPipe đang mở, điều này sẽ tiêu tốn một chút pin. Được bật theo mặc định trên TV.</string>
 <string name="cast_plugin_missing">%2$s chưa cài đặt plugin %1$s, vì vậy không thể phát video này.</string>
 <string name="cast_service_unsupported">%1$s không hỗ trợ dịch vụ của video này.</string>
 <string name="cast_play_failed">%1$s không thể tải video này.</string>
-<string name="cast_remote_menu">Điều khiển từ xa PipePipe</string>
+<string name="cast_remote_menu">Điều khiển từ xa LeadPipe</string>
 <string name="cast_reconnect">Kết nối lại</string>
 <string name="cast_reconnecting">Đang kết nối lại…</string>
 <string name="cast_disconnected">Đã ngắt kết nối</string>
@@ -1285,7 +1285,7 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="missing_plugin_ignore">Không hiển thị lại</string>
 <string name="missing_plugin_not_found">Không tìm thấy trong kho lưu trữ</string>
 <string name="logout_keep_webview_session_title">Giữ phiên web khi đăng xuất</string>
-<string name="logout_keep_webview_session_summary">Đăng xuất chỉ xóa tài khoản khỏi PipePipe và giữ lại phiên trang web, do đó đăng nhập lại sẽ nhanh hơn</string>
+<string name="logout_keep_webview_session_summary">Đăng xuất chỉ xóa tài khoản khỏi LeadPipe và giữ lại phiên trang web, do đó đăng nhập lại sẽ nhanh hơn</string>
 <string name="login_expired_toast">Phiên đăng nhập %1$s đã hết hạn, bạn đã bị đăng xuất</string>
 <string name="early_buffer_title">Bộ đệm sau khi bắt đầu hoặc tua</string>
 <string name="early_buffer_summary">Tải trước bao xa cho đến khi 30 giây được phát liên tục (hiện tại là %s). Giá trị thấp hơn giúp tiết kiệm dữ liệu khi bạn tua hoặc thoát video sớm, toàn bộ bộ đệm bảo vệ tốt hơn trước kết nối kém. Các thay đổi yêu cầu khởi động lại trình phát</string>
@@ -1296,8 +1296,8 @@ nSự khác biệt giữa hai loại này là cái nào nhanh thường thiếu 
 <string name="channel_tab_courses">Khóa học</string>
 <string name="error_report_plugin_button">Báo cáo cho tác giả plugin</string>
 <string name="error_report_plugin_title">Lỗi plugin</string>
-<string name="error_report_plugin_message">Lỗi này xuất phát từ plugin %1$s, vì vậy đây không phải là sự cố của PipePipe. Hãy báo cáo tại %2$s</string>
-<string name="error_report_plugin_no_tracker">Lỗi này xuất phát từ plugin %1$s, vì vậy đây không phải là sự cố của PipePipe. Plugin không khai báo trình theo dõi sự cố nào, vì vậy hãy sao chép báo cáo và gửi cho tác giả của nó, %2$s.</string>
+<string name="error_report_plugin_message">Lỗi này xuất phát từ plugin %1$s, vì vậy đây không phải là sự cố của LeadPipe. Hãy báo cáo tại %2$s</string>
+<string name="error_report_plugin_no_tracker">Lỗi này xuất phát từ plugin %1$s, vì vậy đây không phải là sự cố của LeadPipe. Plugin không khai báo trình theo dõi sự cố nào, vì vậy hãy sao chép báo cáo và gửi cho tác giả của nó, %2$s.</string>
 <string name="error_report_plugin_open">Mở trình theo dõi</string>
 <string name="anti_bot_hint">%1$s đang giới hạn các yêu cầu từ mạng của bạn. Vui lòng thử lại sau hoặc chuyển sang một mạng khác.</string>
 <string name="anti_bot_login_hint">%1$s đã đánh dấu các yêu cầu từ mạng của bạn là bất thường. Đăng nhập để tiếp tục hoặc thử lại sau.</string>

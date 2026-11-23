@@ -85,8 +85,8 @@
     <string name="always">Sempre</string>
     <string name="just_once">Só unha vez</string>
     <string name="file">Ficheiro</string>
-    <string name="notification_channel_name">Notificación do NewPipe</string>
-    <string name="notification_channel_description">Notificacións para o reprodutor de NewPipe</string>
+    <string name="notification_channel_name">Notificación do LeadPipe</string>
+    <string name="notification_channel_description">Notificacións para o reprodutor de LeadPipe</string>
     <string name="unknown_content">[Descoñecido]</string>
     <string name="switch_to_background">Mudar para o segundo plano</string>
     <string name="switch_to_popup">Mudar para o «popup»</string>

@@ -105,7 +105,7 @@
     <string name="enable_search_history_title">Riwayat pencarian</string>
     <string name="enable_search_history_summary">Simpan pencarian secara lokal</string>
     <string name="enable_watch_history_title">Riwayat tontonan</string>
-    <string name="notification_channel_name">Notifikasi NewPipe</string>
+    <string name="notification_channel_name">Notifikasi LeadPipe</string>
     <string name="title_activity_history">Riwayat</string>
     <string name="action_history">Riwayat</string>
     <string name="download_thumbnail_title">Muat thumbnail</string>
@@ -125,7 +125,7 @@
     <string name="always">Selalu</string>
     <string name="just_once">Hanya Sekali</string>
     <string name="file">Berkas</string>
-    <string name="notification_channel_description">Notifikasi untuk pemutar NewPipe</string>
+    <string name="notification_channel_description">Notifikasi untuk pemutar LeadPipe</string>
     <string name="unknown_content">[Tidak diketahui]</string>
     <string name="switch_to_background">Alihkan ke Latar Belakang</string>
     <string name="switch_to_popup">Alihkan ke Popup</string>

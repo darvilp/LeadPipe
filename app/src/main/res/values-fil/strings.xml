@@ -108,7 +108,7 @@
     <string name="tab_about">Tungkol dito</string>
     <string name="restricted_video_no_stream">Ang video na ito ay may paghihigpit sa edad.
 \nDahil sa mga bagong polisiya ng Youtube, hindi maaring ma-access ng NewPipe ang mga video streams nito, kaya hindi ito maipapalabas.</string>
-    <string name="notification_channel_name">Notipikasyon sa NewPipe</string>
+    <string name="notification_channel_name">Notipikasyon sa LeadPipe</string>
     <plurals name="listening">
         <item quantity="one">%s nakikinig</item>
         <item quantity="other">Mga %s nakikinig</item>

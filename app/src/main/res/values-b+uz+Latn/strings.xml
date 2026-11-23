@@ -85,8 +85,8 @@
     <string name="unknown_content">[Noma\'lum]</string>
     <string name="app_update_notification_channel_description">NewPipe yangi versiyasi haqida bildirishnomalar</string>
     <string name="app_update_notification_channel_name">Ilovani yangilash bildirishnomasi</string>
-    <string name="notification_channel_description">NewPipe fon va popup pleyerlari uchun bildirishnomalar</string>
-    <string name="notification_channel_name">NewPipe bildirishnomasi</string>
+    <string name="notification_channel_description">LeadPipe fon va popup pleyerlari uchun bildirishnomalar</string>
+    <string name="notification_channel_name">LeadPipe bildirishnomasi</string>
     <string name="file">Fayl</string>
     <string name="just_once">Faqat bittasi</string>
     <string name="always">Har doim</string>

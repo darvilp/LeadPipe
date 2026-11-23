@@ -153,8 +153,8 @@
     <string name="just_once">Apenas uma vez</string>
     <string name="file">Arquivo</string>
     <string name="notifications">Notificações</string>
-    <string name="notification_channel_name">Notificação PipePipe</string>
-    <string name="notification_channel_description">Notificações para reprodutor do PipePipe</string>
+    <string name="notification_channel_name">Notificação LeadPipe</string>
+    <string name="notification_channel_description">Notificações para reprodutor do LeadPipe</string>
     <string name="app_update_notification_channel_name">Atualizar notificações do app</string>
     <string name="app_update_notification_channel_description">Notificações para novas versões do PipePipe</string>
     <string name="hash_channel_name">Notificações de Hash de Vídeo</string>
@@ -216,7 +216,7 @@
     <string name="restore_defaults_confirmation">Gostaria de restaurar para padrão?</string>
     <string name="permission_display_over_apps">Dar permissão para exibir sobre outros aplicativos</string>
     <!-- error activity -->
-    <string name="error_report_notification_title_new">PipePipe encontrou um erro, toque para relatar</string>
+    <string name="error_report_notification_title_new">LeadPipe encontrou um erro, toque para relatar</string>
     <string name="error_report_notification_toast">Um erro ocorreu, veja a notificação</string>
     <string name="sorry_string">Perdão, isso não deveria ter acontecido.</string>
     <string name="error_report_button_text">Reporte esse erro via e-mail</string>
@@ -295,7 +295,7 @@
     <string name="msg_name">Nome do Arquivo</string>
     <string name="msg_threads">Tópicos</string>
     <string name="msg_error">Erro</string>
-    <string name="msg_running_new">PipePipe Baixando</string>
+    <string name="msg_running_new">LeadPipe Baixando</string>
     <string name="msg_running_detail">Toque para detalhes</string>
     <string name="msg_calculating_hash">Calculando hash</string>
     <string name="msg_wait">Favor, aguarde...</string>
@@ -539,7 +539,7 @@
     <string name="error_http_unsupported_range">O servidor não aceita trasnferências multi-thread, tente novamente com @string/msg_threads = 1</string>
     <string name="error_http_not_found">Não encontrado</string>
     <string name="error_postprocessing_failed">Falha no pós-processamento</string>
-    <string name="error_postprocessing_stopped_new">PipePipe foi fechado enquanto trabalhava nesse arquivo</string>
+    <string name="error_postprocessing_stopped_new">LeadPipe foi fechado enquanto trabalhava nesse arquivo</string>
     <string name="error_insufficient_storage">Sem armazenamento disponível no dispositivo</string>
     <string name="error_progress_lost">Progresso perdido, o arquivo foi removido</string>
     <string name="error_timeout">Conexão perdida, muito tempo de espera</string>
@@ -623,7 +623,7 @@
     <string name="feed_use_dedicated_fetch_method_disable_button">Desabilitar modo rápido</string>
     <string name="feed_use_dedicated_fetch_method_help_text">Você acha que o feed está carregando lento demais? Se acha, tente habilitar o carregamento rápido (você pode habilitá-lo ou desabilitá-lo nas configurações ou presisonando o botão abaixo). \n \nPipePipe oferece duas estratégias de carregamento do feed: \n• Pegando o canal de inscrição completo, que é mais lento porém completo. \n• Usando um serviço dedicado, que é mais rápido mas usualmente não completo. \n \nA diferença entre os dois é que o mais rápido não recebe algumas informações, como a duração do item e seu tipo (não consegue discernir transmissões ao vivo e vídeos comuns) e também pode retornar menos itens. \n \nYouTube é um exemplo de serviço que oferece esse método rápido com seu feed RSS. \n \Então é sua preferência escolher entre: velocidade ou precisão da informação.</string>
     <string name="feed_toggle_show_played_items">Exibir itens assistidos</string>
-    <string name="content_not_supported_new">Esse conteúdo ainda não é suportado pelo PipePipe.\n\nEsperamos que seja suportado em uma versão futura.</string>
+    <string name="content_not_supported_new">Esse conteúdo ainda não é suportado pelo LeadPipe.\n\nEsperamos que seja suportado em uma versão futura.</string>
     <string name="detail_sub_channel_thumbnail_view_description">Miniatura de avatar do canal</string>
     <string name="channel_created_by">Criado por %s</string>
     <string name="video_detail_by">Por %s</string>
@@ -637,12 +637,12 @@
     <string name="no_appropriate_file_manager_message_android_10">Nenhum gerenciador de arquivos apropriado foi encontrado nessa ação. \nFavor instale um gerenciador de arquivos compatível com o &quot;Framework de Acesso ao Armazenamento&quot;</string>
     <string name="georestricted_content">Esse conteúdo não está disponível em seu país.</string>
     <string name="soundcloud_go_plus_content">Esse é uma trilha SoundCloud Go+, pelo menos em seu país, logo não pode ser reproduzida ou transferida pelo PipePipe.</string>
-    <string name="private_content_new">Esse conteúdo é privado, logo não pode ser reproduzido ou transferido pelo PipePipe.</string>
+    <string name="private_content_new">Esse conteúdo é privado, logo não pode ser reproduzido ou transferido pelo LeadPipe.</string>
     <string name="youtube_music_premium_content">Esse vídeo está disponível apenas para membros do YouTube Music Premium, logo não pode ser reproduzido ou transferido pelo PipePipe.</string>
     <string name="live_not_started">O evento ao vivo ainda não começou.</string>
     <string name="account_terminated">Conta excluída</string>
     <string name="service_provides_reason">%s fornece essa razão:</string>
-    <string name="paid_content_new">Esse conteúdo está disponível apenas para usuários que pagaram, logo não pode ser reproduzido ou transferido pelo PipePipe.</string>
+    <string name="paid_content_new">Esse conteúdo está disponível apenas para usuários que pagaram, logo não pode ser reproduzido ou transferido pelo LeadPipe.</string>
     <string name="featured">Destaque</string>
     <string name="radio">Rádio</string>
     <string name="auto_device_theme_title">Automático (tema do dispositivo)</string>
@@ -719,7 +719,7 @@
     <string name="search_suggestions_count_summary">Número de sugestões de pesquisas anteriores a exibir</string>
     <string name="restricted_video_no_stream_new">Este vídeo tem restrição de idade. \nFaça login nas Configurações se quiser assisti-lo.</string>
     <string name="app_update_notification_channel_description_new">Notificações de novas versões do PipePipe</string>
-    <string name="clear_cookie_summary_new">Limpa os cookies que o PipePipe armazena quando você resolve um reCAPTCHA</string>
+    <string name="clear_cookie_summary_new">Limpa os cookies que o LeadPipe armazena quando você resolve um reCAPTCHA</string>
     <string name="donation_title">Doar</string>
     <string name="aspect_ratio_custom">Personalizada…</string>
     <string name="aspect_ratio_custom_title">Proporção de tela personalizada</string>
@@ -736,8 +736,8 @@
     <string name="error_sabr_download_muxing">Não foi possível multiplexar a mídia SABR</string>
     <string name="error_sabr_download_storage">Não foi possível gravar o download SABR</string>
     <string name="error_sabr_download_protocol">Erro de protocolo SABR</string>
-    <string name="feed_load_error_terminated_new">A conta do autor foi encerrada.\nO PipePipe não poderá carregar este feed no futuro.\nDeseja cancelar a inscrição neste canal?</string>
-    <string name="feed_use_dedicated_fetch_method_help_text_new">Você acha que o carregamento do feed está lento demais\? Se sim, tente ativar o carregamento rápido (você pode alterar isso nas configurações ou pressionando o botão abaixo).\n\nO PipePipe oferece duas estratégias de carregamento do feed:\n• Buscar o canal inscrito por inteiro, o que é lento, mas completo.\n• Usar um endpoint dedicado do serviço, que é rápido, mas geralmente incompleto.\n\nA diferença entre as duas é que a rápida geralmente não traz algumas informações, como a duração ou o tipo do item (não distingue transmissões ao vivo de vídeos normais) e pode retornar menos itens.\n\nO YouTube é um exemplo de serviço que oferece esse método rápido por meio do feed RSS.\n\nPortanto, a escolha se resume ao que você prefere: velocidade ou informações precisas.</string>
+    <string name="feed_load_error_terminated_new">A conta do autor foi encerrada.\nO LeadPipe não poderá carregar este feed no futuro.\nDeseja cancelar a inscrição neste canal?</string>
+    <string name="feed_use_dedicated_fetch_method_help_text_new">Você acha que o carregamento do feed está lento demais\? Se sim, tente ativar o carregamento rápido (você pode alterar isso nas configurações ou pressionando o botão abaixo).\n\nO LeadPipe oferece duas estratégias de carregamento do feed:\n• Buscar o canal inscrito por inteiro, o que é lento, mas completo.\n• Usar um endpoint dedicado do serviço, que é rápido, mas geralmente incompleto.\n\nA diferença entre as duas é que a rápida geralmente não traz algumas informações, como a duração ou o tipo do item (não distingue transmissões ao vivo de vídeos normais) e pode retornar menos itens.\n\nO YouTube é um exemplo de serviço que oferece esse método rápido por meio do feed RSS.\n\nPortanto, a escolha se resume ao que você prefere: velocidade ou informações precisas.</string>
     <string name="feed_fetch_channel_tabs">Buscar abas do canal</string>
     <string name="feed_fetch_channel_tabs_summary">Abas a buscar ao atualizar o feed. Esta opção não tem efeito se um canal for atualizado no modo rápido.</string>
     <string name="sponsor_block">SponsorBlock</string>
@@ -822,8 +822,8 @@
     <string name="sponsor_block_manual_skip_button">Pular</string>
     <string name="sponsor_block_show_manual_skip_title">Mostrar botões manuais</string>
     <string name="sponsor_block_show_manual_skip_summary">Mostra botões na tela para pular ou desfazer o pulo de segmentos manualmente. Recomendado ao configurar categorias do SponsorBlock para serem puladas manualmente.</string>
-    <string name="soundcloud_go_plus_content_new">Esta é uma faixa do SoundCloud Go+, pelo menos no seu país, então não pode ser reproduzida nem baixada pelo PipePipe.</string>
-    <string name="youtube_music_premium_content_new">Este vídeo está disponível apenas para assinantes do YouTube Music Premium, então não pode ser reproduzido nem baixado pelo PipePipe.</string>
+    <string name="soundcloud_go_plus_content_new">Esta é uma faixa do SoundCloud Go+, pelo menos no seu país, então não pode ser reproduzida nem baixada pelo LeadPipe.</string>
+    <string name="youtube_music_premium_content_new">Este vídeo está disponível apenas para assinantes do YouTube Music Premium, então não pode ser reproduzido nem baixado pelo LeadPipe.</string>
     <string name="channel_tab_tracks">Faixas</string>
     <string name="image_quality_none">Não carregar imagens</string>
     <string name="image_quality_low">Qualidade baixa</string>
@@ -905,10 +905,10 @@
     <string name="donation_dialog_message">Obrigado por usar o PipePipe! Se você o acha útil, considere se tornar um apoiador no Ko-Fi. Seu apoio é importante para mim e me ajuda a adicionar novos recursos interessantes. Cada contribuição conta! 😇</string>
     <string name="fullscreen_gesture_control_summary">Use gestos para entrar/sair da tela cheia. Desativa o controle da velocidade de reprodução por gestos</string>
     <string name="fullscreen_gesture_control_title">Controle de tela cheia por gestos</string>
-    <string name="require_audio_focus_summary">Garante que somente o PipePipe reproduza áudio</string>
+    <string name="require_audio_focus_summary">Garante que somente o LeadPipe reproduza áudio</string>
     <string name="require_audio_focus_title">Exigir foco de áudio</string>
     <string name="decoder_init_failure">Falha ao inicializar o decodificador</string>
-    <string name="unable_to_decode_summary">Seu dispositivo não possui os decodificadores de hardware necessários, então você não pode reproduzir este vídeo no PipePipe.\nBaixe-o e reproduza-o no VLC.</string>
+    <string name="unable_to_decode_summary">Seu dispositivo não possui os decodificadores de hardware necessários, então você não pode reproduzir este vídeo no LeadPipe.\nBaixe-o e reproduza-o no VLC.</string>
     <string name="settings_category_gestures_summary">Gestos</string>
     <string name="settings_category_backup_title">Backup</string>
     <string name="settings_category_advanced_title">Avançado</string>
@@ -1044,7 +1044,7 @@
     <string name="import_soundcloud_subscriptions_title">Importar do SoundCloud</string>
     <string name="import_soundcloud_subscriptions_summary">Importa inscrições de um perfil do SoundCloud</string>
     <string name="clear_subscriptions_title">Limpar inscrições</string>
-    <string name="clear_subscriptions_summary">Remove todos os canais inscritos do PipePipe</string>
+    <string name="clear_subscriptions_summary">Remove todos os canais inscritos do LeadPipe</string>
     <string name="clear_subscriptions_confirmation">Limpar todas as inscrições? Isso não pode ser desfeito.</string>
     <string name="subscriptions_cleared">Inscrições removidas</string>
     <string name="fetch_subscription_details_title">Buscar detalhes dos canais?</string>

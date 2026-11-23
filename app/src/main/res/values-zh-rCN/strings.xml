@@ -153,8 +153,8 @@
 <string name="just_once">仅一次</string>
 <string name="file">文件</string>
 <string name="notifications">通知</string>
-<string name="notification_channel_name">PipePipe 通知</string>
-<string name="notification_channel_description">PipePipe 播放器通知</string>
+<string name="notification_channel_name">LeadPipe 通知</string>
+<string name="notification_channel_description">LeadPipe 播放器通知</string>
 <string name="app_update_notification_channel_name">应用更新通知</string>
 <string name="app_update_notification_channel_description_new"> PipePipe 新版本通知</string>
 <string name="hash_channel_name">视频哈希通知</string>
@@ -173,7 +173,7 @@
 <string name="recaptcha_cookies_cleared">reCAPTCHA cookies 已清除</string>
 <string name="import_data_summary">覆盖您当前的历史记录、订阅、播放列表和（可选）设置</string>
 <string name="export_data_summary">导出历史记录、订阅、播放列表和设置</string>
-<string name="clear_cookie_summary_new">通过 reCAPTCHA 时清除 PipePipe 存储的 cookies</string>
+<string name="clear_cookie_summary_new">通过 reCAPTCHA 时清除 LeadPipe 存储的 cookies</string>
 <string name="clear_views_history_title">清除观看历史</string>
 <string name="clear_views_history_summary">删除播放串流历史和播放位置</string>
 <string name="delete_view_history_alert">删除所有观看记录？</string>
@@ -216,7 +216,7 @@
 <string name="restore_defaults_confirmation">您想重置为默认吗？</string>
 <string name="permission_display_over_apps">授予在其他应用之上显示的权限</string>
 <!-- error activity -->
-<string name="error_report_notification_title_new">PipePipe 遇到错误，点击报告</string>
+<string name="error_report_notification_title_new">LeadPipe 遇到错误，点击报告</string>
 <string name="error_report_notification_toast">发生错误，查看通知</string>
 <string name="sorry_string">抱歉，这不应该发生。</string>
 <string name="error_report_button_text">通过电子邮件报告此错误</string>
@@ -275,7 +275,7 @@
 <string name="msg_name">文件名</string>
 <string name="msg_threads">线程</string>
 <string name="msg_error">错误</string>
-<string name="msg_running_new">PipePipe 正在下载</string>
+<string name="msg_running_new">LeadPipe 正在下载</string>
 <string name="msg_running_detail">点击了解详情</string>
 <string name="msg_calculating_hash">计算哈希</string>
 <string name="msg_wait">请稍后…</string>
@@ -521,7 +521,7 @@
 <string name="error_http_unsupported_range">服务器不接受多线程下载，使用单线程重试</string>
 <string name="error_http_not_found">未找到</string>
 <string name="error_postprocessing_failed">后期处理失败</string>
-<string name="error_postprocessing_stopped_new">PipePipe 处理文件时被关闭</string>
+<string name="error_postprocessing_stopped_new">LeadPipe 处理文件时被关闭</string>
 <string name="error_insufficient_storage">设备上无剩余空间</string>
 <string name="error_progress_lost">进度丢失，因为文件被删除</string>
 <string name="error_timeout">连接超时</string>
@@ -599,7 +599,7 @@
         \n
         \n所以选择归结为您喜欢什么：速度或精确信息。</string>
 <string name="feed_toggle_show_played_items">显示已观看项目</string>
-<string name="content_not_supported_new">PipePipe 尚未支持此内容。\n\n希望在未来的版本中支持。</string>
+<string name="content_not_supported_new">LeadPipe 尚未支持此内容。\n\n希望在未来的版本中支持。</string>
 <string name="detail_sub_channel_thumbnail_view_description">频道头像缩略图</string>
 <string name="channel_created_by">由 %s 创建</string>
 <string name="video_detail_by">由 %s 制作</string>
@@ -614,13 +614,13 @@
 <string name="no_appropriate_file_manager_message_android_10">未找到适合此操作的文件管理器。
         \n请安装兼容存储访问框架的文件管理器</string>
 <string name="georestricted_content">此内容在您所在的国家不可用。</string>
-<string name="soundcloud_go_plus_content_new">这是 SoundCloud Go+ 曲目，至少在您所在的国家是这样，因此无法通过 PipePipe 进行流式传输或下载。</string>
-<string name="private_content_new">此内容是私有的，因此无法通过 PipePipe 流式传输或下载。</string>
-<string name="youtube_music_premium_content_new">该视频仅供 YouTube Music Premium 会员观看，因此无法通过 PipePipe 进行流式传输或下载。</string>
+<string name="soundcloud_go_plus_content_new">这是 SoundCloud Go+ 曲目，至少在您所在的国家是这样，因此无法通过 LeadPipe 进行流式传输或下载。</string>
+<string name="private_content_new">此内容是私有的，因此无法通过 LeadPipe 流式传输或下载。</string>
+<string name="youtube_music_premium_content_new">该视频仅供 YouTube Music Premium 会员观看，因此无法通过 LeadPipe 进行流式传输或下载。</string>
 <string name="live_not_started">直播尚未开始。</string>
 <string name="account_terminated">账户已失效</string>
 <string name="service_provides_reason">%s 提供此原因：</string>
-<string name="paid_content_new">此内容仅供付费用户使用，因此无法通过 PipePipe 进行流式传输或下载。</string>
+<string name="paid_content_new">此内容仅供付费用户使用，因此无法通过 LeadPipe 进行流式传输或下载。</string>
 <string name="featured">精选</string>
 <string name="radio">电台</string>
 <string name="auto_device_theme_title">自动（设备主题）</string>
@@ -810,7 +810,7 @@
 <string name="donation_dialog_message">感谢您使用 PipePipe！如果您觉得它有用，请考虑在 Ko-Fi 上成为支持者。您的支持对我很重要，并帮助我添加更多令人兴奋的新功能。每一点都很重要！😇</string>
 <string name="fullscreen_gesture_control_summary">使用手势进入/退出全屏</string>
 <string name="fullscreen_gesture_control_title">全屏手势控制</string>
-<string name="require_audio_focus_summary">确保只有 PipePipe 正在播放音频</string>
+<string name="require_audio_focus_summary">确保只有 LeadPipe 正在播放音频</string>
 <string name="require_audio_focus_title">需要音频焦点</string>
 <string name="decoder_init_failure">解码器初始化失败</string>
 <string name="unable_to_decode_summary">您的设备缺乏所需的硬件解码器，因此无法在PipePipe中播放此视频。\n请下载并在VLC中播放。</string>
@@ -1045,7 +1045,7 @@
 <string name="import_soundcloud_subscriptions_title">从 SoundCloud 导入</string>
 <string name="import_soundcloud_subscriptions_summary">从 SoundCloud 个人资料导入订阅</string>
 <string name="clear_subscriptions_title">清除订阅</string>
-<string name="clear_subscriptions_summary">从 PipePipe 中移除所有订阅频道</string>
+<string name="clear_subscriptions_summary">从 LeadPipe 中移除所有订阅频道</string>
 <string name="clear_subscriptions_confirmation">清除所有订阅？此操作无法撤销。</string>
 <string name="subscriptions_cleared">订阅已清除</string>
 <string name="fetch_subscription_details_title">获取频道详情？</string>
@@ -1203,9 +1203,9 @@
 <string name="title_most_played_ascending">最多播放（最少优先）</string>
 <string name="plugins">插件</string>
 <string name="plugins_enable_title">允许使用插件</string>
-<string name="plugins_enable_summary">插件从第三方仓库下载，并以与 PipePipe 相同的权限运行</string>
+<string name="plugins_enable_summary">插件从第三方仓库下载，并以与 LeadPipe 相同的权限运行</string>
 <string name="plugins_warning_title">启用插件？</string>
-<string name="plugins_warning_message">插件是从您添加的仓库下载的代码。它们未经 PipePipe 或您安装 PipePipe 的应用商店（如 F-Droid）审查，并以与 PipePipe 相同的权限和数据访问权限（包括您的登录信息）运行。\n\n请仅添加您信任的仓库。</string>
+<string name="plugins_warning_message">插件是从您添加的仓库下载的代码。它们未经 LeadPipe 或您安装 LeadPipe 的应用商店（如 F-Droid）审查，并以与 LeadPipe 相同的权限和数据访问权限（包括您的登录信息）运行。\n\n请仅添加您信任的仓库。</string>
 <string name="plugins_warning_accept">启用</string>
 <string name="plugins_repositories">仓库</string>
 <string name="plugins_add_repository">添加仓库</string>
@@ -1221,12 +1221,12 @@
 <string name="plugin_installing">正在安装 %s…</string>
 <string name="plugin_install_failed">无法安装 %1$s：%2$s</string>
 <string name="plugin_repository_failed">无法加载 %1$s：%2$s</string>
-<string name="plugin_restart_required">重启 PipePipe 以应用插件更改</string>
+<string name="plugin_restart_required">重启 LeadPipe 以应用插件更改</string>
 <string name="plugin_restart">重启</string>
 <string name="plugin_status_loaded">版本 %s</string>
 <string name="plugin_status_pending">版本 %s，重启后生效</string>
 <string name="plugin_status_error">版本 %1$s，加载失败：%2$s</string>
-<string name="plugin_incompatible">需要更新版本的 PipePipe</string>
+<string name="plugin_incompatible">需要更新版本的 LeadPipe</string>
 <string name="plugin_key_changed">该插件现在使用不同的密钥签名。如果您信任新的发布者，请先卸载它。</string>
 <string name="plugin_settings_title">%s 设置</string>
 <string name="plugin_uninstall_confirm">卸载 %s？您的订阅和历史记录将被保留。</string>
@@ -1239,19 +1239,19 @@
 <string name="plugins_show_nsfw_title">显示 NSFW 插件</string>
 <string name="plugins_show_nsfw_summary">在可用插件中列出被标记为 NSFW 的插件</string>
 <string name="plugin_installed_other_publisher">由其他发布者发布。请先卸载 %1$s 才能安装此插件。</string>
-<string name="cast_to_pipepipe">投屏到 PipePipe</string>
-<string name="cast_searching">正在此网络上搜索 PipePipe 设备…</string>
+<string name="cast_to_pipepipe">投屏到 LeadPipe / PipePipe</string>
+<string name="cast_searching">正在此网络上搜索 LeadPipe / PipePipe 设备…</string>
 <string name="cast_enter_pin">输入 %1$s 上显示的代码</string>
 <string name="cast_wrong_pin">代码错误</string>
-<string name="cast_locked">错误代码次数过多。请在接收设备上重启 PipePipe 后重试。</string>
+<string name="cast_locked">错误代码次数过多。请在接收设备上重启 LeadPipe / PipePipe 后重试。</string>
 <string name="cast_disconnect">断开连接</string>
 <string name="cast_pairing_code_toast">%1$s 想要投屏到此处。配对码：%2$s</string>
-<string name="cast_receiver_title">接收来自其他 PipePipe 设备的投屏</string>
-<string name="cast_receiver_summary">在 PipePipe 打开时保持本地网络监听器运行，这会消耗一些电量。在电视上默认启用。</string>
+<string name="cast_receiver_title">接收来自其他 LeadPipe / PipePipe 设备的投屏</string>
+<string name="cast_receiver_summary">在 LeadPipe 打开时保持本地网络监听器运行，这会消耗一些电量。在电视上默认启用。</string>
 <string name="cast_plugin_missing">%2$s 未安装 %1$s 插件，因此无法播放此视频。</string>
 <string name="cast_service_unsupported">%1$s 不支持此视频的服务。</string>
 <string name="cast_play_failed">%1$s 无法加载此视频。</string>
-<string name="cast_remote_menu">PipePipe 遥控器</string>
+<string name="cast_remote_menu">LeadPipe 遥控器</string>
 <string name="cast_reconnect">重新连接</string>
 <string name="cast_reconnecting">正在重新连接…</string>
 <string name="cast_disconnected">已断开连接</string>
@@ -1272,7 +1272,7 @@
 <string name="reset_settings_confirmation">所有设置将恢复为默认值，应用将重新启动。是否继续？</string>
 <string name="invalid_settings_file">不是有效的设置文件</string>
 <string name="logout_keep_webview_session_title">退出登录时保留网页会话</string>
-<string name="logout_keep_webview_session_summary">退出登录只在 PipePipe 中移除账户，保留网站的登录会话，便于快速重新登录</string>
+<string name="logout_keep_webview_session_summary">退出登录只在 LeadPipe 中移除账户，保留网站的登录会话，便于快速重新登录</string>
 <string name="login_expired_toast">%1$s 登录已过期，已退出登录</string>
 <string name="missing_plugin_title">需要插件</string>
 <string name="missing_plugin_message">您的一些数据属于现在由插件提供的服务，这些插件未安装或未加载：</string>
@@ -1289,8 +1289,8 @@
 <string name="channel_tab_courses">课程</string>
 <string name="error_report_plugin_button">向插件作者报告</string>
 <string name="error_report_plugin_title">插件故障</string>
-<string name="error_report_plugin_message">此故障来自 %1$s 插件，因此不是 PipePipe 的问题。请在 %2$s 报告此问题</string>
-<string name="error_report_plugin_no_tracker">此故障来自 %1$s 插件，因此不是 PipePipe 的问题。该插件未声明问题追踪器，请复制报告并发送给其作者 %2$s。</string>
+<string name="error_report_plugin_message">此故障来自 %1$s 插件，因此不是 LeadPipe 的问题。请在 %2$s 报告此问题</string>
+<string name="error_report_plugin_no_tracker">此故障来自 %1$s 插件，因此不是 LeadPipe 的问题。该插件未声明问题追踪器，请复制报告并发送给其作者 %2$s。</string>
 <string name="error_report_plugin_open">打开问题追踪器</string>
 <string name="anti_bot_hint">%1$s 正在限制来自您网络的请求。请稍后再试或切换到其他网络。</string>
 <string name="anti_bot_login_hint">%1$s 将来自您网络的请求标记为异常。请登录以继续，或稍后再试。</string>

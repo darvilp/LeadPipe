@@ -107,8 +107,8 @@
     <string name="always">Πάντα</string>
     <string name="just_once">Μόνο μία φορά</string>
     <string name="file">Αρχείο</string>
-    <string name="notification_channel_name">Ειδοποίηση NewPipe</string>
-    <string name="notification_channel_description">Ειδοποιήσεις του αναπαραγωγέα του NewPipe</string>
+    <string name="notification_channel_name">Ειδοποίηση LeadPipe</string>
+    <string name="notification_channel_description">Ειδοποιήσεις του αναπαραγωγέα του LeadPipe</string>
     <string name="unknown_content">[Άγνωστο]</string>
     <string name="switch_to_background">Αλλαγή σε Παρασκήνιο</string>
     <string name="switch_to_popup">Αλλαγή σε Αναδυόμενο Παράθυρο</string>

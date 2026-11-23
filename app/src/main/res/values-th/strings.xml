@@ -92,8 +92,8 @@
     <string name="always">ตลอดเวลา</string>
     <string name="just_once">เพียงครั้งเดียว</string>
     <string name="file">ไฟล์</string>
-    <string name="notification_channel_name">การแจ้งเตือน NewPipe</string>
-    <string name="notification_channel_description">การแจ้งเตือนของแอป NewPipe เมื่อเล่นสื่อในโหมดพื้นหลังและป๊อปอัพ</string>
+    <string name="notification_channel_name">การแจ้งเตือน LeadPipe</string>
+    <string name="notification_channel_description">การแจ้งเตือนของแอป LeadPipe เมื่อเล่นสื่อในโหมดพื้นหลังและป๊อปอัพ</string>
     <string name="app_update_notification_channel_name">การแจ้งเตือนการอัปเดตแอป</string>
     <string name="app_update_notification_channel_description">การแจ้งเตือนสำหรับ NewPipe เวอร์ชั่นใหม่</string>
     <string name="unknown_content">[ไม่ทราบ]</string>

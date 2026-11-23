@@ -59,7 +59,7 @@
     <string name="clear">Pyyhi</string>
     <string name="best_resolution">Paras resoluutio</string>
     <string name="undo">Peru</string>
-    <string name="notification_channel_name">NewPipe ilmoitus</string>
+    <string name="notification_channel_name">LeadPipe ilmoitus</string>
     <string name="notification_channel_description">Ilmoitukset NewPipen soittimille</string>
     <string name="general_error">Virhe</string>
     <string name="network_error">Verkkovirhe</string>

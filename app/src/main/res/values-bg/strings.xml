@@ -61,8 +61,8 @@
     <string name="best_resolution">Най-добра резолюция</string>
     <string name="undo">Отмени</string>
     <string name="play_all">Възпроизведи всички</string>
-    <string name="notification_channel_name">Известия от NewPipe</string>
-    <string name="notification_channel_description">Известия за Фонов плейър и плейъра в Отделен прозорец на NewPipe</string>
+    <string name="notification_channel_name">Известия от LeadPipe</string>
+    <string name="notification_channel_description">Известия за Фонов плейър и плейъра в Отделен прозорец на LeadPipe</string>
     <string name="unknown_content">[Неизвестен]</string>
     <string name="general_error">Грешка</string>
     <string name="network_error">Проблем с мрежата</string>

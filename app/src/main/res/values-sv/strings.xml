@@ -77,7 +77,7 @@
     <string name="settings_category_history_title">Historik och cacheminne</string>
     <string name="undo">Ångra</string>
     <string name="play_all">Spela upp alla</string>
-    <string name="notification_channel_name">Aviseringar för PipePipe</string>
+    <string name="notification_channel_name">Aviseringar för LeadPipe</string>
     <string name="notification_channel_description">Aviseringar för PipePipes spelare</string>
     <string name="unknown_content">[Okänd]</string>
     <string name="youtube_signature_deobfuscation_error">Det gick inte att avkoda videoadressens signatur</string>
@@ -662,10 +662,10 @@
     </plurals>
     <string name="restricted_video_no_stream_new">Den här videon har en åldersgräns.\nLogga in via inställningarna för att titta på den.</string>
     <string name="app_update_notification_channel_description_new">Aviseringar om nya versioner av PipePipe</string>
-    <string name="clear_cookie_summary_new">Rensa kakor som PipePipe lagrar när du löser en reCAPTCHA</string>
-    <string name="error_report_notification_title_new">Ett fel uppstod i PipePipe. Tryck för att rapportera</string>
+    <string name="clear_cookie_summary_new">Rensa kakor som LeadPipe lagrar när du löser en reCAPTCHA</string>
+    <string name="error_report_notification_title_new">Ett fel uppstod i LeadPipe. Tryck för att rapportera</string>
     <string name="error_report_open_issue_button_text_new">Rapportera på GitHub</string>
-    <string name="msg_running_new">PipePipe hämtar</string>
+    <string name="msg_running_new">LeadPipe hämtar</string>
     <string name="title_activity_about_new">Om PipePipe</string>
     <string name="app_description_new">En fri Android-app med öppen källkod som låter dig utforska YouTube, NicoNico och BiliBili fritt</string>
     <string name="duplicate_in_playlist">De nedtonade spellistorna innehåller redan det här objektet.</string>
@@ -682,7 +682,7 @@
     <string name="card">Kort</string>
     <string name="app_update_unavailable_toast">Du använder den senaste versionen av PipePipe</string>
     <string name="app_update_notification_content_title_new">En uppdatering av PipePipe är tillgänglig!</string>
-    <string name="error_postprocessing_stopped_new">PipePipe stängdes medan filen bearbetades</string>
+    <string name="error_postprocessing_stopped_new">LeadPipe stängdes medan filen bearbetades</string>
     <string name="error_sabr_download_failed">SABR-hämtningen misslyckades</string>
     <string name="error_sabr_download_format">Det här SABR-formatet kan inte hämtas</string>
     <string name="error_sabr_download_initialization">SABR kunde inte initieras</string>
@@ -778,12 +778,12 @@
     <string name="sponsor_block_manual_skip_button">Hoppa över</string>
     <string name="sponsor_block_show_manual_skip_title">Visa knappar för manuell överhoppning</string>
     <string name="sponsor_block_show_manual_skip_summary">Visa knappar på skärmen för att hoppa över segment eller ångra överhoppning manuellt. Detta rekommenderas när SponsorBlock-kategorier är inställda på manuell överhoppning.</string>
-    <string name="content_not_supported_new">Det här innehållet stöds ännu inte av PipePipe.\n\nFörhoppningsvis kommer det att stödjas i en framtida version.</string>
-    <string name="soundcloud_go_plus_content_new">Det här är ett SoundCloud Go+-spår, åtminstone i ditt land, och kan därför inte strömmas eller hämtas med PipePipe.</string>
-    <string name="private_content_new">Det här innehållet är privat och kan därför inte strömmas eller hämtas med PipePipe.</string>
-    <string name="youtube_music_premium_content_new">Den här videon är endast tillgänglig för YouTube Music Premium-medlemmar och kan därför inte strömmas eller hämtas med PipePipe.</string>
+    <string name="content_not_supported_new">Det här innehållet stöds ännu inte av LeadPipe.\n\nFörhoppningsvis kommer det att stödjas i en framtida version.</string>
+    <string name="soundcloud_go_plus_content_new">Det här är ett SoundCloud Go+-spår, åtminstone i ditt land, och kan därför inte strömmas eller hämtas med LeadPipe.</string>
+    <string name="private_content_new">Det här innehållet är privat och kan därför inte strömmas eller hämtas med LeadPipe.</string>
+    <string name="youtube_music_premium_content_new">Den här videon är endast tillgänglig för YouTube Music Premium-medlemmar och kan därför inte strömmas eller hämtas med LeadPipe.</string>
     <string name="live_not_started">Livesändningen har inte börjat ännu.</string>
-    <string name="paid_content_new">Det här innehållet är endast tillgängligt för användare som har betalat och kan därför inte strömmas eller hämtas med PipePipe.</string>
+    <string name="paid_content_new">Det här innehållet är endast tillgängligt för användare som har betalat och kan därför inte strömmas eller hämtas med LeadPipe.</string>
     <string name="metadata_subscribers">Prenumeranter</string>
     <string name="remove_duplicates">Ta bort dubbletter</string>
     <string name="remove_duplicates_popup_title">Ta bort dubbletter av strömmar?</string>
@@ -902,10 +902,10 @@
     <string name="donation_dialog_message">Tack för att du använder PipePipe! Om du har nytta av appen får du gärna bli supporter på Ko-Fi. Ditt stöd betyder mycket för mig och hjälper mig att lägga till fler spännande funktioner. Varje bidrag räknas! 😇</string>
     <string name="fullscreen_gesture_control_summary">Använd gester för att öppna och lämna helskärmsläget. Inaktiverar gester för uppspelningshastighet</string>
     <string name="fullscreen_gesture_control_title">Helskärmsgester</string>
-    <string name="require_audio_focus_summary">Se till att bara PipePipe spelar upp ljud</string>
+    <string name="require_audio_focus_summary">Se till att bara LeadPipe spelar upp ljud</string>
     <string name="require_audio_focus_title">Kräv ljudfokus</string>
     <string name="decoder_init_failure">Avkodaren kunde inte initieras</string>
-    <string name="unable_to_decode_summary">Din enhet saknar de maskinvaruavkodare som krävs, så videon kan inte spelas upp i PipePipe.\nHämta videon och spela upp den i VLC.</string>
+    <string name="unable_to_decode_summary">Din enhet saknar de maskinvaruavkodare som krävs, så videon kan inte spelas upp i LeadPipe.\nHämta videon och spela upp den i VLC.</string>
     <string name="settings_category_gestures_summary">Gester</string>
     <string name="settings_category_bullet_comments_summary">Inställningar för danmaku</string>
     <string name="settings_category_backup_title">Säkerhetskopiering</string>
@@ -1061,7 +1061,7 @@
     <string name="import_soundcloud_subscriptions_title">Importera från SoundCloud</string>
     <string name="import_soundcloud_subscriptions_summary">Importera prenumerationer från en SoundCloud-profil</string>
     <string name="clear_subscriptions_title">Rensa prenumerationer</string>
-    <string name="clear_subscriptions_summary">Ta bort alla kanaler du prenumererar på från PipePipe</string>
+    <string name="clear_subscriptions_summary">Ta bort alla kanaler du prenumererar på från LeadPipe</string>
     <string name="clear_subscriptions_confirmation">Rensa alla prenumerationer? Detta kan inte ångras.</string>
     <string name="subscriptions_cleared">Prenumerationerna har rensats</string>
     <string name="fetch_subscription_details_title">Hämta kanalinformation?</string>

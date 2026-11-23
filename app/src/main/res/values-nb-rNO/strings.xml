@@ -98,8 +98,8 @@
     <string name="enable_watch_history_summary">Lagre visningshistorikk</string>
     <string name="clear">Tøm</string>
     <string name="best_resolution">Beste oppløsning</string>
-    <string name="notification_channel_name">NewPipe-merknad</string>
-    <string name="notification_channel_description">Merknad for NewPipe sin avspiller</string>
+    <string name="notification_channel_name">LeadPipe-merknad</string>
+    <string name="notification_channel_description">Merknad for LeadPipe sin avspiller</string>
     <string name="settings_category_downloads_title">Last ned</string>
     <string name="settings_file_charset_title">Tillate tegn i filnavn</string>
     <string name="charset_letters_and_digits">Bokstaver og tall</string>

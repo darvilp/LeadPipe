@@ -72,7 +72,7 @@
     <string name="best_resolution">बेहतर विडियो की क्वालिटी</string>
     <string name="undo">वापस जाए</string>
     <string name="play_all">सारे प्ले करे</string>
-    <string name="notification_channel_name">NewPipe की अधिसूचना</string>
+    <string name="notification_channel_name">LeadPipe की अधिसूचना</string>
     <string name="notification_channel_description">न्यूपाइप के बैकग्राउंड में चल रहे विडियो और पॉपअप विडियो के लिए अधिसूचना</string>
     <string name="unknown_content">[नहीं जानते]</string>
     <string name="general_error">त्रुटी</string>

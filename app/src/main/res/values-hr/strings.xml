@@ -113,8 +113,8 @@
     <string name="contribution_title">Doprinos</string>
     <string name="title_activity_history">Povijest</string>
     <string name="action_history">Povijest</string>
-    <string name="notification_channel_name">NewPipe obavijest</string>
-    <string name="notification_channel_description">Obavijesti za NewPipe reproduktore</string>
+    <string name="notification_channel_name">LeadPipe obavijest</string>
+    <string name="notification_channel_description">Obavijesti za LeadPipe reproduktore</string>
     <string name="settings_category_player_title">Reproduktor</string>
     <string name="settings_category_history_title">Povijest i predmemorija</string>
     <string name="undo">Poništi</string>

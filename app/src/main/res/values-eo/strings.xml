@@ -95,8 +95,8 @@
     <string name="enable_search_history_summary">Konservi la historio de serĉo lokale</string>
     <string name="enable_watch_history_title">Rigardu historion</string>
     <string name="enable_watch_history_summary">Spuri la viditajn filmetojn</string>
-    <string name="notification_channel_name">NewPipe Sciigo</string>
-    <string name="notification_channel_description">Sciigoj por NewPipe fonaj kaj ŝprucfenestraj ludiloj</string>
+    <string name="notification_channel_name">LeadPipe Sciigo</string>
+    <string name="notification_channel_description">Sciigoj por LeadPipe fonaj kaj ŝprucfenestraj ludiloj</string>
     <string name="settings_category_player_title">Ludilo</string>
     <string name="settings_category_history_title">Historio kaj kaŝmemoro</string>
     <string name="undo">Malfari</string>

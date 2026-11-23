@@ -413,8 +413,8 @@
     <string name="unknown_content">[E panjohur]</string>
     <string name="app_update_notification_channel_description">Njoftimet për versionet e reja të NewPipe</string>
     <string name="app_update_notification_channel_name">Njoftimi për Përditësime të Aplikacionit</string>
-    <string name="notification_channel_description">Njoftimet për luajtësit në sfond dhe popup të NewPipe</string>
-    <string name="notification_channel_name">Njoftim nga NewPipe</string>
+    <string name="notification_channel_description">Njoftimet për luajtësit në sfond dhe popup të LeadPipe</string>
+    <string name="notification_channel_name">Njoftim nga LeadPipe</string>
     <string name="file">Skedar</string>
     <string name="just_once">Vetëm një Herë</string>
     <string name="always">Gjithmonë</string>

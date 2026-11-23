@@ -76,8 +76,8 @@
     <string name="best_resolution">רזולוציה מיטבית</string>
     <string name="undo">ביטול</string>
     <string name="play_all">לנגן הכול</string>
-    <string name="notification_channel_name">התראה מ־NewPipe</string>
-    <string name="notification_channel_description">התראות עבור הנגן של NewPipe</string>
+    <string name="notification_channel_name">התראה מ־LeadPipe</string>
+    <string name="notification_channel_description">התראות עבור הנגן של LeadPipe</string>
     <string name="unknown_content">[לא ידוע]</string>
     <string name="player_stream_failure">נגינת התזרים לא הצליחה</string>
     <string name="player_unrecoverable_failure">אירעה תקלה בנגן ממנה לא ניתן להשתקם</string>

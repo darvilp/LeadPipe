@@ -391,8 +391,8 @@
     <string name="unknown_content">[Disconnotu]</string>
     <string name="app_update_notification_channel_description">Notìficas pro sas versiones noas de NewPipe</string>
     <string name="app_update_notification_channel_name">Notìfica de agiornamentu de s\'aplicatzione</string>
-    <string name="notification_channel_description">Notìficas pro su riproduidore de NewPipe</string>
-    <string name="notification_channel_name">Notìficas de NewPipe</string>
+    <string name="notification_channel_description">Notìficas pro su riproduidore de LeadPipe</string>
+    <string name="notification_channel_name">Notìficas de LeadPipe</string>
     <string name="file">Documentu</string>
     <string name="just_once">Una borta ebbia</string>
     <string name="always">Semper</string>

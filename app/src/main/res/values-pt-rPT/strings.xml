@@ -21,7 +21,7 @@
     <string name="error_progress_lost">Progresso perdido, o ficheiro foi eliminado</string>
     <string name="channel_unsubscribed">Canal não subscrito</string>
     <string name="msg_name">Nome do ficheiro</string>
-    <string name="notification_channel_description">Notificações para o reprodutor do NewPipe</string>
+    <string name="notification_channel_description">Notificações para o reprodutor do LeadPipe</string>
     <string name="unhook_checkbox">Desvincular (pode causar distorção)</string>
     <string name="show_search_suggestions_summary">Escolha as sugestões a mostrar ao pesquisar</string>
     <string name="no_valid_zip_file">Ficheiro ZIP inválido</string>
@@ -177,7 +177,7 @@
     <string name="top_50">Top 50</string>
     <string name="detail_dislikes_img_view_description">Não gosto</string>
     <string name="import_file_title">Importar ficheiro</string>
-    <string name="notification_channel_name">Notificação NewPipe</string>
+    <string name="notification_channel_name">Notificação LeadPipe</string>
     <string name="error_snackbar_message">Desculpe mas algo correu mal.</string>
     <string name="theme_title">Tema</string>
     <string name="error_path_creation">Não foi possível criar a pasta de destino</string>

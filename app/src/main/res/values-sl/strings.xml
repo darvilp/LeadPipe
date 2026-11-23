@@ -109,8 +109,8 @@
     <string name="enable_watch_history_summary">Sledi zgodovini predvajanih posnetkov</string>
     <string name="resume_on_audio_focus_gain_title">Nadaljuj predvajanje</string>
     <string name="resume_on_audio_focus_gain_summary">Nadaljuj s predvajanjem po prekinitvi (npr. po telefonskem klicu)</string>
-    <string name="notification_channel_name">Obvestila NewPipe</string>
-    <string name="notification_channel_description">Obvestila predvajalnika NewPipe</string>
+    <string name="notification_channel_name">Obvestila LeadPipe</string>
+    <string name="notification_channel_description">Obvestila predvajalnika LeadPipe</string>
     <string name="contribution_title">Doprinos k projektu</string>
     <string name="title_activity_history">Zgodovina</string>
     <string name="action_history">Zgodovina</string>

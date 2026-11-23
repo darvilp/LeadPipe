@@ -85,8 +85,8 @@
     <string name="always">Заўсёды</string>
     <string name="just_once">Толькі цяпер</string>
     <string name="file">Файл</string>
-    <string name="notification_channel_name">Апавяшчэнне NewPipe</string>
-    <string name="notification_channel_description">Апавяшчэнні для NewPipe ў фоне і ва ўсплываючым акне</string>
+    <string name="notification_channel_name">Апавяшчэнне LeadPipe</string>
+    <string name="notification_channel_description">Апавяшчэнні для LeadPipe ў фоне і ва ўсплываючым акне</string>
     <string name="unknown_content">[Невядома]</string>
     <string name="switch_to_background">Перайсці ў фон</string>
     <string name="switch_to_popup">Перайсці ў акно</string>

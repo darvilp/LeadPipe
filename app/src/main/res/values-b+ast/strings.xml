@@ -56,7 +56,7 @@
     <string name="settings_category_player_title">Reproductor</string>
     <string name="settings_category_history_title">Historial y caché</string>
     <string name="best_resolution">La meyor resolución</string>
-    <string name="notification_channel_name">Avisu permanente de NewPipe</string>
+    <string name="notification_channel_name">Avisu permanente de LeadPipe</string>
     <string name="search_no_results">Nun hai resultaos</string>
     <string name="empty_subscription_feed_subtitle">Equí nun hai más que grillos</string>
     <plurals name="subscribers">
@@ -469,7 +469,7 @@
     <string name="switch_to_background">Cambiar al reproductor en segundu planu</string>
     <string name="app_update_notification_channel_description">Anovamientos pa NewPipe</string>
     <string name="app_update_notification_channel_name">Avisos d\'anovamientos</string>
-    <string name="notification_channel_description">Avisos de los reproductores en segundu planu y en ventanu de NewPipe</string>
+    <string name="notification_channel_description">Avisos de los reproductores en segundu planu y en ventanu de LeadPipe</string>
     <string name="just_once">Namás una vegada</string>
     <string name="file_deleted">Desanicióse\'l ficheru</string>
     <string name="undo">Desfacer</string>

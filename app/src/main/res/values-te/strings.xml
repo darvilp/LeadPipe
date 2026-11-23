@@ -215,7 +215,7 @@
     <string name="hash_channel_name">వీడియో హాష్ నోటిఫికేషన్</string>
     <string name="hash_channel_description">వీడియో హ్యాషింగ్ పురోగతి కోసం నోటిఫికేషన్‌లు</string>
     <string name="playlists">ప్లేజాబితాలు</string>
-    <string name="notification_channel_description">NewPipe ప్లేయర్‌ నోటిఫికేషన్‌లు</string>
+    <string name="notification_channel_description">LeadPipe ప్లేయర్‌ నోటిఫికేషన్‌లు</string>
     <string name="duration_live">ప్రత్యక్ష (ప్రసారం)</string>
     <string name="channels">ఛానెల్లు</string>
     <string name="videos_string">వీడియోలు</string>

@@ -117,7 +117,7 @@
     <string name="fragment_feed_title">Ինչ կա֊չկա</string>
     <string name="remove_watched">Հեռացնել դիտվածները</string>
     <string name="video">Տեսանյութ</string>
-    <string name="notification_channel_name">NewPipe ծանուցում</string>
+    <string name="notification_channel_name">LeadPipe ծանուցում</string>
     <string name="just_once">Մեկ անգամ</string>
     <string name="always">Միշտ</string>
     <string name="download_dialog_title">Բեռնել</string>

@@ -166,8 +166,8 @@
     <string name="just_once">Doar o dată</string>
     <string name="file">Fișier</string>
     <string name="notifications">Notificări</string>
-    <string name="notification_channel_name">Notificare PipePipe</string>
-    <string name="notification_channel_description">Notificări pentru playerul PipePipe</string>
+    <string name="notification_channel_name">Notificare LeadPipe</string>
+    <string name="notification_channel_description">Notificări pentru playerul LeadPipe</string>
     <string name="app_update_notification_channel_name">Notificare actualizare aplicație</string>
     <string name="app_update_notification_channel_description_new">Notificări pentru versiunile noi PipePipe</string>
     <string name="hash_channel_name">Notificare hash video</string>
@@ -186,7 +186,7 @@
     <string name="recaptcha_cookies_cleared">Cookie-urile reCAPTCHA au fost șterse</string>
     <string name="import_data_summary">Suprascrie istoricul, abonamentele, listele de redare și (opțional) setările curente</string>
     <string name="export_data_summary">Exportă istoricul, abonamentele, listele de redare și setările</string>
-    <string name="clear_cookie_summary_new">Șterge cookie-urile pe care PipePipe le stochează când rezolvați un reCAPTCHA</string>
+    <string name="clear_cookie_summary_new">Șterge cookie-urile pe care LeadPipe le stochează când rezolvați un reCAPTCHA</string>
     <string name="clear_views_history_title">Șterge istoricul vizionărilor</string>
     <string name="clear_views_history_summary">Șterge istoricul fluxurilor redate și pozițiile de redare</string>
     <string name="delete_view_history_alert">Ștergeți întregul istoric al vizionărilor?</string>
@@ -227,7 +227,7 @@
     <string name="restore_defaults">Restaurează valorile implicite</string>
     <string name="restore_defaults_confirmation">Doriți să restaurați valorile implicite?</string>
     <string name="permission_display_over_apps">Acordați permisiunea de a afișa peste alte aplicații</string>
-    <string name="error_report_notification_title_new">PipePipe a întâmpinat o eroare; atingeți pentru a o raporta</string>
+    <string name="error_report_notification_title_new">LeadPipe a întâmpinat o eroare; atingeți pentru a o raporta</string>
     <string name="error_report_notification_toast">A apărut o eroare; consultați notificarea</string>
     <string name="sorry_string">Ne pare rău, acest lucru nu ar fi trebuit să se întâmple.</string>
     <string name="error_report_button_text">Raportați această eroare prin e-mail</string>
@@ -308,7 +308,7 @@
     <string name="msg_name">Nume fișier</string>
     <string name="msg_threads">Fire de execuție</string>
     <string name="msg_error">Eroare</string>
-    <string name="msg_running_new">PipePipe descarcă</string>
+    <string name="msg_running_new">LeadPipe descarcă</string>
     <string name="msg_running_detail">Atingeți pentru detalii</string>
     <string name="msg_calculating_hash">Se calculează hash-ul</string>
     <string name="msg_wait">Vă rugăm să așteptați…</string>
@@ -544,7 +544,7 @@
     <string name="error_http_unsupported_range">Serverul nu acceptă descărcări cu mai multe fire; reîncercați cu @string/msg_threads = 1</string>
     <string name="error_http_not_found">Nu a fost găsit</string>
     <string name="error_postprocessing_failed">Post-procesarea a eșuat</string>
-    <string name="error_postprocessing_stopped_new">PipePipe s-a închis în timp ce lucra la fișier</string>
+    <string name="error_postprocessing_stopped_new">LeadPipe s-a închis în timp ce lucra la fișier</string>
     <string name="error_insufficient_storage">Nu mai este spațiu pe dispozitiv</string>
     <string name="error_progress_lost">Progresul a fost pierdut deoarece fișierul a fost șters</string>
     <string name="error_timeout">Conexiunea a expirat</string>
@@ -740,7 +740,7 @@
     <string name="sponsor_block_manual_skip_button">Omite</string>
     <string name="sponsor_block_show_manual_skip_title">Afișează butoanele manuale</string>
     <string name="sponsor_block_show_manual_skip_summary">Afișează butoane pe ecran pentru a omite/anula manual omiterea segmentelor. Se recomandă activarea acestei opțiuni când configurați categoriile SponsorBlock pentru omitere manuală.</string>
-    <string name="content_not_supported_new">Acest conținut nu este încă acceptat de PipePipe.
+    <string name="content_not_supported_new">Acest conținut nu este încă acceptat de LeadPipe.
         \n
         \nSperăm că va fi acceptat într-o versiune viitoare.</string>
     <string name="detail_sub_channel_thumbnail_view_description">Miniatura avatarului canalului</string>
@@ -757,13 +757,13 @@
     <string name="no_appropriate_file_manager_message_android_10">Nu a fost găsit un manager de fișiere potrivit pentru această acțiune.
         \nVă rugăm să instalați un manager de fișiere compatibil cu Storage Access Framework</string>
     <string name="georestricted_content">Acest conținut nu este disponibil în țara dvs.</string>
-    <string name="soundcloud_go_plus_content_new">Aceasta este o piesă SoundCloud Go+, cel puțin în țara dvs., deci nu poate fi redată în flux sau descărcată de PipePipe.</string>
-    <string name="private_content_new">Acest conținut este privat, deci nu poate fi redat în flux sau descărcat de PipePipe.</string>
-    <string name="youtube_music_premium_content_new">Acest videoclip este disponibil doar membrilor YouTube Music Premium, deci nu poate fi redat în flux sau descărcat de PipePipe.</string>
+    <string name="soundcloud_go_plus_content_new">Aceasta este o piesă SoundCloud Go+, cel puțin în țara dvs., deci nu poate fi redată în flux sau descărcată de LeadPipe.</string>
+    <string name="private_content_new">Acest conținut este privat, deci nu poate fi redat în flux sau descărcat de LeadPipe.</string>
+    <string name="youtube_music_premium_content_new">Acest videoclip este disponibil doar membrilor YouTube Music Premium, deci nu poate fi redat în flux sau descărcat de LeadPipe.</string>
     <string name="live_not_started">Transmisiunea live nu a început încă.</string>
     <string name="account_terminated">Cont închis</string>
     <string name="service_provides_reason">%s oferă acest motiv:</string>
-    <string name="paid_content_new">Acest conținut este disponibil doar utilizatorilor care au plătit, deci nu poate fi redat în flux sau descărcat de PipePipe.</string>
+    <string name="paid_content_new">Acest conținut este disponibil doar utilizatorilor care au plătit, deci nu poate fi redat în flux sau descărcat de LeadPipe.</string>
     <string name="featured">Evidențiate</string>
     <string name="radio">Radio</string>
     <string name="auto_device_theme_title">Automat (tema dispozitivului)</string>
@@ -955,10 +955,10 @@
     <string name="donation_dialog_message">Vă mulțumim că folosiți PipePipe! Dacă vă este util, luați în considerare să deveniți susținător pe Ko-fi. Sprijinul dvs. este important pentru mine și mă ajută să adaug funcții noi interesante. Orice contribuție contează! 😇</string>
     <string name="fullscreen_gesture_control_summary">Folosiți gesturi pentru a intra/ieși din ecranul complet. Dezactivează controlul vitezei de redare prin gesturi</string>
     <string name="fullscreen_gesture_control_title">Controlul ecranului complet prin gesturi</string>
-    <string name="require_audio_focus_summary">Asigurați-vă că doar PipePipe redă audio</string>
+    <string name="require_audio_focus_summary">Asigurați-vă că doar LeadPipe redă audio</string>
     <string name="require_audio_focus_title">Solicită focus audio</string>
     <string name="decoder_init_failure">Inițializarea decodorului a eșuat</string>
-    <string name="unable_to_decode_summary">Dispozitivul dvs. nu are decodoarele hardware necesare, deci nu puteți reda acest videoclip în PipePipe.
+    <string name="unable_to_decode_summary">Dispozitivul dvs. nu are decodoarele hardware necesare, deci nu puteți reda acest videoclip în LeadPipe.
         \nVă rugăm să îl descărcați și să îl redați în VLC.</string>
     <string name="settings_category_gestures_summary">Gesturi</string>
     <string name="settings_category_bullet_comments_summary">Setări danmaku</string>
@@ -1126,7 +1126,7 @@
     <string name="import_soundcloud_subscriptions_title">Importă din SoundCloud</string>
     <string name="import_soundcloud_subscriptions_summary">Importă abonamente dintr-un profil SoundCloud</string>
     <string name="clear_subscriptions_title">Șterge abonamentele</string>
-    <string name="clear_subscriptions_summary">Elimină toate canalele abonate din PipePipe</string>
+    <string name="clear_subscriptions_summary">Elimină toate canalele abonate din LeadPipe</string>
     <string name="clear_subscriptions_confirmation">Ștergeți toate abonamentele? Această acțiune nu poate fi anulată.</string>
     <string name="subscriptions_cleared">Abonamentele au fost șterse</string>
     <string name="fetch_subscription_details_title">Preluați detaliile canalelor?</string>

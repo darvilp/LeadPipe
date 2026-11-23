@@ -116,8 +116,8 @@
     <string name="default_content_country_title">País per defecte dels continguts</string>
     <string name="background_player_playing_toast">S\'està reproduint en rerefons</string>
     <string name="popup_playing_toast">S\'està reproduint en mode emergent</string>
-    <string name="notification_channel_name">Notificació de NewPipe</string>
-    <string name="notification_channel_description">Notificacions per al reproductor de NewPipe</string>
+    <string name="notification_channel_name">Notificació de LeadPipe</string>
+    <string name="notification_channel_description">Notificacions per al reproductor de LeadPipe</string>
     <string name="could_not_load_thumbnails">No s\'han pogut carregar totes les miniatures</string>
     <string name="youtube_signature_deobfuscation_error">No s\'ha pogut desxifrar la signatura de l\'URL del vídeo</string>
     <string name="parsing_error">No s\'ha pogut processar el lloc web</string>

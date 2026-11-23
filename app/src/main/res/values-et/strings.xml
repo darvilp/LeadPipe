@@ -81,8 +81,8 @@
     <string name="always">Alati</string>
     <string name="just_once">Üks kord</string>
     <string name="file">Fail</string>
-    <string name="notification_channel_name">NewPipe teavitus</string>
-    <string name="notification_channel_description">Teavitused NewPipe pleierile</string>
+    <string name="notification_channel_name">LeadPipe teavitus</string>
+    <string name="notification_channel_description">Teavitused LeadPipe pleierile</string>
     <string name="unknown_content">[Tundmatu]</string>
     <string name="switch_to_background">Lülita taustale</string>
     <string name="switch_to_popup">Lülita hüpikpleierile</string>
