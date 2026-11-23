@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
     private ToolbarLayoutBinding toolbarLayoutBinding;
 
     private ActionBarDrawerToggle toggle;
+    @Nullable
+    private AlertDialog launchNoticeDialog;
 
     private boolean servicesShown = false;
 
@@ -223,12 +225,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         builder.setOnDismissListener(dialog -> {
+            launchNoticeDialog = null;
             if (!isFinishing() && !isDestroyed()) {
                 prefs.edit().putInt(LAST_SHOWN_VERSION, BuildConfig.VERSION_CODE).apply();
                 MissingPluginHelper.checkOnStart(this);
             }
         });
-        builder.show();
+        launchNoticeDialog = builder.show();
     }
 
     private void setupDrawer() throws ExtractionException {
@@ -496,6 +499,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (launchNoticeDialog != null) {
+            launchNoticeDialog.setOnDismissListener(null);
+            launchNoticeDialog.dismiss();
+            launchNoticeDialog = null;
+        }
         super.onDestroy();
         if (!isChangingConfigurations()) {
             StateSaver.clearStateFiles();
