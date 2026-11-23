@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.94"
+        android:scaleY="0.94">
+        <path
+            android:name="upper_elbow"
+            android:pathData="M32,40 V35 C32,28.8 36.5,26.3 42,29.6 L46,32"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="7.8" />
+        <path
+            android:name="upper_vertical_cuff"
+            android:pathData="M32,40.8 V44.3"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="upper_diagonal_cuff"
+            android:pathData="M46.7,32.4 L49.7,34.2"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="upper_pipe"
+            android:pathData="M50.4,34.6 L64.3,43"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="5.8" />
+        <path
+            android:name="upper_point_cuff"
+            android:pathData="M65,43.5 L68,45.3"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="point_elbow"
+            android:pathData="M68.7,45.7 L73,48.3 C78.5,51.6 78.5,56.4 73,59.7 L68.7,62.3"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="7.8" />
+        <path
+            android:name="lower_point_cuff"
+            android:pathData="M68,62.7 L65,64.5"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="lower_pipe"
+            android:pathData="M64.3,65 L50.4,73.4"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="5.8" />
+        <path
+            android:name="lower_diagonal_cuff"
+            android:pathData="M49.7,73.8 L46.7,75.6"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="lower_elbow"
+            android:pathData="M46,76 L42,78.4 C36.5,81.7 32,79.2 32,73 V68"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="7.8" />
+        <path
+            android:name="lower_vertical_cuff"
+            android:pathData="M32,67.2 V63.7"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="9" />
+        <path
+            android:name="vertical_pipe"
+            android:pathData="M32,45.1 V62.9"
+            android:strokeColor="#C4C5C6"
+            android:strokeWidth="5.8" />
+    </group>
+</vector>
