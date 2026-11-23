@@ -1,4 +1,4 @@
-name: Publish PipePipe All Features
+name: Build and release LeadPipe
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - unofficial/all-features
       - integration/pipepipe-5.6.0
       - candidate/all-features-5.6.0-unofficial.22
+      - candidate/all-features-5.6.0-unofficial.23
     tags:
       - all-features/v*
 
@@ -14,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    name: Build and verify all-features APKs
+    name: Build and verify LeadPipe APKs
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout client
@@ -101,8 +102,15 @@ jobs:
           path: ${{ env.PIPEPIPE_ASSET_DIR }}
           if-no-files-found: error
 
+      - name: Upload signed ARM64 APK for device testing
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          path: ${{ env.PIPEPIPE_ASSET_DIR }}/*-arm64-v8a.apk
+          archive: false
+          if-no-files-found: error
+
   release:
-    name: Create draft All Features release
+    name: Create draft LeadPipe release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     needs: build
     runs-on: ubuntu-24.04
@@ -124,6 +132,7 @@ jobs:
         run: sdkmanager "build-tools;37.0.0"
 
       - name: Validate release tag
+        id: version
         shell: bash
         run: |
           set -euo pipefail
@@ -133,6 +142,7 @@ jobs:
             echo "Tag $GITHUB_REF_NAME does not match release version $expected" >&2
             exit 1
           }
+          echo "name=$version" >> "$GITHUB_OUTPUT"
 
       - name: Download verified assets
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -169,6 +179,7 @@ jobs:
         with:
           draft: true
           prerelease: false
+          name: LeadPipe ${{ steps.version.outputs.name }}
           body_path: PipePipeClient/release/RELEASE_NOTES.md
           files: |
             ${{ runner.temp }}/pipepipe-all-features-assets/*.apk
