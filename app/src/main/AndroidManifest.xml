@@ -123,7 +123,7 @@
 
         <activity
             android:name=".about.AboutActivity"
-            android:label="@string/title_activity_about_new" />
+            android:label="@string/tab_about" />
 
         <service
             android:name=".local.subscription.services.SubscriptionsImportService"

@@ -1,8 +1,8 @@
-# PipePipe All Features — unofficial release channel
+# LeadPipe release channel
 
-This branch prepares the integrated all-features build for the darvilp fork. APKs are GitHub Release assets, not files committed to this branch. Creating this local branch does not publish it. Push the exact client and extractor revisions and verify their availability before publishing a candidate.
+Download APKs from GitHub Releases. The `unofficial/all-features` branch, `all-features/v*` tags, and existing APK filename conventions identify this release channel. Push the exact client and extractor revisions and verify their availability before publishing a candidate.
 
-The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching the existing all-features installation. The release variant is **not debuggable**. Its label is **PipePipe All Features (Unofficial)**. Updates are manual through the fork's releases page; this build cancels old official update jobs and does not run the official update checker.
+The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching existing installations. The release variant is **not debuggable** and its display label is **LeadPipe**. Updates are manual through the fork's releases page; this build cancels old official update jobs and does not run the official update checker.
 
 ## Recreate the source
 

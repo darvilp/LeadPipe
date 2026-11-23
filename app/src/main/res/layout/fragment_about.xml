@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:text="@string/app_description_new" />
+            android:text="@string/leadpipe_about_description" />
 
         <org.schabi.newpipe.views.NewPipeTextView
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
         <org.schabi.newpipe.views.NewPipeTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/donation_dialog_message" />
+                android:text="@string/leadpipe_about_upstream_support" />
 
         <Button
                 android:id="@+id/about_donation_link"

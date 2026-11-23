@@ -69,7 +69,7 @@ android {
             debuggable true
 
             applicationIdSuffix ".debug.allfeatures"
-            resValue "string", "app_name", "PipePipe All Features (Unofficial)"
+            resValue "string", "app_name", "LeadPipe"
         }
 
         release {
@@ -78,7 +78,7 @@ android {
             }
             debuggable false
             applicationIdSuffix ".debug.allfeatures"
-            resValue "string", "app_name", "PipePipe All Features (Unofficial)"
+            resValue "string", "app_name", "LeadPipe"
             minifyEnabled true
             shrinkResources false // disabled to fix F-Droid's reproducible build
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

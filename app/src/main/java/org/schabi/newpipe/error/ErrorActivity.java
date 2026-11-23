@@ -74,9 +74,6 @@ public class ErrorActivity extends AppCompatActivity {
     public static final String ERROR_EMAIL_ADDRESS = "feedback@pipepipe.dev";
     public static final String ERROR_EMAIL_SUBJECT = "Exception in ";
 
-    public static final String ERROR_GITHUB_ISSUE_URL
-            = "https://github.com/InfinityLoop1308/PipePipe/issues";
-
     public static final DateTimeFormatter CURRENT_TIMESTAMP_FORMATTER
             = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -243,8 +240,8 @@ public class ErrorActivity extends AppCompatActivity {
                             + BuildConfig.VERSION_NAME)
                     .putExtra(Intent.EXTRA_TEXT, buildJson());
             ShareUtils.openIntentInApp(context, i, true);
-        } else if (action.equals("GITHUB")) { // open the issue page of whoever owns the failure
-            ShareUtils.openUrlInBrowser(this, ERROR_GITHUB_ISSUE_URL, false);
+        } else if (action.equals("GITHUB")) {
+            ShareUtils.openUrlInBrowser(this, getString(R.string.leadpipe_issues_url), false);
         }
     }
 

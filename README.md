@@ -1,10 +1,10 @@
-# PipePipe All Features
+# LeadPipe
 
-This fork combines the eight feature topics below with upstream development updates. Version `5.6.0-beta1-unofficial.18` uses the established All Features application identity and signing certificate for in-place updates.
+LeadPipe is an independently maintained quality-of-life fork of PipePipe for Android. It continues to sync useful upstream changes and submit independent pull requests.
 
-The release channel is `unofficial/all-features`. APKs and exact source manifests are distributed through [GitHub Releases](https://github.com/darvilp/PipePipeClient/releases). The existing `submit/upstream-v5.5-eight/` branches contain the prepared upstream topics.
+The release channel is `unofficial/all-features`. Find the current APKs and their exact source manifests on [GitHub Releases](https://github.com/darvilp/PipePipeClient/releases). Report LeadPipe app issues on the [fork issue tracker](https://github.com/darvilp/PipePipeClient/issues).
 
-See [release/README.md](release/README.md) for build, signing, validation and publication instructions. The application is named **PipePipe All Features (Unofficial)**.
+The existing `submit/upstream-v5.5-eight/` branches contain the prepared upstream topics.
 
 ## Included behavior changes
 
@@ -23,6 +23,6 @@ See [release/README.md](release/README.md) for build, signing, validation and pu
 
 Use `python3 tools/release.py --check` to verify signing, toolchain and source pins, then `python3 tools/release.py` to build and export a signed local candidate. The [release runbook](release/README.md) records acceptance and publication steps.
 
-## Upstream project
+## Upstream projects and license
 
-The client of [PipePipe](https://codeberg.org/NullPointerException/PipePipe).
+LeadPipe builds on [PipePipe](https://codeberg.org/NullPointerException/PipePipe), which is based on [NewPipe](https://github.com/TeamNewPipe/NewPipe). See the [GNU General Public License](LICENSE).

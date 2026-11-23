@@ -1,4 +1,4 @@
-# PipePipe All Features release instructions
+# LeadPipe release instructions
 
 The release channel is `unofficial/all-features` in `darvilp/PipePipeClient`, with a clean sibling `PipePipeExtractor`. The release runbook is [release/README.md](release/README.md); source pins and identity are in [release/source-manifest.json](release/source-manifest.json).
 
@@ -18,7 +18,7 @@ The release channel is `unofficial/all-features` in `darvilp/PipePipeClient`, wi
 ## Prepare, test, then publish
 
 1. Inspect branch, HEAD and status before editing. Integrate in a separate worktree and preserve existing work. Migrate maintained feature branches individually and prove their builds before combining them. Keep unrelated changes out of the candidate.
-2. Preserve package `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures` and label `PipePipe All Features (Unofficial)`. The `.debug` text is historical identity; the release APK must be minified and non-debuggable. Increment the fork counter for each newly distributed app build and match Gradle and manifest versions. Pin extractor and FFmpeg inputs; commit the candidate so both checkouts are clean.
+2. Preserve package `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures` and use the display label `LeadPipe`. The `.debug` text is historical identity; the release APK must be minified and non-debuggable. Increment the fork counter for each newly distributed app build and match Gradle and manifest versions. Pin extractor and FFmpeg inputs; commit the candidate so both checkouts are clean.
 3. Run the release entry point. It verifies source/toolchain/signing before building, checks JVM tests and the existing lint baseline, and verifies all four ABI APKs. Never reset the lint baseline to make a build pass. Run relevant Android regression tests separately and report debug/emulator evidence separately from signed-release device acceptance.
 4. Link the signed arm64-v8a APK directly for device testing, with its exact source commit, filename, SHA-256 and signer. In GitHub Actions, upload that APK as an individual artifact with `archive: false` so the tester can install it without extracting a ZIP. Record install/update and retained-data checks, playback and changed-feature testing on the intended device. Never clear user data or change devices implicitly. Use the runbook's disposable-device probes only in their documented scope.
 5. Wait for user test-drive acceptance and explicit publication approval. Then bring the accepted source onto `unofficial/all-features`, make exact client/extractor revisions available on the forks, and tag the accepted client commit as `all-features/v<version_name>`. Do not replace existing tags or APKs. A branch push builds artifacts; the tag workflow creates a draft GitHub release. Publish future All Features builds as regular releases after verification.
