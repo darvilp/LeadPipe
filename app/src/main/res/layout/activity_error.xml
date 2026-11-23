@@ -115,12 +115,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="" />
 
-            <Button
-                android:id="@+id/errorReportEmailButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/error_report_button_text" />
-
             <org.schabi.newpipe.views.NewPipeTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,14 +122,6 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/error_report_open_github_notice"
                 android:textStyle="bold" />
-
-            <org.schabi.newpipe.views.NewPipeTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/error_priority_notice"
-                    android:textStyle="bold" />
 
             <Button
                 android:id="@+id/errorReportCopyButton"

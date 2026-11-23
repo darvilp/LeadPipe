@@ -1,23 +1,19 @@
 # LeadPipe
 
-LeadPipe is an independently maintained quality-of-life fork of PipePipe for Android. It continues to sync useful upstream changes and submit independent pull requests.
+LeadPipe is an independently maintained Android fork of PipePipe. It syncs changes from PipePipe and contributes fixes upstream.
 
 The release channel is `unofficial/all-features`. Find the current APKs and their exact source manifests on [GitHub Releases](https://github.com/darvilp/PipePipeClient/releases). Report LeadPipe app issues on the [fork issue tracker](https://github.com/darvilp/PipePipeClient/issues).
 
-The existing `submit/upstream-v5.5-eight/` branches contain the prepared upstream topics.
+## LeadPipe and PipePipe
 
-## Included behavior changes
-
-| Submission branch | Changed behavior |
-| --- | --- |
-| [01-player-safety](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/01-player-safety) | Player lifecycle, queue metadata and enqueue-mode guards |
-| [02-feed-refresh](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/02-feed-refresh) | Usable subscription feeds during refresh |
-| [03-content-rules](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/03-content-rules) | Subscription-group content rules |
-| [04-header-enqueue](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/04-header-enqueue) | Queue header actions that preserve the active player mode |
-| [05-queue-preserving-playback](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/05-queue-preserving-playback) | Queue-preserving browsing, explicit play choices and timestamp routing |
-| [06-queue-drag](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/06-queue-drag) | Stable edge scrolling and asynchronous viewport restoration |
-| [07-sponsorblock-editor](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/07-sponsorblock-editor) | Precise segment editing with retained drafts |
-| [08-player-mode-switching](https://github.com/darvilp/PipePipeClient/tree/submit/upstream-v5.5-eight/08-player-mode-switching) | Main, background and popup transitions for the active session |
+| Feature | LeadPipe | PipePipe 5.6.0 |
+| --- | --- | --- |
+| Browsing while playing | Browse other videos while the active queue keeps playing. Choose whether to play now and keep the queue, add to the end, or replace it. | Opening or playing another video can replace the active queue. |
+| Add to queue from playback buttons | Long-press Background or Popup on video details, or a playback button in a list header, to append and keep the active player mode. | Use the queue actions in item menus or the detail view. |
+| Switch playback modes | Move the active session between main, background and popup playback while keeping the queue, position and play/pause state. | Mode switching is available from some player controls, such as background to main or popup. |
+| Subscription-group content | Choose videos, Shorts and live streams for each group, with per-channel overrides. | Subscription groups organize channels. |
+| Feed refresh | Keep browsing the existing feed while newer items load. | The feed list is hidden while refresh is in progress. |
+| SponsorBlock editing | Edit exact segment times and keep unfinished drafts tied to their video while browsing. | Enter exact segment times in the editor for the current video. |
 
 ## Build and release
 

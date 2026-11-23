@@ -331,7 +331,8 @@
 <string name="tab_about">About</string>
 <string name="app_description_new">A FLOSS Android app to let you browse YouTube, NicoNico and BiliBili freely </string>
 <string name="leadpipe_about_description">LeadPipe is an independently maintained fork of PipePipe, which is based on NewPipe. LeadPipe is free software under the GNU General Public License.</string>
-<string name="leadpipe_about_upstream_support">This link supports the upstream PipePipe project on Ko-fi.</string>
+<string name="leadpipe_about_source">LeadPipe source code</string>
+<string name="leadpipe_about_report_issue">Report a LeadPipe issue</string>
 <string name="contribution_title">Contribute</string>
 <string name="contribution_encouragement">Whether you have ideas of; translation, design changes, code cleaning, or real heavy code changes—help is always welcome. The more is done the better it gets!</string>
 <string name="donation_title">Donate</string>
@@ -1349,6 +1350,11 @@ Only add repositories you trust.</string>
 <string name="anti_bot_captcha_hint">%1$s wants to verify you are not a bot.</string>
 <string name="anti_bot_captcha_action">Verify</string>
 <string name="anti_bot_unknown_service">This service</string>
-    <string name="unofficial_releases_title">Unofficial releases</string>
-    <string name="unofficial_releases_summary">Download updates from the darvilp fork. Automatic updates are disabled for this build.</string>
+    <string name="leadpipe_releases_title">View LeadPipe releases</string>
+    <string name="leadpipe_update_title">LeadPipe update available</string>
+    <string name="leadpipe_update_channel_description">Notifications for new LeadPipe versions</string>
+    <string name="leadpipe_update_current">LeadPipe is up to date</string>
+    <string name="leadpipe_update_failed">Could not check for LeadPipe updates</string>
+    <string name="leadpipe_update_available_without_notifications">LeadPipe %1$s is available. Open View LeadPipe releases to download it.</string>
+    <string name="leadpipe_update_view_release">Tap to view release</string>
 </resources>

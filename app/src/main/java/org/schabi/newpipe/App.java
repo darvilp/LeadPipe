@@ -122,9 +122,6 @@ public class App extends MultiDexApplication {
 
         // Initialize settings first because others inits can use its values
         NewPipeSettings.initSettings(this);
-        if (BuildConfig.UNOFFICIAL_BUILD) {
-            NewVersionWorker.cancelOfficialUpdateWork(this);
-        }
         // Set this before any activity is created so AppCompat can apply the selected night mode
         // while attaching the activity's base context.
         ThemeHelper.setDayNightMode(this);
@@ -381,7 +378,9 @@ public class App extends MultiDexApplication {
                 .Builder(getString(R.string.app_update_notification_channel_id),
                         NotificationManagerCompat.IMPORTANCE_LOW)
                 .setName(getString(R.string.app_update_notification_channel_name))
-                .setDescription(getString(R.string.app_update_notification_channel_description_new))
+                .setDescription(getString(BuildConfig.UNOFFICIAL_BUILD
+                        ? R.string.leadpipe_update_channel_description
+                        : R.string.app_update_notification_channel_description_new))
                 .build());
 
         notificationChannelCompats.add(new NotificationChannelCompat

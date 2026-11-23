@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import org.schabi.newpipe.BuildConfig
+import org.schabi.newpipe.LeadPipeRelease
 import org.schabi.newpipe.R
 import org.schabi.newpipe.databinding.ActivityAboutBinding
 import org.schabi.newpipe.databinding.FragmentAboutBinding
@@ -52,11 +53,11 @@ class AboutActivity : AppCompatActivity() {
     }
 
     class AboutFragment : Fragment() {
-        private fun Button.openLink(url: Int) {
+        private fun Button.openLink(url: String) {
             setOnClickListener {
                 ShareUtils.openUrlInBrowser(
                     context,
-                    requireContext().getString(url),
+                    url,
                     false
                 )
             }
@@ -69,8 +70,9 @@ class AboutActivity : AppCompatActivity() {
         ): View {
             FragmentAboutBinding.inflate(inflater, container, false).apply {
                 aboutAppVersion.text = BuildConfig.VERSION_NAME
-                aboutGithubLink.openLink(R.string.github_url)
-                aboutDonationLink.openLink(R.string.donation_url)
+                aboutSourceLink.openLink(getString(R.string.github_url))
+                aboutReleasesLink.openLink(LeadPipeRelease.RELEASES_URL)
+                aboutIssuesLink.openLink(getString(R.string.leadpipe_issues_url))
                 return root
             }
         }

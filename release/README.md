@@ -2,7 +2,7 @@
 
 Download APKs from GitHub Releases. The `unofficial/all-features` branch, `all-features/v*` tags, and existing APK filename conventions identify this release channel. Push the exact client and extractor revisions and verify their availability before publishing a candidate.
 
-The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching existing installations. The release variant is **not debuggable** and its display label is **LeadPipe**. Updates are manual through the fork's releases page; this build cancels old official update jobs and does not run the official update checker.
+The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching existing installations. The release variant is **not debuggable** and its display label is **LeadPipe**. LeadPipe checks the fork’s published regular releases when update notifications are enabled or when the user chooses **Check for updates**. Update notifications open the compatible APK download or the release page in the browser.
 
 ## Recreate the source
 

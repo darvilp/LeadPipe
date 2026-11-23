@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
-import androidx.work.Operation
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -53,19 +52,27 @@ class NewVersionWorker(
         val currentVersion = parseVersion(BuildConfig.VERSION_NAME)
         val newVersion = parseVersion(versionName)
         if (compareVersions(currentVersion, newVersion) >= 0) {
-            if (isManual) {
-                ContextCompat.getMainExecutor(applicationContext).execute {
-                    Toast.makeText(
-                        applicationContext, R.string.app_update_unavailable_toast,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+            if (isManual) showToast(R.string.app_update_unavailable_toast)
             return
         }
 
-        // A pending intent to open the apk location url in the browser.
-        val intent = Intent(Intent.ACTION_VIEW, apkLocationUrl?.toUri())
+        showUpdateNotification(versionName, apkLocationUrl)
+    }
+
+    private fun showToast(message: Int, vararg args: Any) {
+        ContextCompat.getMainExecutor(applicationContext).execute {
+            Toast.makeText(
+                applicationContext, applicationContext.getString(message, *args), Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun showUpdateNotification(
+        versionName: String,
+        targetUrl: String?,
+        opensReleasePage: Boolean = false
+    ) {
+        val intent = Intent(Intent.ACTION_VIEW, targetUrl?.toUri())
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val pendingIntent = PendingIntent.getActivity(
             applicationContext, 0, intent,
@@ -79,11 +86,14 @@ class NewVersionWorker(
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setContentTitle(applicationContext.getString(R.string.app_update_notification_content_title_new))
-            .setContentText(
-                applicationContext.getString(R.string.app_update_notification_content_text) +
-                    " " + versionName
-            )
+            .setContentTitle(applicationContext.getString(
+                if (BuildConfig.UNOFFICIAL_BUILD) R.string.leadpipe_update_title
+                else R.string.app_update_notification_content_title_new
+            ))
+            .setContentText(applicationContext.getString(
+                if (opensReleasePage) R.string.leadpipe_update_view_release
+                else R.string.app_update_notification_content_text
+            ) + " " + versionName)
         val notificationManager = NotificationManagerCompat.from(applicationContext)
         notificationManager.notify(2000, notificationBuilder.build())
     }
@@ -105,12 +115,20 @@ class NewVersionWorker(
             }
         }
 
-        // Make a network request to get latest NewPipe data.
-        val response = DownloaderImpl.getInstance().get(NEWPIPE_API_URL)
-        handleResponse(response)
+        val apiUrl = if (BuildConfig.UNOFFICIAL_BUILD) LeadPipeRelease.API_URL else NEWPIPE_API_URL
+        val response = DownloaderImpl.getInstance().get(apiUrl)
+        if (BuildConfig.UNOFFICIAL_BUILD) {
+            if (response.responseCode() != 200) {
+                throw IOException("LeadPipe releases API returned HTTP ${response.responseCode()}")
+            }
+            handleLeadPipeRelease(response.responseBody())
+            saveUpdateExpiry(response)
+        } else {
+            handleResponse(response)
+        }
     }
 
-    private fun handleResponse(response: Response) {
+    private fun saveUpdateExpiry(response: Response) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         try {
             // Store a timestamp which needs to be exceeded,
@@ -124,7 +142,11 @@ class NewVersionWorker(
                 Log.w(TAG, "Could not extract and save new expiry date", e)
             }
         }
+    }
 
+    private fun handleResponse(response: Response) {
+        saveUpdateExpiry(response)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         // Parse the json from the response.
         try {
             val githubReleases = JsonParser.`array`().from(response.responseBody())
@@ -147,6 +169,30 @@ class NewVersionWorker(
             }
         } catch (e: JsonParserException) {
             if (DEBUG) Log.w(TAG, "JSON解析错误", e)
+        }
+    }
+
+    private fun handleLeadPipeRelease(body: String) {
+        val release = try {
+            LeadPipeRelease.fromJson(body, Build.SUPPORTED_ABIS)
+        } catch (e: JsonParserException) {
+            throw IOException("Invalid LeadPipe release response", e)
+        }
+        val comparison = release?.compareToInstalled(BuildConfig.VERSION_NAME)
+        if (release == null || comparison == null) {
+            throw IOException("Unrecognized LeadPipe release or installed version")
+        }
+
+        val isManual = inputData.getBoolean(IS_MANUAL, false)
+        if (comparison <= 0) {
+            if (isManual) showToast(R.string.leadpipe_update_current)
+        } else if (NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()) {
+            showUpdateNotification(
+                release.version, release.downloadUrl ?: release.releaseUrl,
+                opensReleasePage = release.downloadUrl == null
+            )
+        } else if (isManual) {
+            showToast(R.string.leadpipe_update_available_without_notifications, release.version)
         }
     }
 
@@ -175,19 +221,24 @@ class NewVersionWorker(
             ?.getString("browser_download_url")
     }
 
-
-
     override fun doWork(): Result {
-        if (BuildConfig.UNOFFICIAL_BUILD) return Result.success()
         return try {
             checkNewVersion()
             Result.success()
         } catch (e: IOException) {
-            Log.w(TAG, "Could not fetch NewPipe API: probably network problem", e)
+            Log.w(TAG, "Could not check for app updates", e)
+            showManualLeadPipeFailure()
             Result.failure()
         } catch (e: AntiBotException) {
             Log.e(TAG, "Update check was blocked as automated traffic", e)
+            showManualLeadPipeFailure()
             Result.failure()
+        }
+    }
+
+    private fun showManualLeadPipeFailure() {
+        if (BuildConfig.UNOFFICIAL_BUILD && inputData.getBoolean(IS_MANUAL, false)) {
+            showToast(R.string.leadpipe_update_failed)
         }
     }
 
@@ -197,37 +248,17 @@ class NewVersionWorker(
         private val RELEASE_APK_ABIS = listOf("armeabi-v7a", "arm64-v8a", "x86_64", "x86")
         private const val NEWPIPE_API_URL = "https://api.github.com/repositories/490984887/releases"
         private const val IS_MANUAL = "isManual"
-        // Existing debug builds persisted this un-obfuscated worker-class tag.
-        private const val LEGACY_UPDATE_TAG = "org.schabi.newpipe.NewVersionWorker"
-
-        @JvmStatic
-        fun cancelOfficialUpdateWork(context: Context): Operation {
-            NotificationManagerCompat.from(context).cancel(2000)
-            return WorkManager.getInstance(context).cancelAllWorkByTag(LEGACY_UPDATE_TAG)
-        }
 
         private fun getReleaseApkAbi(name: String): String? {
             return RELEASE_APK_ABIS.firstOrNull { name.contains("-$it-") }
         }
+
         /**
-         * Start a new worker which checks if all conditions for performing a version check are met,
-         * fetches the API endpoint [.NEWPIPE_API_URL] containing info about the latest NewPipe
-         * version and displays a notification about an available update if one is available.
-         * <br></br>
-         * Following conditions need to be met, before data is requested from the server:
-         *
-         *  *  The app is signed with the correct signing key (by TeamNewPipe / schabi).
-         * If the signing key differs from the one used upstream, the update cannot be installed.
-         *  * The user enabled searching for and notifying about updates in the settings.
-         *  * The app did not recently check for updates.
-         * We do not want to make unnecessary connections and DOS our servers.
+         * Check for an app update after a manual request or when startup update checks are enabled.
+         * Automatic checks are throttled using the previous response's expiry time.
          */
         @JvmStatic
         fun enqueueNewVersionCheckingWork(context: Context, isManual: Boolean) {
-            if (BuildConfig.UNOFFICIAL_BUILD) {
-                cancelOfficialUpdateWork(context)
-                return
-            }
             val workRequest = OneTimeWorkRequestBuilder<NewVersionWorker>()
                 .setInputData(workDataOf(IS_MANUAL to isManual))
                 .build()
