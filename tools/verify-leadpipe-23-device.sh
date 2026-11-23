@@ -30,13 +30,28 @@ else
 fi
 
 command adb start-server
-avdmanager create avd --name leadpipe-23 --package 'system-images;android-35;default;x86_64' --device pixel_6 </dev/null
+export ANDROID_AVD_HOME="$tmp/avd"
+mkdir "$ANDROID_AVD_HOME"
+avdmanager create avd --name leadpipe-23 --package 'system-images;android-35;default;x86_64' \
+    --device pixel_6 --path "$ANDROID_AVD_HOME/leadpipe-23.avd" </dev/null
+"$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fx leadpipe-23
 "$ANDROID_HOME/emulator/emulator" -avd leadpipe-23 -port 5580 -accel "$accel" \
     -no-window -no-snapshot -no-audio -no-boot-anim -no-metrics -gpu swiftshader_indirect \
     -memory 3072 -cores 2 > "$tmp/emulator.log" 2>&1 &
 emulator_pid=$!
 trap 'kill "$emulator_pid" 2>/dev/null || true; tail -12 "$tmp/emulator.log" | grep -Ev "pubkey|auth_token" || true' EXIT
-timeout 720 bash -c 'until [[ $(adb -s emulator-5580 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r") == 1 ]]; do sleep 5; done'
+booted=
+deadline=$((SECONDS+720))
+while (( SECONDS < deadline )); do
+    kill -0 "$emulator_pid"
+    if [[ $(timeout 8 adb -s emulator-5580 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r") == 1 ]]; then
+        booted=1
+        break
+    fi
+    sleep 5
+done
+[[ "$booted" == 1 ]]
+echo 'Android emulator booted.'
 adb root
 adb wait-for-device
 for scale in window_animation_scale transition_animation_scale animator_duration_scale; do
