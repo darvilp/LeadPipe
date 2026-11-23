@@ -1,6 +1,5 @@
-# PipePipe All Features 5.6.0-unofficial.21
+# PipePipe All Features 5.6.0-unofficial.22
 
-- Fix a crash when Android recreates the video detail pager with the SponsorBlock tab enabled.
-- Preserve the All Features SponsorBlock editor and its saved drafts.
+- Fix thumbnails that could stay blank until scrolling in YouTube search and other lists using the experimental UI.
 
-This signed device-test candidate updates .20 in place and uses the same Room 903 database schema.
+This device-test build upgrades `.21` in place and uses Room schema 903.
