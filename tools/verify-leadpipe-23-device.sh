@@ -137,18 +137,31 @@ dump_screen() {
 
 wait_for_screen() {
     for _ in {1..8}; do
-        if dump_screen && grep -Fq "$1" "$tmp/screen.xml"; then return; fi
+        if dump_screen && grep -Fiq "$1" "$tmp/screen.xml"; then return; fi
         sleep 2
     done
     echo "Missing UI text: $1" >&2
     return 1
 }
 
+require_screen_text() {
+    if ! grep -Fiq "$1" "$tmp/screen.xml"; then
+        printf 'Expected UI text: %s\n' "$1" >&2
+        python3 - "$tmp/screen.xml" <<'PY'
+import sys
+from xml.etree import ElementTree as ET
+print([n.get("text") for n in ET.parse(sys.argv[1]).iter("node") if n.get("text")])
+PY
+        return 1
+    fi
+}
+
 tap_text() {
     read -r x y < <(python3 - "$tmp/screen.xml" "$1" <<'PY'
 import re, sys
 from xml.etree import ElementTree as ET
-node = ET.parse(sys.argv[1]).find(f".//node[@text='{sys.argv[2]}']")
+node = next(n for n in ET.parse(sys.argv[1]).iter("node")
+            if n.get("text", "").casefold() == sys.argv[2].casefold())
 left, top, right, bottom = map(int, re.findall(r"\d+", node.attrib["bounds"]))
 print((left+right)//2, (top+bottom)//2)
 PY
@@ -158,8 +171,8 @@ PY
 
 adb shell am start -W -n "$main"
 wait_for_screen 'What’s new in LeadPipe'
-grep -Fq 'LeadPipe 5.6.0-unofficial.23 is installed' "$tmp/screen.xml"
-grep -Fq 'Release notes' "$tmp/screen.xml"
+require_screen_text 'LeadPipe 5.6.0-unofficial.23 is installed'
+require_screen_text 'Release notes'
 tap_text OK
 for _ in {1..10}; do
     if adb exec-out cat "$prefs" | grep -Eq 'name="version_code" value="113001"'; then break; fi
@@ -180,6 +193,32 @@ adb shell am switch-user "$fresh"
 adb shell wm dismiss-keyguard
 adb shell am start -W --user "$fresh" -n "$main"
 wait_for_screen 'Welcome to LeadPipe'
-grep -Fq 'Enable update alerts' "$tmp/screen.xml"
+require_screen_text 'Enable update alerts'
 tap_text 'Not now'
 echo 'PASS: independently provisioned Android user saw the LeadPipe welcome and optional update alerts.'
+
+adb shell am start -W --user "$fresh" -n "$pkg/org.schabi.newpipe.about.AboutActivity"
+wait_for_screen 'Report a LeadPipe issue'
+require_screen_text 'LeadPipe source code'
+require_screen_text 'View LeadPipe releases'
+"$ANDROID_HOME/build-tools/37.0.0/aapt2" dump resources "$candidate" > "$tmp/resources.txt"
+grep -F 'https://github.com/darvilp/PipePipeClient/issues' "$tmp/resources.txt"
+echo 'PASS: LeadPipe About exposes the issue action and the signed APK contains the fork issue URL.'
+
+adb shell am start -W --user "$fresh" -n "$pkg/org.schabi.newpipe.settings.SettingsActivity"
+wait_for_screen Updates
+tap_text Updates
+wait_for_screen 'Check for updates'
+require_screen_text 'View LeadPipe releases'
+tap_text 'Check for updates'
+work_db=$(adb shell "find '/data/user/$fresh/$pkg' -name androidx.work.workdb -print -quit")
+[[ -n "$work_db" ]]
+work_state=
+for _ in {1..20}; do
+    work_state=$(adb shell "sqlite3 '$work_db' \"SELECT state FROM workspec WHERE worker_class_name='org.schabi.newpipe.NewVersionWorker';\"")
+    if [[ "$work_state" == "2" || "$work_state" == "3" ]]; then break; fi
+    sleep 2
+done
+echo "Manual LeadPipe update worker result: $work_state"
+[[ "$work_state" == "2" ]]
+echo 'PASS: manual LeadPipe update check completed successfully.'
