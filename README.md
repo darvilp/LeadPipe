@@ -6,6 +6,8 @@ The release channel is `unofficial/all-features`. Find the current APKs and thei
 
 ## LeadPipe and PipePipe
 
+See the [Subscription Groups guide](docs/wiki/Subscription-Groups.md) and the [wiki comparison draft](docs/wiki/LeadPipe-vs-PipePipe.md).
+
 ### Features
 
 | Feature | LeadPipe | PipePipe 5.6.0 |
