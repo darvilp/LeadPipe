@@ -9,7 +9,7 @@ import com.grack.nanojson.JsonWriter
 import org.schabi.newpipe.DownloaderImpl
 import org.schabi.newpipe.R
 import org.schabi.newpipe.SharedWebViewRuntime
-import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
+import org.schabi.newpipe.extractor.exceptions.AntiBotException
 import org.schabi.newpipe.extractor.services.youtube.YoutubePoTokenResult
 import org.schabi.newpipe.extractor.services.youtube.sabr.exception.SabrProtocolException
 import java.io.Closeable
@@ -124,8 +124,8 @@ object LocalDomPoTokenProvider {
                     }
                 }
                 val cause = error.cause ?: error
-                // keep the captcha error unwrapped so the error panel offers to solve it
-                if (cause is ReCaptchaException) throw cause
+                // keep anti-bot blocks unwrapped so the error panel shows the matching hint/action
+                if (cause is AntiBotException) throw cause
                 throw SabrProtocolException(
                     "Global PO token initialization failed: ${cause.message}",
                     cause,
@@ -206,7 +206,7 @@ object LocalDomPoTokenProvider {
             mapOf(
                 "Accept-Language" to listOf("en-US"),
                 "Cookie" to listOf(loginCookies ?: ANONYMOUS_COOKIE),
-                "User-Agent" to listOf(SharedWebViewRuntime.USER_AGENT),
+                "User-Agent" to listOf(SharedWebViewRuntime.getUserAgent(appContext)),
             ),
         )
         if (response.responseCode() != 200) {
@@ -236,8 +236,10 @@ object LocalDomPoTokenProvider {
 
     private const val TAG = "YoutubeGlobalPoToken"
     private const val MAX_TRACKED_TOKENS = 64
-    private const val YOUTUBE_HOME = "https://www.youtube.com"
-    private const val ANONYMOUS_COOKIE = "PREF=hl=en&gl=US"
+
+    // The WebView user agent is mobile; app=desktop keeps the WEB home and its WEB attestation.
+    private const val YOUTUBE_HOME = "https://www.youtube.com/?app=desktop&persist_app=1"
+    private const val ANONYMOUS_COOKIE = "PREF=hl=en&gl=US&app=desktop"
 }
 
 private class PersistentMintSession private constructor(
@@ -246,6 +248,7 @@ private class PersistentMintSession private constructor(
     private val bootstrap: YoutubePageAttestationBootstrap,
 ) : Closeable {
     private val runtime = SharedWebViewRuntime.get(context.applicationContext)
+    private val userAgent = SharedWebViewRuntime.getUserAgent(context)
     private val sessionId = runtime.registerSabrLocalDomCallbacks(Callbacks())
     private val tokenWaiters = mutableMapOf<String, TokenWaiter>()
     @Volatile
@@ -348,7 +351,7 @@ private class PersistentMintSession private constructor(
                 val response = downloader.post(
                     url,
                     mapOf(
-                        "User-Agent" to listOf(SharedWebViewRuntime.USER_AGENT),
+                        "User-Agent" to listOf(userAgent),
                         "Accept" to listOf("application/json"),
                         "Content-Type" to listOf(contentType),
                         "x-goog-api-key" to listOf(LOCAL_DOM_GOOGLE_API_KEY),
@@ -380,7 +383,7 @@ private class PersistentMintSession private constructor(
                 val response = downloader.get(
                     url,
                     mapOf(
-                        "User-Agent" to listOf(SharedWebViewRuntime.USER_AGENT),
+                        "User-Agent" to listOf(userAgent),
                         "Accept" to listOf("*/*"),
                     ),
                 )
