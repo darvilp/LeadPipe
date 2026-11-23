@@ -20,6 +20,12 @@ internal class LeadPipeRelease private constructor(
         private const val TAG_PREFIX = "all-features/v"
         private val versionPattern = Regex("""\d+\.\d+\.\d+(?:-beta\d+)?-unofficial\.(\d+)""")
 
+        @JvmStatic
+        fun releasePageForVersion(version: String): String {
+            if (revisionOf(version) == null) return RELEASES_URL
+            return "$RELEASES_URL/tag/$TAG_PREFIX$version"
+        }
+
         fun fromJson(body: String, supportedAbis: Array<String>): LeadPipeRelease? {
             val release = JsonParser.`object`().from(body)
             if (release.getBoolean("draft", true) || release.getBoolean("prerelease", true)) {
@@ -45,7 +51,7 @@ internal class LeadPipeRelease private constructor(
                 version,
                 revision,
                 apkName?.let { "$RELEASES_URL/download/${tag.replace("/", "%2F")}/$it" },
-                "$RELEASES_URL/tag/$tag"
+                releasePageForVersion(version)
             )
         }
 

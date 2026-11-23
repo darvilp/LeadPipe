@@ -4,6 +4,8 @@ Download APKs from GitHub Releases. The `unofficial/all-features` branch, `all-f
 
 The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching existing installations. The release variant is **not debuggable** and its display label is **LeadPipe**. LeadPipe checks the fork’s published regular releases when update notifications are enabled or when the user chooses **Check for updates**. Update notifications open the compatible APK download or the release page in the browser.
 
+The welcome and upgrade messages are bundled with the app in [Android string resources](../app/src/main/res/values/strings.xml). The upgrade dialog links to the fork’s tag for the installed version. Put version-specific details in [RELEASE_NOTES.md](RELEASE_NOTES.md) before building a release.
+
 ## Recreate the source
 
 Download the candidate's `source-manifest.json` alongside its APK. That generated manifest includes the exact `client_commit`; the tracked manifest records the integration basis instead, avoiding a self-referencing commit hash.

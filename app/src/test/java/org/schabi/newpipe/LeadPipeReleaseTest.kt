@@ -9,6 +9,18 @@ class LeadPipeReleaseTest {
     private val armAbis = arrayOf("arm64-v8a", "armeabi-v7a")
 
     @Test
+    fun opensTheInstalledVersionNotesWithAForkReleasesFallback() {
+        assertEquals(
+            "https://github.com/darvilp/PipePipeClient/releases/tag/all-features/v5.6.0-unofficial.22",
+            LeadPipeRelease.releasePageForVersion("5.6.0-unofficial.22")
+        )
+        assertEquals(
+            "https://github.com/darvilp/PipePipeClient/releases",
+            LeadPipeRelease.releasePageForVersion("unknown")
+        )
+    }
+
+    @Test
     fun comparesForkCounterIncludingAcrossUpstreamVersions() {
         val current = LeadPipeRelease.fromJson(releaseJson(), armAbis)!!
         assertEquals(0, current.compareToInstalled("5.6.0-unofficial.22"))

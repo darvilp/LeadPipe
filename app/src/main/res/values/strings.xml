@@ -1357,4 +1357,12 @@ Only add repositories you trust.</string>
     <string name="leadpipe_update_failed">Could not check for LeadPipe updates</string>
     <string name="leadpipe_update_available_without_notifications">LeadPipe %1$s is available. Open View LeadPipe releases to download it.</string>
     <string name="leadpipe_update_view_release">Tap to view release</string>
+    <string name="leadpipe_welcome_title">Welcome to LeadPipe</string>
+    <string name="leadpipe_welcome_message">LeadPipe is an independently maintained fork of PipePipe.</string>
+    <string name="leadpipe_welcome_update_prompt">LeadPipe is an independently maintained fork of PipePipe. Would you like to be notified about new LeadPipe releases?</string>
+    <string name="leadpipe_enable_update_alerts">Enable update alerts</string>
+    <string name="leadpipe_update_not_now">Not now</string>
+    <string name="leadpipe_upgrade_title">What’s new in LeadPipe</string>
+    <string name="leadpipe_upgrade_message">LeadPipe %1$s is installed. Open the release notes to see what changed.</string>
+    <string name="leadpipe_view_release_notes">Release notes</string>
 </resources>

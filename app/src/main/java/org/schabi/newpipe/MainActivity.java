@@ -20,7 +20,6 @@
 
 package org.schabi.newpipe;
 
-import static org.schabi.newpipe.util.AnnouncementParser.parseContentsBeforeId;
 import static org.schabi.newpipe.util.Localization.assureCorrectAppLanguage;
 
 import android.app.AlertDialog;
@@ -99,6 +98,7 @@ import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final String LAST_SHOWN_VERSION = "version_code";
     @SuppressWarnings("ConstantConditions")
     public static final boolean DEBUG = !BuildConfig.BUILD_TYPE.equals("release");
 
@@ -183,88 +183,52 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        final App app = App.getApp();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(app);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean(getString(R.string.update_app_key), false)) {
+            NewVersionWorker.enqueueNewVersionCheckingWork(this, false);
+        }
+        showLeadPipeLaunchNotice(prefs);
+    }
 
-        if (prefs.getBoolean(app.getString(R.string.update_app_key), false)) {
-            // Start the worker which is checking all conditions
-            // and eventually searching for a new version.
-                NewVersionWorker.enqueueNewVersionCheckingWork(app, false);
+    private void showLeadPipeLaunchNotice(final SharedPreferences prefs) {
+        final LeadPipeLaunchNotice notice = LeadPipeLaunchNotice.forVersions(
+                prefs.getInt(LAST_SHOWN_VERSION, 0), BuildConfig.VERSION_CODE);
+        if (notice == LeadPipeLaunchNotice.NONE) {
+            MissingPluginHelper.checkOnStart(this);
+            return;
         }
 
-        int currentVersionCode = BuildConfig.VERSION_CODE;
-        int storedVersionCode = prefs.getInt("version_code", 0);
-        long lastShowDonationTime = prefs.getLong("last_show_donation_time", 0);
-        long currentTime = System.currentTimeMillis();
-
-        if (currentVersionCode > storedVersionCode + 90) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.fragment_feed_title);
-            builder.setMessage(R.string.update_log);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (notice == LeadPipeLaunchNotice.WELCOME) {
+            builder.setTitle(R.string.leadpipe_welcome_title);
+            if (prefs.getBoolean(getString(R.string.update_app_key), false)) {
+                builder.setMessage(R.string.leadpipe_welcome_message);
+                builder.setPositiveButton(R.string.ok, null);
+            } else {
+                builder.setMessage(R.string.leadpipe_welcome_update_prompt);
+                builder.setPositiveButton(R.string.leadpipe_enable_update_alerts, (dialog, which) -> {
+                    prefs.edit().putBoolean(getString(R.string.update_app_key), true).apply();
+                    NewVersionWorker.enqueueNewVersionCheckingWork(this, true);
+                    PermissionChecker.checkNotificationPermission(this);
+                });
+                builder.setNegativeButton(R.string.leadpipe_update_not_now, null);
+            }
+        } else {
+            builder.setTitle(R.string.leadpipe_upgrade_title);
+            builder.setMessage(getString(R.string.leadpipe_upgrade_message, BuildConfig.VERSION_NAME));
             builder.setPositiveButton(R.string.ok, null);
-
-            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-            builder2.setTitle(R.string.donation_dialog_title);
-            builder2.setMessage(R.string.donation_dialog_message);
-
-            builder2.setPositiveButton(R.string.sponsor_promote, (dialog, which) -> {
-                ShareUtils.openUrlInBrowser(this, getString(R.string.donation_url));
-            });
-            builder2.setNegativeButton(R.string.no, null);
-
-            final AlertDialog dialog2 = builder2.create();
-
-            final AlertDialog dialog1 = builder.create();
-            dialog1.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    if((storedVersionCode / 100 < 1111 && currentTime - lastShowDonationTime > 14 * 24 * 60 * 60 * 1000)
-                            || currentTime - lastShowDonationTime > 30L * 24 * 60 * 60 * 1000) {
-                        prefs.edit().putLong("last_show_donation_time", currentTime).apply();
-                        dialog2.show();
-                    }
-                }
-            });
-
-            dialog1.show();
-            prefs.edit().putInt("version_code", currentVersionCode).apply();
-        }
-        MissingPluginHelper.checkOnStart(this);
-        String lastAnnouncementId = prefs.getString("last_announcement_id", null);
-        try {
-            NewPipe.getDownloader().getAsync("https://github.com/InfinityLoop1308/PipePipe/wiki/Announcement", resp -> {
-                AnnouncementParser.ParsedResult result = parseContentsBeforeId(resp.responseBody(), lastAnnouncementId);
-                if(result.latestId != null) {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-                        builder3.setMessage(result.contents);
-                        builder3.setTitle(R.string.announcement);
-                        builder3.setPositiveButton(R.string.ok, (dialog, which) -> {
-                            prefs.edit().putString("last_announcement_id", result.latestId).apply();
-                        });
-                        builder3.show();
-                    });
-                }
-            });
-        } catch (Exception ignore) {
+            builder.setNeutralButton(R.string.leadpipe_view_release_notes, (dialog, which) ->
+                    ShareUtils.openUrlInBrowser(this,
+                            LeadPipeRelease.releasePageForVersion(BuildConfig.VERSION_NAME)));
         }
 
-
-        int isFirstRun = prefs.getInt("isFirstRun", 0);
-        if (isFirstRun == 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.dialog_title_enable_update_checker);
-            builder.setMessage(R.string.dialog_message_enable_update_checker);
-            builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-                prefs.edit().putBoolean(app.getString(R.string.update_app_key), true).apply();
-                NewVersionWorker.enqueueNewVersionCheckingWork(app, true);
-            });
-            builder.setNegativeButton(R.string.no, (dialog, which) -> prefs.edit().putBoolean(app.getString(R.string.update_app_key), false).apply());
-            builder.show();
-            prefs.edit().putInt("isFirstRun", 1).apply();
-            PermissionChecker.checkNotificationPermission(this);
-        }
+        builder.setOnDismissListener(dialog -> {
+            if (!isFinishing() && !isDestroyed()) {
+                prefs.edit().putInt(LAST_SHOWN_VERSION, BuildConfig.VERSION_CODE).apply();
+                MissingPluginHelper.checkOnStart(this);
+            }
+        });
+        builder.show();
     }
 
     private void setupDrawer() throws ExtractionException {
