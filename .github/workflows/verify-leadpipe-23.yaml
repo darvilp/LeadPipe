@@ -14,22 +14,21 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: pipepipe-all-features-release-assets
-          path: ${{ runner.temp }}/verified-leadpipe-23
-          run-id: 45206960351
-          github-token: ${{ github.token }}
-      - uses: actions/setup-java@b6effb05e454b25005698d796606bdc6ffcbf961 # v5
-        with:
-          java-version: 25
-          distribution: temurin
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
-        with:
-          packages: platform-tools
+      - name: Check out the acceptance script
+        run: |
+          git init .
+          git fetch --depth=1 "https://github.com/$GITHUB_REPOSITORY.git" "$GITHUB_SHA"
+          git checkout --detach FETCH_HEAD
+      - name: Download the matching signed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14834198765/zip" > "$RUNNER_TEMP/leadpipe.zip"
+          cd "$RUNNER_TEMP"
+          echo 'ef1028db70c97b9a6cb0152451ccfaed5552da72f75024b91539093cb580f153  leadpipe.zip' | sha256sum -c
+          unzip -q leadpipe.zip -d verified-leadpipe-23
       - name: Install the disposable Android image
-        run: sdkmanager 'emulator' 'system-images;android-35;default;x86_64' 'build-tools;37.0.0'
+        run: sdkmanager 'platform-tools' 'emulator' 'system-images;android-35;default;x86_64' 'build-tools;37.0.0'
       - name: Check the exact signed candidate on Android
         shell: bash
         run: bash tools/verify-leadpipe-23-device.sh "$RUNNER_TEMP/verified-leadpipe-23"
