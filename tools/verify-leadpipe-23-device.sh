@@ -220,5 +220,12 @@ for _ in {1..20}; do
     sleep 2
 done
 echo "Manual LeadPipe update worker result: $work_state"
+if [[ "$work_state" != "2" ]]; then
+    adb logcat -d -s NewVersionWorker WorkManager WM-WorkerWrapper '*:S' | tail -80
+    if curl -sS --max-time 15 -o "$tmp/latest.json" -w 'Runner GitHub releases API status: %{http_code}\n' \
+        https://api.github.com/repos/darvilp/PipePipeClient/releases/latest; then
+        jq '{tag_name, draft, prerelease, message}' "$tmp/latest.json" || true
+    fi
+fi
 [[ "$work_state" == "2" ]]
 echo 'PASS: manual LeadPipe update check completed successfully.'
