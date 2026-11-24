@@ -5,7 +5,7 @@ on:
     branches:
       - unofficial/all-features
       - integration/pipepipe-5.6.0
-      - candidate/leadpipe-*
+      - candidate/leadpipe-5.6.0.24
     tags:
       - all-features/v*
       - leadpipe/v*
