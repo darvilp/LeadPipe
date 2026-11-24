@@ -23,7 +23,7 @@ Download the candidate's `source-manifest.json` alongside its APK. That generate
 From the directory containing the downloaded manifest:
 
 ```bash
-git clone https://github.com/darvilp/PipePipeClient.git PipePipeClient
+git clone https://github.com/darvilp/LeadPipe.git PipePipeClient
 extractor_repository=$(python3 -c 'import json; print(json.load(open("source-manifest.json"))["extractor_repository"])')
 git clone "$extractor_repository" PipePipeExtractor
 client_revision=$(python3 -c 'import json; print(json.load(open("source-manifest.json"))["client_commit"])')
@@ -59,7 +59,7 @@ The file contains literal `NAME=value` assignments, optionally with `export`, sh
 
 Nonempty process environment values override the file, including legacy aliases. Canonical names take precedence over legacy names within each source. CI skips automatic local-file loading and uses its four GitHub secrets; an explicitly selected file is still honored. Never print or commit a keystore, alias, password, base64 payload or actual private setup path. Never generate a substitute key. Preflight checks the selected private-key certificate against `signer_sha256` before Gradle runs. Build output masks the loaded signing values.
 
-The GitHub workflow maps `PIPEPIPE_ALL_FEATURES_KEYSTORE_BASE64`, `PIPEPIPE_ALL_FEATURES_KEYSTORE_PASSWORD`, `PIPEPIPE_ALL_FEATURES_KEY_ALIAS`, and `PIPEPIPE_ALL_FEATURES_KEY_PASSWORD` to the same signing inputs. Check their names with `gh secret list --repo darvilp/PipePipeClient` if diagnosing CI setup; their presence does not replace the local private key file.
+The GitHub workflow maps `PIPEPIPE_ALL_FEATURES_KEYSTORE_BASE64`, `PIPEPIPE_ALL_FEATURES_KEYSTORE_PASSWORD`, `PIPEPIPE_ALL_FEATURES_KEY_ALIAS`, and `PIPEPIPE_ALL_FEATURES_KEY_PASSWORD` to the same signing inputs. Check their names with `gh secret list --repo darvilp/LeadPipe` if diagnosing CI setup; their presence does not replace the local private key file.
 
 ### What each run verifies and exports
 
@@ -85,7 +85,7 @@ After candidate acceptance and publication approval:
 
 1. Make both exact source revisions available on the fork repositories using normal pushes.
 2. Tag the accepted client commit as `leadpipe/v<version_name>` or use the manifest's `legacy_release_tag` for the bridge. Refuse an existing tag.
-3. Let the tag workflow create a draft release in `darvilp/PipePipeClient` with the four verified ABI APKs, checksums, generated manifests and release notes.
+3. Let the tag workflow create a draft release in `darvilp/LeadPipe` with the four verified ABI APKs, checksums, generated manifests and release notes.
 4. Verify the draft target and downloaded asset hashes before publishing it as a regular GitHub release. Verify that both Draft and Pre-release are off after publication.
 
 Keep previous releases and local APK copies. A safe rollback may require rebuilding corrected source with a higher version code; do not assume an older APK can downgrade newer database state. Runtime acceptance remains device-specific even though every ABI split receives the same structural verification.

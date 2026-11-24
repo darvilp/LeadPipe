@@ -16,10 +16,10 @@ internal class LeadPipeRelease private constructor(
     }
 
     companion object {
-        private const val REPOSITORY = "darvilp/PipePipeClient"
-        private const val RENAMED_REPOSITORY = "darvilp/LeadPipe"
+        private const val REPOSITORY = "darvilp/LeadPipe"
+        private const val LEGACY_REPOSITORY = "darvilp/PipePipeClient"
         const val API_URL = "https://api.github.com/repositories/1316188248/releases/latest"
-        const val LEGACY_API_URL = "https://api.github.com/repos/$REPOSITORY/releases/latest"
+        const val NAMED_API_URL = "https://api.github.com/repos/$REPOSITORY/releases/latest"
         const val RELEASES_URL = "https://github.com/$REPOSITORY/releases"
         private const val TAG_PREFIX = "leadpipe/v"
         private const val LEGACY_TAG_PREFIX = "all-features/v"
@@ -100,7 +100,7 @@ internal class LeadPipeRelease private constructor(
             ) return null
             return url.takeIf {
                 uri.path == "/$REPOSITORY/releases/$path"
-                    || uri.path == "/$RENAMED_REPOSITORY/releases/$path"
+                    || uri.path == "/$LEGACY_REPOSITORY/releases/$path"
             }
         }
 

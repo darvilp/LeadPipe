@@ -120,7 +120,7 @@ class NewVersionWorker(
         var response = downloader.get(apiUrl)
         if (BuildConfig.UNOFFICIAL_BUILD) {
             if (response.responseCode() == 404) {
-                response = downloader.get(LeadPipeRelease.LEGACY_API_URL)
+                response = downloader.get(LeadPipeRelease.NAMED_API_URL)
             }
             if (response.responseCode() != 200) {
                 throw IOException("LeadPipe releases API returned HTTP ${response.responseCode()}")

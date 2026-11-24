@@ -1,6 +1,6 @@
 {
   "channel": "unofficial/all-features",
-  "client_repository": "https://github.com/darvilp/PipePipeClient.git",
+  "client_repository": "https://github.com/darvilp/LeadPipe.git",
   "integration_commit": "25a73445fa5548c87e6087fbcaceacc72b692e52",
   "upstream_release": "v5.6.0",
   "upstream_client_commit": "43ef494c1a1792a774c223e1982ff1e794c49017",

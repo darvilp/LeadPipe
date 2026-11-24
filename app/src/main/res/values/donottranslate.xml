@@ -16,8 +16,8 @@
     <string name="md5">MD5</string>
     <string name="sha1">SHA-1</string>
     <string name="recaptcha">reCAPTCHA</string>
-    <string name="github_url">https://github.com/darvilp/PipePipeClient/tree/unofficial/all-features</string>
-    <string name="leadpipe_issues_url" translatable="false">https://github.com/darvilp/PipePipeClient/issues</string>
+    <string name="github_url">https://github.com/darvilp/LeadPipe/tree/unofficial/all-features</string>
+    <string name="leadpipe_issues_url" translatable="false">https://github.com/darvilp/LeadPipe/issues</string>
     <string name="donation_url">https://ko-fi.com/pipepipe</string>
     <string name="website_url">https://newpipe.net/</string>
     <string name="privacy_policy_url">https://newpipe.net/legal/privacy/</string>

@@ -1,6 +1,6 @@
 # LeadPipe release instructions
 
-The release channel is `unofficial/all-features` in `darvilp/PipePipeClient`, with a clean sibling `PipePipeExtractor`. The release runbook is [release/README.md](release/README.md); source pins and identity are in [release/source-manifest.json](release/source-manifest.json).
+The release channel is `unofficial/all-features` in `darvilp/LeadPipe`, with a clean sibling `PipePipeExtractor`. The release runbook is [release/README.md](release/README.md); source pins and identity are in [release/source-manifest.json](release/source-manifest.json).
 
 ## Upstream pull requests
 

@@ -11,11 +11,11 @@ class LeadPipeReleaseTest {
     @Test
     fun opensTheInstalledVersionNotesWithAForkReleasesFallback() {
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/tag/all-features/v5.6.0-unofficial.22",
+            "https://github.com/darvilp/LeadPipe/releases/tag/all-features/v5.6.0-unofficial.22",
             LeadPipeRelease.releasePageForVersion("5.6.0-unofficial.22")
         )
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases",
+            "https://github.com/darvilp/LeadPipe/releases",
             LeadPipeRelease.releasePageForVersion("unknown")
         )
     }
@@ -42,10 +42,10 @@ class LeadPipeReleaseTest {
         assertEquals("5.6.0.24", bridge.version)
         assertTrue(bridge.compareToInstalled("5.6.0-unofficial.23")!! > 0)
         assertEquals(0, bridge.compareToInstalled("5.6.0.24"))
-        assertEquals("https://github.com/darvilp/PipePipeClient/releases/tag/$tag", bridge.releaseUrl)
+        assertEquals("https://github.com/darvilp/LeadPipe/releases/tag/$tag", bridge.releaseUrl)
         assertEquals(bridge.releaseUrl, LeadPipeRelease.releasePageForVersion("5.6.0.24"))
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/download/all-features%2Fv5.6.0-unofficial.24/$apk",
+            "https://github.com/darvilp/LeadPipe/releases/download/all-features%2Fv5.6.0-unofficial.24/$apk",
             bridge.downloadUrl
         )
     }
@@ -61,7 +61,7 @@ class LeadPipeReleaseTest {
         assertEquals(0, next.compareToInstalled("5.7.0.25"))
         assertEquals(next.releaseUrl, LeadPipeRelease.releasePageForVersion("5.7.0.25"))
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/download/leadpipe%2Fv5.7.0.25/$apk",
+            "https://github.com/darvilp/LeadPipe/releases/download/leadpipe%2Fv5.7.0.25/$apk",
             next.downloadUrl
         )
         assertNull(LeadPipeRelease.fromJson(releaseJson("leadpipe/v5.7.0-unofficial.25"), armAbis))
@@ -86,7 +86,7 @@ class LeadPipeReleaseTest {
             releaseJson(assets = "[$arm32,$arm64]"), armAbis
         )!!
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/download/all-features%2F" +
+            "https://github.com/darvilp/LeadPipe/releases/download/all-features%2F" +
                 "v5.6.0-unofficial.22/PipePipe-all-features-5.6.0-unofficial.22-" +
                 "466db9b96-20261123T020515Z-arm64-v8a.apk",
             release.downloadUrl
@@ -102,7 +102,7 @@ class LeadPipeReleaseTest {
         )!!
         assertNull(release.downloadUrl)
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/tag/all-features/v5.6.0-unofficial.22",
+            "https://github.com/darvilp/LeadPipe/releases/tag/all-features/v5.6.0-unofficial.22",
             release.releaseUrl
         )
     }
@@ -124,6 +124,21 @@ class LeadPipeReleaseTest {
     }
 
     @Test
+    fun stillAcceptsReleaseMetadataUsingTheOriginalRepositoryName() {
+        val tag = "leadpipe/v5.6.0.25"
+        val apk = "LeadPipe-5.6.0.25-466db9b96-20261124T020515Z-arm64-v8a.apk"
+        val page = "https://github.com/darvilp/PipePipeClient/releases/tag/$tag"
+        val download = "https://github.com/darvilp/PipePipeClient/releases/download/$tag/$apk"
+        val release = LeadPipeRelease.fromJson(
+            releaseJson(tag, assets = "[${assetJson(apk, url = download)}]", htmlUrl = page),
+            armAbis
+        )!!
+
+        assertEquals(page, release.releaseUrl)
+        assertEquals(download, release.downloadUrl)
+    }
+
+    @Test
     fun ignoresReleaseUrlsOutsideTheLeadPipeReleaseAndSelectedAsset() {
         val tag = "leadpipe/v5.6.0.26"
         val apk = "LeadPipe-5.6.0.26-466db9b96-20261124T020515Z-arm64-v8a.apk"
@@ -138,9 +153,9 @@ class LeadPipeReleaseTest {
             armAbis
         )!!
 
-        assertEquals("https://github.com/darvilp/PipePipeClient/releases/tag/$tag", release.releaseUrl)
+        assertEquals("https://github.com/darvilp/LeadPipe/releases/tag/$tag", release.releaseUrl)
         assertEquals(
-            "https://github.com/darvilp/PipePipeClient/releases/download/leadpipe%2Fv5.6.0.26/$apk",
+            "https://github.com/darvilp/LeadPipe/releases/download/leadpipe%2Fv5.6.0.26/$apk",
             release.downloadUrl
         )
     }
