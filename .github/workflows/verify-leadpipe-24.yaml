@@ -1,0 +1,62 @@
+name: Verify the signed LeadPipe .24 bridge on Android
+
+on:
+  push:
+    branches:
+      - test/leadpipe-24-upgrade
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the acceptance script
+        run: |
+          git init .
+          git fetch --depth=1 "https://github.com/$GITHUB_REPOSITORY.git" "$GITHUB_SHA"
+          git checkout --detach FETCH_HEAD
+      - name: Download the matching signed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14901586660/zip" > "$RUNNER_TEMP/leadpipe.zip"
+          cd "$RUNNER_TEMP"
+          echo '00a1f9b06731130ec6432550c23ac9c47a0e054b603bd56a10c4a2d08c70d5cd  leadpipe.zip' | sha256sum -c
+          unzip -q leadpipe.zip -d verified-leadpipe-24
+      - name: Install the disposable Android image
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          if ! java -version 2>&1 | grep -E 'version "(1[7-9]|[2-9][0-9])\.'; then
+            url=https://download.oracle.com/java/25/latest/jdk-25_linux-x64_bin.tar.gz
+            curl -fsSL --retry 3 "$url" -o jdk.tar.gz
+            curl -fsSL --retry 3 "$url.sha256" -o jdk.sha256
+            printf '%s  jdk.tar.gz\n' "$(cat jdk.sha256)" | sha256sum -c
+            export JAVA_HOME="$RUNNER_TEMP/leadpipe-jdk"
+            mkdir "$JAVA_HOME"
+            tar -xzf jdk.tar.gz --strip-components=1 -C "$JAVA_HOME"
+            export PATH="$JAVA_HOME/bin:$PATH"
+            echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+            echo "$JAVA_HOME/bin" >> "$GITHUB_PATH"
+          fi
+          export ANDROID_HOME="$RUNNER_TEMP/leadpipe-sdk"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          curl -fsSL --retry 3 https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -o tools.zip
+          echo '5fdcc763663eefb86a5b8879697aa6088b041e70  tools.zip' | sha1sum -c
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          unzip -q tools.zip -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          tools="$ANDROID_HOME/cmdline-tools/latest/bin"
+          chmod +x "$tools/sdkmanager" "$tools/avdmanager"
+          (set +o pipefail; yes | "$tools/sdkmanager" --licenses)
+          "$tools/sdkmanager" 'platform-tools' 'emulator' 'system-images;android-35;default;x86_64' 'build-tools;37.0.0'
+          printf 'ANDROID_HOME=%s\nANDROID_SDK_ROOT=%s\n' "$ANDROID_HOME" "$ANDROID_HOME" >> "$GITHUB_ENV"
+          printf '%s\n%s/platform-tools\n' "$tools" "$ANDROID_HOME" >> "$GITHUB_PATH"
+      - name: Check the exact signed candidate on Android
+        shell: bash
+        run: bash tools/verify-leadpipe-24-device.sh "$RUNNER_TEMP/verified-leadpipe-24"
