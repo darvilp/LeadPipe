@@ -1,6 +1,8 @@
 package org.schabi.newpipe
 
 import com.grack.nanojson.JsonParser
+import java.net.URI
+import java.net.URISyntaxException
 
 internal class LeadPipeRelease private constructor(
     val version: String,
@@ -15,7 +17,9 @@ internal class LeadPipeRelease private constructor(
 
     companion object {
         private const val REPOSITORY = "darvilp/PipePipeClient"
-        const val API_URL = "https://api.github.com/repos/$REPOSITORY/releases/latest"
+        private const val RENAMED_REPOSITORY = "darvilp/LeadPipe"
+        const val API_URL = "https://api.github.com/repositories/1316188248/releases/latest"
+        const val LEGACY_API_URL = "https://api.github.com/repos/$REPOSITORY/releases/latest"
         const val RELEASES_URL = "https://github.com/$REPOSITORY/releases"
         private const val TAG_PREFIX = "leadpipe/v"
         private const val LEGACY_TAG_PREFIX = "all-features/v"
@@ -62,22 +66,42 @@ internal class LeadPipeRelease private constructor(
             val version = if (tagVersion == LEGACY_BRIDGE_VERSION) BRIDGE_VERSION else tagVersion
 
             val assets = release.getArray("assets")
-            val uploadedNames = (0 until assets.size)
+            val uploadedAssets = (0 until assets.size)
                 .mapNotNull { assets.getObject(it) }
                 .filter { it.getString("state") == "uploaded" }
-                .mapNotNull { it.getString("name") }
-            val apkName = supportedAbis.firstNotNullOfOrNull { abi ->
+            val apk = supportedAbis.firstNotNullOfOrNull { abi ->
                 val expected = Regex(
                     """$apkPrefix-${Regex.escape(tagVersion)}-[0-9a-f]{9}-\d{8}T\d{6}Z-${Regex.escape(abi)}\.apk"""
                 )
-                uploadedNames.singleOrNull(expected::matches)
+                uploadedAssets.singleOrNull { it.getString("name")?.let(expected::matches) == true }
+            }
+            val downloadUrl = apk?.getString("name")?.let { name ->
+                knownReleaseUrl(apk.getString("browser_download_url"), "download/$tag/$name")
+                    ?: "$RELEASES_URL/download/${tag.replace("/", "%2F")}/$name"
             }
             return LeadPipeRelease(
                 version,
                 revision,
-                apkName?.let { "$RELEASES_URL/download/${tag.replace("/", "%2F")}/$it" },
-                "$RELEASES_URL/tag/$tag"
+                downloadUrl,
+                knownReleaseUrl(release.getString("html_url"), "tag/$tag")
+                    ?: "$RELEASES_URL/tag/$tag"
             )
+        }
+
+        private fun knownReleaseUrl(url: String?, path: String): String? {
+            if (url == null) return null
+            val uri = try {
+                URI(url)
+            } catch (_: URISyntaxException) {
+                return null
+            }
+            if (uri.scheme != "https" || uri.rawAuthority != "github.com"
+                || uri.rawQuery != null || uri.rawFragment != null
+            ) return null
+            return url.takeIf {
+                uri.path == "/$REPOSITORY/releases/$path"
+                    || uri.path == "/$RENAMED_REPOSITORY/releases/$path"
+            }
         }
 
         private fun revisionOf(version: String): Int? {

@@ -5,9 +5,8 @@ on:
     branches:
       - unofficial/all-features
       - integration/pipepipe-5.6.0
-      - candidate/leadpipe-5.6.0.24
+      - candidate/leadpipe-5.6.0.25
     tags:
-      - all-features/v*
       - leadpipe/v*
 
 permissions:
@@ -26,6 +25,20 @@ jobs:
 
       - name: Test release entry point
         run: python3 PipePipeClient/tools/test_release.py
+
+      - name: Verify the update endpoint for the repository rename
+        if: github.ref == 'refs/heads/candidate/leadpipe-5.6.0.25'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          endpoint=$(grep -Eo 'https://api.github.com/repositories/[0-9]+/releases/latest' \
+            PipePipeClient/app/src/main/java/org/schabi/newpipe/LeadPipeRelease.kt)
+          by_id=$(gh api "$endpoint" --jq '[.id, .tag_name] | @tsv')
+          by_name=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '[.id, .tag_name] | @tsv')
+          [[ "$by_id" == "$by_name" && -n "$by_id" ]]
+          echo "Both updater paths return the same release: $by_id"
 
       - name: Read pinned extractor source
         id: source

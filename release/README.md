@@ -90,6 +90,12 @@ After candidate acceptance and publication approval:
 
 Keep previous releases and local APK copies. A safe rollback may require rebuilding corrected source with a higher version code; do not assume an older APK can downgrade newer database state. Runtime acceptance remains device-specific even though every ABI split receives the same structural verification.
 
+## Repository rename
+
+Publish and verify `5.6.0.25` on the existing repo first. Confirm that `.24` finds the new `leadpipe/v5.6.0.25` tag, opens the compatible APK and upgrades in place. Starting with `.25`, the updater looks up releases by GitHub repository ID `1316188248` and checks that returned release and download URLs match the expected owner, repository, tag and asset.
+
+Rename the client repository in place to `darvilp/LeadPipe` and leave the old `PipePipeClient` name unused so GitHub keeps its redirects. Check the old path-based release API, existing release notes and APK URLs, and the repository-ID API after the rename. Update local remotes, the client repository URL in future source manifests, and the app and documentation links. Before shipping the next release, verify that both `.24` and `.25` can find and install it. If the checks fail, keep the existing releases available and resolve the redirect or update endpoint before shipping another build.
+
 ## Repeat the controlled upgrade probe
 
 `UnofficialReleaseUpgradeProbe` is separate from ordinary test runs. It uses Android framework instrumentation so test-library references do not conflict with the minified app. Use it only on a disposable acceptance device: it adds one clearly named subscription and local playlist and sets speed, pitch and theme preferences.

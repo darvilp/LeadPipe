@@ -116,8 +116,12 @@ class NewVersionWorker(
         }
 
         val apiUrl = if (BuildConfig.UNOFFICIAL_BUILD) LeadPipeRelease.API_URL else NEWPIPE_API_URL
-        val response = DownloaderImpl.getInstance().get(apiUrl)
+        val downloader = DownloaderImpl.getInstance()
+        var response = downloader.get(apiUrl)
         if (BuildConfig.UNOFFICIAL_BUILD) {
+            if (response.responseCode() == 404) {
+                response = downloader.get(LeadPipeRelease.LEGACY_API_URL)
+            }
             if (response.responseCode() != 200) {
                 throw IOException("LeadPipe releases API returned HTTP ${response.responseCode()}")
             }

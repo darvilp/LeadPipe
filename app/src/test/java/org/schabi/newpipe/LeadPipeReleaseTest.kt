@@ -107,19 +107,62 @@ class LeadPipeReleaseTest {
         )
     }
 
+    @Test
+    fun usesGitHubReleaseAndDownloadUrlsAfterRepositoryRename() {
+        val tag = "leadpipe/v5.6.0.26"
+        val apk = "LeadPipe-5.6.0.26-466db9b96-20261124T020515Z-arm64-v8a.apk"
+        val page = "https://github.com/darvilp/LeadPipe/releases/tag/$tag"
+        val download = "https://github.com/darvilp/LeadPipe/releases/download/leadpipe%2Fv5.6.0.26/$apk"
+        val release = LeadPipeRelease.fromJson(
+            releaseJson(tag, assets = "[${assetJson(apk, url = download)}]", htmlUrl = page),
+            armAbis
+        )!!
+
+        assertTrue(release.compareToInstalled("5.6.0.25")!! > 0)
+        assertEquals(page, release.releaseUrl)
+        assertEquals(download, release.downloadUrl)
+    }
+
+    @Test
+    fun ignoresReleaseUrlsOutsideTheLeadPipeReleaseAndSelectedAsset() {
+        val tag = "leadpipe/v5.6.0.26"
+        val apk = "LeadPipe-5.6.0.26-466db9b96-20261124T020515Z-arm64-v8a.apk"
+        val wrongPage = "https://github.com/darvilp/LeadPipe/releases/tag/leadpipe/v9.0.0.99"
+        val wrongDownload = "https://github.com/other/LeadPipe/releases/download/$tag/$apk"
+        val release = LeadPipeRelease.fromJson(
+            releaseJson(
+                tag,
+                assets = "[${assetJson(apk, url = wrongDownload)}]",
+                htmlUrl = wrongPage
+            ),
+            armAbis
+        )!!
+
+        assertEquals("https://github.com/darvilp/PipePipeClient/releases/tag/$tag", release.releaseUrl)
+        assertEquals(
+            "https://github.com/darvilp/PipePipeClient/releases/download/leadpipe%2Fv5.6.0.26/$apk",
+            release.downloadUrl
+        )
+    }
+
     private fun releaseJson(
         tag: String = "all-features/v5.6.0-unofficial.22",
         draft: Boolean = false,
         prerelease: Boolean = false,
-        assets: String = "[]"
-    ) = """{"tag_name":"$tag","draft":$draft,"prerelease":$prerelease,"assets":$assets}"""
+        assets: String = "[]",
+        htmlUrl: String = ""
+    ) = """{"tag_name":"$tag","draft":$draft,"prerelease":$prerelease,"assets":$assets,"html_url":"$htmlUrl"}"""
 
     private fun asset(abi: String, state: String = "uploaded"): String {
         val name = "PipePipe-all-features-5.6.0-unofficial.22-466db9b96-20261123T020515Z-$abi.apk"
         return assetJson(name, state)
     }
 
-    private fun assetJson(name: String, state: String = "uploaded"): String {
-        return """{"name":"$name","state":"$state","browser_download_url":"https://example.org/"}"""
+    private fun assetJson(
+        name: String,
+        state: String = "uploaded",
+        url: String = "https://example.org/"
+    ): String {
+        return """{"name":"$name","state":"$state","browser_download_url":"$url"}"""
     }
 }
