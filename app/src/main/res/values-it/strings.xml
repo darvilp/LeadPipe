@@ -471,7 +471,7 @@
 <string name="feed_update_threshold_option_always_update">Aggiorna sempre</string>
 <string name="feed_load_error">Errore nel caricamento del feed</string>
 <string name="feed_load_error_account_info">Impossibile caricare il feed per \'%s\'.</string>
-<string name="feed_load_error_terminated_new">L\'account dell\'autore è stato terminato.\nPipePipe non sarà in grado di caricare questo feed in futuro.\nVuoi annullare l\'abbonamento a questo canale?</string>
+<string name="feed_load_error_terminated_new">L\'account dell\'autore è stato terminato.\nLeadPipe non sarà in grado di caricare questo feed in futuro.\nVuoi annullare l\'abbonamento a questo canale?</string>
 <string name="feed_load_error_fast_unknown">La modalità feed veloce non fornisce ulteriori informazioni su questo.</string>
 <string name="feed_use_dedicated_fetch_method_title">Scarica dal feed dedicato quando disponibile</string>
 <string name="feed_use_dedicated_fetch_method_summary">Disponibile in alcuni servizi, è generalmente molto più veloce ma può restituire un numero limitato di elementi e informazioni spesso incomplete (es. nessuna durata, tipo di elemento, nessun live status)</string>
@@ -479,7 +479,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">Disabilita modalità veloce</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">Pensi che il caricamento del feed sia troppo lento\? Se sì, prova ad abilitare il caricamento veloce (puoi cambiarlo nelle impostazioni o premendo il pulsante qui sotto).
 \n
-\nPipePipe offre due strategie di caricamento del feed:
+\nLeadPipe offre due strategie di caricamento del feed:
 \n• Raccogliere l\'intero canale dell\'abbonamento, che è lento ma completo.
 \n• Usare un endpoint di servizio dedicato, che è veloce ma generalmente non completo.
 \n

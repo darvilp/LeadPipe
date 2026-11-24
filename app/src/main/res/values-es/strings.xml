@@ -600,14 +600,14 @@
 <string name="feed_update_threshold_option_always_update">Siempre actualizar</string>
 <string name="feed_load_error">Error al cargar el feed</string>
 <string name="feed_load_error_account_info">No se pudo cargar el feed para \'%s\'.</string>
-<string name="feed_load_error_terminated_new">La cuenta del autor ha sido terminada.\nPipePipe no podrá cargar este feed en el futuro.\n¿Quieres cancelar la suscripción a este canal?</string>
+<string name="feed_load_error_terminated_new">La cuenta del autor ha sido terminada.\nLeadPipe no podrá cargar este feed en el futuro.\n¿Quieres cancelar la suscripción a este canal?</string>
 <string name="feed_load_error_fast_unknown">El modo rápido del feed no proporciona más información sobre esto.</string>
 <string name="feed_use_dedicated_fetch_method_title">Obtener de feed dedicado cuando esté disponible</string>
 <string name="feed_use_dedicated_fetch_method_summary">Disponible en algunos servicios, generalmente es mucho más rápido pero puede devolver una cantidad limitada de elementos y a menudo información incompleta (por ejemplo, sin duración, tipo de ítem, sin estado en vivo)</string>
 <string name="feed_use_dedicated_fetch_method_enable_button">Habilitar modo rápido</string>
 <string name="feed_use_dedicated_fetch_method_disable_button">Desactivar modo rápido</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">¿Crees que la carga del feed es demasiado lenta\? Si es así, intenta habilitar la carga rápida (puedes cambiarlo en la configuración o presionando el botón de abajo).\n\n
-    \nPipePipe ofrece dos estrategias de carga de feed:\n\n• Obtener el canal de suscripción completo, que es lento pero completo.\n\n• Usar un punto de servicio dedicado, que es rápido pero generalmente no completo.\n\n
+    \nLeadPipe ofrece dos estrategias de carga de feed:\n\n• Obtener el canal de suscripción completo, que es lento pero completo.\n\n• Usar un punto de servicio dedicado, que es rápido pero generalmente no completo.\n\n
     \nLa diferencia entre los dos es que el rápido generalmente carece de alguna información, como la duración o tipo del elemento (no puede distinguir entre vídeos en vivo y normales) y puede devolver menos elementos.\n\n
     \nYouTube es un ejemplo de un servicio que ofrece este método rápido con su feed RSS.\n\n
     \nEntonces la elección se reduce a lo que prefieres: rapidez o información precisa.</string>

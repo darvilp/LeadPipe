@@ -630,7 +630,7 @@
 <string name="feed_update_threshold_option_always_update">Her zaman güncelle</string>
 <string name="feed_load_error">Akış yükleme hatası</string>
 <string name="feed_load_error_account_info">\'%s\' için akış yüklenemedi.</string>
-<string name="feed_load_error_terminated_new">Yazarın hesabı kapatıldı.\nPipePipe gelecekte bu akışı yükleyemeyecek.\nBu kanalın aboneliğinden çıkmak istiyor musunuz?</string>
+<string name="feed_load_error_terminated_new">Yazarın hesabı kapatıldı.\nLeadPipe gelecekte bu akışı yükleyemeyecek.\nBu kanalın aboneliğinden çıkmak istiyor musunuz?</string>
 <string name="feed_load_error_fast_unknown">Hızlı akış modu bu konuda daha fazla bilgi sağlamıyor.</string>
 <string name="feed_use_dedicated_fetch_method_title">Mevcut olduğunda özel akıştan getir</string>
 <string name="feed_use_dedicated_fetch_method_summary">Bazı hizmetlerde mevcuttur, genellikle çok daha hızlıdır ancak sınırlı miktarda öğe döndürebilir ve genellikle eksik bilgi (ör. süre yok, öğe türü yok, canlı durumu yok) içerebilir</string>
@@ -638,7 +638,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">Hızlı modu devre dışı bırak</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">Akış yüklemenin çok yavaş olduğunu mu düşünüyorsunuz\? Öyleyse, hızlı yüklemeyi etkinleştirmeyi deneyin (ayarlardan veya aşağıdaki düğmeye basarak değiştirebilirsiniz).
 \n
-\nPipePipe iki akış yükleme stratejisi sunar:
+\nLeadPipe iki akış yükleme stratejisi sunar:
 \n• Abonelik kanalının tamamını getirmek, ki bu yavaştır ama eksiksizdir.
 \n• Özel bir hizmet uç noktası kullanmak, ki bu hızlıdır ancak genellikle eksiksiz değildir.
 \n

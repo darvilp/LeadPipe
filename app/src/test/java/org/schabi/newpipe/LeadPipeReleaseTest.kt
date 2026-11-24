@@ -34,6 +34,41 @@ class LeadPipeReleaseTest {
     }
 
     @Test
+    fun recognizesTheBridgeWithItsLegacyTagAndAssetName() {
+        val tag = "all-features/v5.6.0-unofficial.24"
+        val apk = "PipePipe-all-features-5.6.0-unofficial.24-466db9b96-20261123T020515Z-arm64-v8a.apk"
+        val bridge = LeadPipeRelease.fromJson(releaseJson(tag, assets = "[${assetJson(apk)}]"), armAbis)!!
+
+        assertEquals("5.6.0.24", bridge.version)
+        assertTrue(bridge.compareToInstalled("5.6.0-unofficial.23")!! > 0)
+        assertEquals(0, bridge.compareToInstalled("5.6.0.24"))
+        assertEquals("https://github.com/darvilp/PipePipeClient/releases/tag/$tag", bridge.releaseUrl)
+        assertEquals(bridge.releaseUrl, LeadPipeRelease.releasePageForVersion("5.6.0.24"))
+        assertEquals(
+            "https://github.com/darvilp/PipePipeClient/releases/download/all-features%2Fv5.6.0-unofficial.24/$apk",
+            bridge.downloadUrl
+        )
+    }
+
+    @Test
+    fun recognizesLeadPipeTagsAndAssetsAfterTheBridgeAcrossUpstreamChanges() {
+        val tag = "leadpipe/v5.7.0.25"
+        val apk = "LeadPipe-5.7.0.25-466db9b96-20261123T020515Z-arm64-v8a.apk"
+        val next = LeadPipeRelease.fromJson(releaseJson(tag, assets = "[${assetJson(apk)}]"), armAbis)!!
+
+        assertEquals("5.7.0.25", next.version)
+        assertTrue(next.compareToInstalled("5.6.0.24")!! > 0)
+        assertEquals(0, next.compareToInstalled("5.7.0.25"))
+        assertEquals(next.releaseUrl, LeadPipeRelease.releasePageForVersion("5.7.0.25"))
+        assertEquals(
+            "https://github.com/darvilp/PipePipeClient/releases/download/leadpipe%2Fv5.7.0.25/$apk",
+            next.downloadUrl
+        )
+        assertNull(LeadPipeRelease.fromJson(releaseJson("leadpipe/v5.7.0-unofficial.25"), armAbis))
+        assertNull(LeadPipeRelease.fromJson(releaseJson("all-features/v5.7.0.25"), armAbis))
+    }
+
+    @Test
     fun onlyAcceptsPublishedRegularForkReleases() {
         assertNull(LeadPipeRelease.fromJson(releaseJson(draft = true), armAbis))
         assertNull(LeadPipeRelease.fromJson(releaseJson(prerelease = true), armAbis))
@@ -81,6 +116,10 @@ class LeadPipeReleaseTest {
 
     private fun asset(abi: String, state: String = "uploaded"): String {
         val name = "PipePipe-all-features-5.6.0-unofficial.22-466db9b96-20261123T020515Z-$abi.apk"
+        return assetJson(name, state)
+    }
+
+    private fun assetJson(name: String, state: String = "uploaded"): String {
         return """{"name":"$name","state":"$state","browser_download_url":"https://example.org/"}"""
     }
 }

@@ -16,15 +16,21 @@ release_source=$(git rev-parse HEAD)
 [[ -z $(git status --porcelain) ]] || { echo 'Client source must be clean' >&2; exit 1; }
 [[ -z $(git -C ../PipePipeExtractor status --porcelain) ]] || { echo 'Extractor source must be clean' >&2; exit 1; }
 python3 - <<'PY'
-import hashlib, json, subprocess
+import hashlib, json, re, subprocess
 from pathlib import Path
 m = json.loads(Path('release/source-manifest.json').read_text())
 actual = subprocess.check_output(['git', '-C', '../PipePipeExtractor', 'rev-parse', 'HEAD'], text=True).strip()
 if actual != m['extractor_commit']:
     raise SystemExit('Extractor revision does not match release/source-manifest.json')
 subprocess.run(['git', 'merge-base', '--is-ancestor', m['integration_commit'], 'HEAD'], check=True)
-import re
 build = Path('app/build.gradle').read_text()
+version = re.fullmatch(r'(\d+\.\d+\.\d+)\.\d+', m['version_name'])
+upstream = re.match(r'v(\d+\.\d+\.\d+)(?=$|-)', m['upstream_release'])
+if not version or not upstream or version[1] != upstream[1]:
+    raise SystemExit('LeadPipe version must be the PipePipe base followed by a release counter')
+bridge_tags = {'5.6.0.24': 'all-features/v5.6.0-unofficial.24'}
+if m.get('legacy_release_tag') != bridge_tags.get(m['version_name']):
+    raise SystemExit('The legacy release tag is required for the 5.6.0.24 bridge only')
 if re.search(r'def appVersionName = "([^"]+)"', build)[1] != m['version_name']:
     raise SystemExit('Gradle version name does not match release manifest')
 if int(re.search(r'def baseVersionCode = (\d+)', build)[1]) != m['base_version_code']:
@@ -52,7 +58,18 @@ release_extractor=$(python3 -c 'import json; print(json.load(open("release/sourc
 [[ -z $(git -C ../PipePipeExtractor status --porcelain) && "$release_extractor" == $(git -C ../PipePipeExtractor rev-parse HEAD) ]] || {
     echo 'Extractor source changed during build' >&2; exit 1;
 }
-release_version=$(python3 -c 'import json; print(json.load(open("release/source-manifest.json"))["version_name"])')
+read -r release_version release_asset_prefix release_asset_version < <(python3 - <<'PY'
+import json
+
+manifest = json.load(open('release/source-manifest.json'))
+version = manifest['version_name']
+legacy_tag = manifest.get('legacy_release_tag')
+if legacy_tag:
+    print(version, 'PipePipe-all-features', legacy_tag.removeprefix('all-features/v'))
+else:
+    print(version, 'LeadPipe', version)
+PY
+)
 release_timestamp=$(date -u +%Y%m%dT%H%M%SZ)
 release_short=${release_source:0:9}
 release_output_parent=${1:-"$release_root/build/unofficial"}
@@ -60,9 +77,9 @@ mkdir -p "$release_output_parent"
 release_output="$release_output_parent/$release_version-$release_short-$release_timestamp"
 mkdir "$release_output"
 for release_abi in armeabi-v7a arm64-v8a x86 x86_64; do
-    release_apk_name="PipePipe-all-features-$release_version-$release_short-$release_timestamp-$release_abi.apk"
+    release_apk_name="$release_asset_prefix-$release_asset_version-$release_short-$release_timestamp-$release_abi.apk"
     release_apk="$release_output/$release_apk_name"
-    cp "app/build/outputs/apk/release/PipePipe_$release_version-$release_abi-release.apk" "$release_apk"
+    cp "app/build/outputs/apk/release/LeadPipe_$release_version-$release_abi-release.apk" "$release_apk"
     python3 tools/verify-unofficial-apk.py "$release_apk" --sdk "$release_sdk" \
         --abi "$release_abi" \
         --output-json "$release_output/apk-manifest-$release_abi.json"

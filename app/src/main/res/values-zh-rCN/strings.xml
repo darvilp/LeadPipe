@@ -581,7 +581,7 @@
 <string name="feed_update_threshold_option_always_update">总是更新</string>
 <string name="feed_load_error">加载推送出错</string>
 <string name="feed_load_error_account_info">无法加载“%s”的推送</string>
-<string name="feed_load_error_terminated_new">作者的帐户已被终止。\nPipePipe 以后将无法加载此推送。\n您要取消订阅此频道吗？</string>
+<string name="feed_load_error_terminated_new">作者的帐户已被终止。\nLeadPipe 以后将无法加载此推送。\n您要取消订阅此频道吗？</string>
 <string name="feed_load_error_fast_unknown">快速推送模式不提供更多信息。</string>
 <string name="feed_use_dedicated_fetch_method_title">可用时从专用推送中获取</string>
 <string name="feed_use_dedicated_fetch_method_summary">在某些服务中可用，通常要快得多，但可能会返回有限数量的项目和通常不完整的信息（例如，没有持续时间、项目类型、没有直播状态）</string>
@@ -589,7 +589,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">关闭快速模式</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">您是否认为推送加载太慢\？如果是这样，请尝试启用快速加载（您可以在设置中更改或点击下方按钮）。
         \n
-        \nPipePipe 提供两种推送加载策略：
+        \nLeadPipe 提供两种推送加载策略：
         \n• 获取整个订阅频道，速度缓慢但完整。
         \n• 使用专用服务端点，速度很快但通常不完整。
         \n

@@ -12,7 +12,8 @@
   "compile_sdk": 37,
   "build_tools": "37.0.0",
   "application_id": "InfinityLoop1309.NewPipeEnhanced.debug.allfeatures",
-  "version_name": "5.6.0-unofficial.23",
-  "base_version_code": 1130,
+  "version_name": "5.6.0.24",
+  "legacy_release_tag": "all-features/v5.6.0-unofficial.24",
+  "base_version_code": 1131,
   "signer_sha256": "2bb91a5aa3f4c2f2c8d5edba770f14c7cd10619fb737439a1ba7bf868468ed91"
 }

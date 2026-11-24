@@ -1,8 +1,7 @@
-# LeadPipe 5.6.0-unofficial.23
+# LeadPipe 5.6.0.24
 
-- Introduce the LeadPipe name and pipe-triangle icon, including Android themed icons and the TV launcher.
-- Check for updates from this fork and open the matching APK from the update notification.
-- Use LeadPipe welcome and upgrade messages. The upgrade message links to these release notes.
-- Find source code, releases and app issue reporting in About. The startup donation prompt and email reporting button have been removed.
+- Use four-part LeadPipe versions. This release keeps the PipePipe v5.6.0 base at client commit `43ef494c1` and increments the LeadPipe release number to 24.
+- Install this bridge to receive later releases with LeadPipe tags and APK filenames. The bridge uses the previous tag and download naming so the `.23` update checker can find it.
+- Use the LeadPipe name in feed help and feed error messages.
 
-This release keeps the same application ID, signing certificate and Room schema 903 for in-place upgrades from `.22`.
+This release keeps the same application ID, signing certificate and Room schema 903 for in-place upgrades from `.23`.

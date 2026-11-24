@@ -535,7 +535,7 @@
 <string name="feed_update_threshold_option_always_update">Immer aktualisieren</string>
 <string name="feed_load_error">Fehler beim Laden des Feeds</string>
 <string name="feed_load_error_account_info">Feed konnte für \'%s\' nicht geladen werden.</string>
-<string name="feed_load_error_terminated_new">Das Konto des Autors wurde beendet.\nPipePipe kann diesen Feed in Zukunft nicht mehr laden.\nMöchten Sie dieses Kanal abonnieren?</string>
+<string name="feed_load_error_terminated_new">Das Konto des Autors wurde beendet.\nLeadPipe kann diesen Feed in Zukunft nicht mehr laden.\nMöchten Sie dieses Kanal abonnieren?</string>
 <string name="feed_load_error_fast_unknown">Der schnelle Feed-Modus bietet keine weiteren Informationen dazu.</string>
 <string name="feed_use_dedicated_fetch_method_title">Dedizierten Feed abrufen, wenn verfügbar</string>
 <string name="feed_use_dedicated_fetch_method_summary">In einigen Diensten verfügbar, in der Regel viel schneller, kann jedoch eine begrenzte Anzahl von Elementen und oft unvollständige Informationen liefern (z.B. keine Dauer, Typ der Elemente, kein Live-Status)</string>
@@ -543,7 +543,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">Schnellen Modus deaktivieren</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">Denken Sie, dass das Laden des Feeds zu langsam ist\? Wenn ja, versuchen Sie, das schnelle Laden zu aktivieren (Sie können es in den Einstellungen oder durch Drücken des unten stehenden Knopfes ändern).
 \n
-\nPipePipe bietet zwei Feed-Ladestrategien:
+\nLeadPipe bietet zwei Feed-Ladestrategien:
 \n• Das gesamte Abonnement-Kanal abrufen, das langsamer, aber vollständig ist.
 \n• Einen dedizierten Service-Endpunkt verwenden, der schnell, aber normalerweise nicht vollständig ist.
 \n

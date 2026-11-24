@@ -1,10 +1,20 @@
 # LeadPipe release channel
 
-Download APKs from GitHub Releases. The `unofficial/all-features` branch, `all-features/v*` tags, and existing APK filename conventions identify this release channel. Push the exact client and extractor revisions and verify their availability before publishing a candidate.
+Download APKs from GitHub Releases. The maintained branch is `unofficial/all-features`. Push the exact client and extractor revisions and verify their availability before publishing.
 
 The release application ID is `InfinityLoop1309.NewPipeEnhanced.debug.allfeatures`, matching existing installations. The release variant is **not debuggable** and its display label is **LeadPipe**. LeadPipe checks the fork’s published regular releases when update notifications are enabled or when the user chooses **Check for updates**. Update notifications open the compatible APK download or the release page in the browser.
 
 The welcome and upgrade messages are bundled with the app in [Android string resources](../app/src/main/res/values/strings.xml). The upgrade dialog links to the fork’s tag for the installed version. Put version-specific details in [RELEASE_NOTES.md](RELEASE_NOTES.md) before building a release.
+
+## Versioning
+
+Use a four-part LeadPipe version `major.minor.patch.release`. The first three numbers match the PipePipe base. Increase the fourth number for each new LeadPipe release and carry it across upstream syncs, for example `5.6.0.24`, `5.6.0.25`, then `5.7.0.26`. Record the exact PipePipe tag and commit in the source manifest, including a beta suffix if the base is a beta. Mention the exact base in the release notes.
+
+Use the four-part value in Android `versionName` and the GitHub release title. Increase Android's separate base version code for each release and keep it in sync between Gradle and the source manifest. APK version codes are `100 * baseVersionCode + ABI code`. The package ID and signing certificate identify the installed app.
+
+From `5.6.0.25` onward, use tag `leadpipe/v<version_name>` and assets named `LeadPipe-<version_name>-<commit>-<UTC timestamp>-<abi>.apk`. The updater compares the LeadPipe release counter and chooses the APK for the device ABI.
+
+The `5.6.0.24` bridge is the sole exception. Its app version and release title use the four-part number. Its manifest sets `legacy_release_tag` to `all-features/v5.6.0-unofficial.24`, and its published APKs use `PipePipe-all-features-5.6.0-unofficial.24-<commit>-<UTC timestamp>-<abi>.apk` so `.23` can find and download the bridge. The bridge opens that legacy tag for its release notes. Remove `legacy_release_tag` when preparing `.25`. After the first release under `leadpipe/v*` becomes Latest, anyone who skipped the bridge can install the current APK directly over `.23`.
 
 ## Recreate the source
 
@@ -74,7 +84,7 @@ Before building a release candidate, carry forward the release workflow from the
 After candidate acceptance and publication approval:
 
 1. Make both exact source revisions available on the fork repositories using normal pushes.
-2. Tag the accepted client commit as `all-features/v<version_name>` from its manifest, refusing an existing tag.
+2. Tag the accepted client commit as `leadpipe/v<version_name>` or use the manifest's `legacy_release_tag` for the bridge. Refuse an existing tag.
 3. Let the tag workflow create a draft release in `darvilp/PipePipeClient` with the four verified ABI APKs, checksums, generated manifests and release notes.
 4. Verify the draft target and downloaded asset hashes before publishing it as a regular GitHub release. Verify that both Draft and Pre-release are off after publication.
 

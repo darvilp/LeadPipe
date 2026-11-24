@@ -482,7 +482,7 @@ Voulez-vous continuer?</string>
 <string name="feed_update_threshold_option_always_update">Toujours mettre à jour</string>
 <string name="feed_load_error">Erreur de chargement du flux</string>
 <string name="feed_load_error_account_info">Impossible de charger le flux pour \'%s\'.</string>
-<string name="feed_load_error_terminated_new">Le compte de l\'auteur a été résilié.\nPipePipe ne pourra pas charger ce flux à l\'avenir.\nVoulez-vous vous désabonner de cette chaîne?</string>
+<string name="feed_load_error_terminated_new">Le compte de l\'auteur a été résilié.\nLeadPipe ne pourra pas charger ce flux à l\'avenir.\nVoulez-vous vous désabonner de cette chaîne?</string>
 <string name="feed_load_error_fast_unknown">Le mode flux rapide ne fournit pas plus d\'informations à ce sujet.</string>
 <string name="feed_use_dedicated_fetch_method_title">Récupérer à partir du flux dédié lorsque disponible</string>
 <string name="feed_use_dedicated_fetch_method_summary">Disponible sur certains services, c\'est généralement plus rapide mais peut renvoyer un nombre limité d\'éléments et parfois des informations incomplètes (par exemple, pas de durée, type d\'élément, pas de statut en direct)</string>
@@ -490,7 +490,7 @@ Voulez-vous continuer?</string>
 <string name="feed_use_dedicated_fetch_method_disable_button">Désactiver le mode rapide</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">Vous trouvez que le chargement du flux est trop lent\? Si oui, essayez d\'activer le chargement rapide (vous pouvez le changer dans les paramètres ou en appuyant sur le bouton ci-dessous).
 
-\nPipePipe offre deux stratégies de chargement de flux :
+\nLeadPipe offre deux stratégies de chargement de flux :
 \n• Récupérer l\'ensemble du canal d\'abonnement, ce qui est lent mais complet.
 \n• Utiliser un point de terminaison de service dédié, qui est rapide mais généralement non complet.
 

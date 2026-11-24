@@ -2,7 +2,9 @@
 
 LeadPipe is an independently maintained Android fork of PipePipe. It syncs changes from PipePipe and contributes fixes upstream.
 
-The release channel is `unofficial/all-features`. Find the current APKs and their exact source manifests on [GitHub Releases](https://github.com/darvilp/PipePipeClient/releases). Report LeadPipe app issues on the [fork issue tracker](https://github.com/darvilp/PipePipeClient/issues).
+Find the current APKs and their exact source manifests on [GitHub Releases](https://github.com/darvilp/PipePipeClient/releases). Report LeadPipe app issues on the [LeadPipe issue tracker](https://github.com/darvilp/PipePipeClient/issues).
+
+LeadPipe uses four-part versions. In `5.6.0.24`, `5.6.0` is the PipePipe base and `24` is the LeadPipe release number. The counter keeps increasing across PipePipe updates. See the [versioning policy](release/README.md#versioning).
 
 ## LeadPipe and PipePipe
 

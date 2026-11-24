@@ -5,10 +5,10 @@ on:
     branches:
       - unofficial/all-features
       - integration/pipepipe-5.6.0
-      - candidate/all-features-5.6.0-unofficial.22
-      - candidate/all-features-5.6.0-unofficial.23
+      - candidate/leadpipe-*
     tags:
       - all-features/v*
+      - leadpipe/v*
 
 permissions:
   contents: read
@@ -98,7 +98,7 @@ jobs:
       - name: Upload verified test assets
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: pipepipe-all-features-release-assets
+          name: leadpipe-release-assets
           path: ${{ env.PIPEPIPE_ASSET_DIR }}
           if-no-files-found: error
 
@@ -136,8 +136,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version=$(python3 -c 'import json; print(json.load(open("PipePipeClient/release/source-manifest.json"))["version_name"])')
-          expected="all-features/v$version"
+          read -r version expected < <(python3 - <<'PY'
+          import json
+
+          manifest = json.load(open('PipePipeClient/release/source-manifest.json'))
+          version = manifest['version_name']
+          print(version, manifest.get('legacy_release_tag', f'leadpipe/v{version}'))
+          PY
+          )
           [[ "$GITHUB_REF_NAME" == "$expected" ]] || {
             echo "Tag $GITHUB_REF_NAME does not match release version $expected" >&2
             exit 1
@@ -147,7 +153,7 @@ jobs:
       - name: Download verified assets
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: pipepipe-all-features-release-assets
+          name: leadpipe-release-assets
           path: ${{ runner.temp }}/pipepipe-all-features-assets
 
       - name: Reverify downloaded assets

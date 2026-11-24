@@ -439,7 +439,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">停用快速模式</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">您覺得 feed 載入太慢了嗎？如果是的話，試著啟用快速載入（您可以在設定中變更或按下下方的按鈕）。
 \n
-\nPipePipe 提供兩個 feed 載入策略：
+\nLeadPipe 提供兩個 feed 載入策略：
 \n• 擷取整個訂閱頻道，慢但是完整。
 \n• 使用專用的伺服器端點，較快速但是通常不完整。
 \n
@@ -549,7 +549,7 @@
 <string name="account_terminated">帳號已終止</string>
 <string name="feed_load_error_fast_unknown">快速 feed 模式不會提供更多資訊。</string>
 <string name="feed_load_error_terminated_new">作者帳號已被停權。
-\nPipePipe 未來將無法載入這個 feed。
+\nLeadPipe 未來將無法載入這個 feed。
 \n您要取消訂閱這個頻道嗎？</string>
 <string name="feed_load_error_account_info">無法載入「%s」。</string>
 <string name="feed_load_error">載入 feed 時發生錯誤</string>

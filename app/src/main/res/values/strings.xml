@@ -667,7 +667,7 @@
 <string name="feed_update_threshold_option_always_update">Always update</string>
 <string name="feed_load_error">Error loading feed</string>
 <string name="feed_load_error_account_info">Could not load feed for \'%s\'.</string>
-<string name="feed_load_error_terminated_new">The author\'s account has been terminated.\nPipePipe will not be able to load this feed in the future.\nDo you want to unsubscribe from this channel?</string>
+<string name="feed_load_error_terminated_new">The author\'s account has been terminated.\nLeadPipe will not be able to load this feed in the future.\nDo you want to unsubscribe from this channel?</string>
 <string name="feed_load_error_fast_unknown">The fast feed mode does not provide more info on this.</string>
 <string name="feed_use_dedicated_fetch_method_title">Fetch from dedicated feed when available</string>
 <string name="feed_use_dedicated_fetch_method_summary">Available in some services, it is usually much faster but may return a limited amount of items and often incomplete information (e.g. no duration, item type, no live status)</string>
@@ -675,7 +675,7 @@
 <string name="feed_use_dedicated_fetch_method_disable_button">Disable fast mode</string>
 <string name="feed_use_dedicated_fetch_method_help_text_new">Do you think feed loading is too slow\? If so, try enabling fast loading (you can change it in settings or by pressing the button below).
 \n
-\nPipePipe offers two feed loading strategies:
+\nLeadPipe offers two feed loading strategies:
 \n• Fetching the whole subscription channel, which is slow but complete.
 \n• Using a dedicated service endpoint, which is fast but usually not complete.
 \n

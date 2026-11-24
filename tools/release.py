@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical local/CI entry point for a signed All Features test-drive build."""
+"""Build and verify a signed LeadPipe candidate locally or in GitHub Actions."""
 import argparse
 import json
 import os

@@ -634,7 +634,7 @@
     <string name="feed_update_threshold_option_always_update">Actualizează întotdeauna</string>
     <string name="feed_load_error">Eroare la încărcarea fluxului</string>
     <string name="feed_load_error_account_info">Nu s-a putut încărca fluxul pentru „%s”.</string>
-    <string name="feed_load_error_terminated_new">Contul autorului a fost închis.\nPipePipe nu va mai putea încărca acest flux în viitor.\nDoriți să vă dezabonați de la acest canal?</string>
+    <string name="feed_load_error_terminated_new">Contul autorului a fost închis.\nLeadPipe nu va mai putea încărca acest flux în viitor.\nDoriți să vă dezabonați de la acest canal?</string>
     <string name="feed_load_error_fast_unknown">Modul rapid de flux nu oferă mai multe informații despre aceasta.</string>
     <string name="feed_use_dedicated_fetch_method_title">Preluați din fluxul dedicat când este disponibil</string>
     <string name="feed_use_dedicated_fetch_method_summary">Disponibil la unele servicii; este de obicei mult mai rapid, dar poate returna un număr limitat de elemente și adesea informații incomplete (de exemplu, fără durată, tip de element sau stare live)</string>
@@ -642,7 +642,7 @@
     <string name="feed_use_dedicated_fetch_method_disable_button">Dezactivează modul rapid</string>
     <string name="feed_use_dedicated_fetch_method_help_text_new">Considerați că încărcarea fluxului este prea lentă? Dacă da, încercați să activați încărcarea rapidă (o puteți modifica din setări sau apăsând butonul de mai jos).
         \n
-        \nPipePipe oferă două strategii de încărcare a fluxului:
+        \nLeadPipe oferă două strategii de încărcare a fluxului:
         \n• Preluarea întregului canal al abonamentului, ceea ce este lent, dar complet.
         \n• Folosirea unui endpoint dedicat al serviciului, ceea ce este rapid, dar de obicei incomplet.
         \n
