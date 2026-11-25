@@ -232,9 +232,10 @@ public class SponsorBlockSegmentListAdapter extends
             }
 
             // State belongs to the segment, not the recycled row displaying it.
-            final String uuid = segmentUuid;
+            final SponsorBlockSegment segment = currentSponsorBlockSegment;
             final int serviceId = segmentServiceId;
-            final VoteState state = votes.computeIfAbsent(serviceId + ":" + uuid,
+            final String apiUrl = SponsorBlockExtractorHelper.getVoteApiUrl(segment);
+            final VoteState state = votes.computeIfAbsent(serviceId + ":" + apiUrl + ":" + segmentUuid,
                     key -> new VoteState());
             if (state.isVoting || Integer.valueOf(value).equals(state.lastVote)) {
                 return;
@@ -246,8 +247,7 @@ public class SponsorBlockSegmentListAdapter extends
             // Let the captured segment request finish even if this holder is rebound.
             voteRequests.add(Single.fromCallable(() ->
                             SponsorBlockExtractorHelper.submitSponsorBlockSegmentVote(
-                                    uuid, SponsorBlockExtractorHelper.getApiUrl(serviceId),
-                                    value, userId))
+                                    segment, value, userId))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(response -> {
