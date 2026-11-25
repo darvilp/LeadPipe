@@ -367,6 +367,7 @@ class FeedFragment : BaseStateFragment<FeedState>(), BackPressable {
     private fun applySelectionToItems() {
         for (item in originalItems) {
             item.isItemSelected = selection.isSelected(item.streamWithState.stream.uid)
+            item.isSelectionActive = selection.isActive
         }
         groupAdapter.notifyItemRangeChanged(0, groupAdapter.itemCount, StreamItem.UPDATE_SELECTION)
     }
@@ -902,7 +903,10 @@ class FeedFragment : BaseStateFragment<FeedState>(), BackPressable {
         // the feed items are recreated on every update, so drop selected ones that disappeared
         // and mark the new instances
         selection.retainOnly(loadedState.items.map { it.streamWithState.stream.uid })
-        loadedState.items.forEach { it.isItemSelected = selection.isSelected(it.streamWithState.stream.uid) }
+        loadedState.items.forEach {
+            it.isItemSelected = selection.isSelected(it.streamWithState.stream.uid)
+            it.isSelectionActive = selection.isActive
+        }
 
         // Store original items for filtering
         originalItems.clear()

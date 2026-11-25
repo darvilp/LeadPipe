@@ -118,12 +118,17 @@ public class InfoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Nullable
     private SelectionState selectionState;
+    private boolean quickEnqueueEnabled;
+
+    public void setQuickEnqueueEnabled(final boolean enabled) {
+        quickEnqueueEnabled = enabled;
+    }
 
     public void setSelectionState(@Nullable final SelectionState selectionState) {
         this.selectionState = selectionState;
     }
 
-    /** Refreshes the selection highlight of all items without rebinding their content. */
+    /** Refreshes selection and row actions without rebinding item content. */
     public void notifySelectionChanged() {
         notifyItemRangeChanged(0, getItemCount(), SELECTION_PAYLOAD);
     }
@@ -137,6 +142,13 @@ public class InfoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.itemView.setForeground(new ColorDrawable((accent & 0x00FFFFFF) | 0x3D000000));
         } else {
             holder.itemView.setForeground(null);
+        }
+        final Runnable enqueue = quickEnqueueEnabled && item instanceof StreamInfoItem stream
+                ? QuickEnqueue.actionFor(holder.itemView, stream) : null;
+        if (holder instanceof ComposeInfoItemHolder composeHolder) {
+            composeHolder.setQuickEnqueueAction(enqueue);
+        } else {
+            QuickEnqueue.bind(holder.itemView, enqueue);
         }
     }
 

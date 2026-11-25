@@ -14,11 +14,13 @@ import org.schabi.newpipe.R;
 import org.schabi.newpipe.database.LocalItem;
 import org.schabi.newpipe.database.playlist.PlaylistStreamEntry;
 import org.schabi.newpipe.database.stream.StreamStatisticsEntry;
+import org.schabi.newpipe.database.stream.model.StreamEntity;
 import org.schabi.newpipe.database.stream.model.StreamStateEntity;
 import org.schabi.newpipe.database.playlist.PlaylistMetadataEntry;
 import org.schabi.newpipe.database.playlist.model.PlaylistRemoteEntity;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.info_list.ItemViewMode;
+import org.schabi.newpipe.info_list.QuickEnqueue;
 import org.schabi.newpipe.local.history.HistoryRecordManager;
 import org.schabi.newpipe.local.holder.*;
 import org.schabi.newpipe.util.*;
@@ -91,6 +93,11 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Nullable
     private SelectionState selectionState;
+    private boolean quickEnqueueEnabled;
+
+    public void setQuickEnqueueEnabled(final boolean enabled) {
+        quickEnqueueEnabled = enabled;
+    }
 
     private final LocalItemBuilder localItemBuilder;
     private final ArrayList<LocalItem> localItems;
@@ -130,7 +137,7 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.selectionState = selectionState;
     }
 
-    /** Refreshes the selection highlight of all items without rebinding their content. */
+    /** Refreshes selection and row actions without rebinding item content. */
     public void notifySelectionChanged() {
         notifyItemRangeChanged(0, getItemCount(), SELECTION_PAYLOAD);
     }
@@ -144,6 +151,18 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.itemView.setForeground(new ColorDrawable((accent & 0x00FFFFFF) | 0x3D000000));
         } else {
             holder.itemView.setForeground(null);
+        }
+        final StreamEntity stream = switch (item) {
+            case PlaylistStreamEntry entry -> entry.getStreamEntity();
+            case StreamStatisticsEntry entry -> entry.getStreamEntity();
+            default -> null;
+        };
+        final Runnable enqueue = quickEnqueueEnabled && stream != null
+                ? QuickEnqueue.actionFor(holder.itemView, stream.toStreamInfoItem()) : null;
+        if (holder instanceof ComposeLocalItemHolder composeHolder) {
+            composeHolder.setQuickEnqueueAction(enqueue);
+        } else {
+            QuickEnqueue.bind(holder.itemView, enqueue);
         }
     }
 

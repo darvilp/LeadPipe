@@ -1,8 +1,10 @@
 package org.schabi.newpipe.player;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import android.app.Service;
 import android.content.Context;
@@ -12,10 +14,17 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.widget.FrameLayout;
 
+import org.schabi.newpipe.R;
 import org.schabi.newpipe.databinding.PlayerBinding;
+import org.schabi.newpipe.info_list.InfoListAdapter;
+import org.schabi.newpipe.info_list.ItemViewMode;
 import org.schabi.newpipe.util.ThemeHelper;
 
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -23,17 +32,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.stream.StreamType;
+import org.schabi.newpipe.info_list.QuickEnqueue;
 import org.schabi.newpipe.player.PlayerService.PlayerType;
 import org.schabi.newpipe.player.mediasession.PlayerServiceInterface;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.helper.PlayerHolder;
 import org.schabi.newpipe.util.NavigationHelper;
+import org.schabi.newpipe.util.OnClickGesture;
 import org.schabi.newpipe.player.playqueue.SinglePlayQueue;
 import org.schabi.newpipe.util.SerializedCache;
 
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public final class HeaderEnqueueNavigationTest {
@@ -48,8 +60,7 @@ public final class HeaderEnqueueNavigationTest {
         });
     }
 
-    private static void checkEnqueue(final Context context, final PlayerType activeType,
-                                     final boolean next) {
+    private static Player createPlayer(final Context context) {
         final Service service = new LocalService(context);
         final PlayerServiceInterface serviceInterface = (PlayerServiceInterface)
                 Proxy.newProxyInstance(PlayerServiceInterface.class.getClassLoader(),
@@ -64,6 +75,12 @@ public final class HeaderEnqueueNavigationTest {
                         });
         final Player player = new Player(serviceInterface);
         prepareView(player, context);
+        return player;
+    }
+
+    private static void checkEnqueue(final Context context, final PlayerType activeType,
+                                     final boolean next) {
+        final Player player = createPlayer(context);
         final PlayQueue queue = new SinglePlayQueue(
                 Arrays.asList(item("first"), item("second"), item("third")), 0);
         queue.init();
@@ -138,6 +155,114 @@ public final class HeaderEnqueueNavigationTest {
                 }
             } finally {
                 setHolderPlayer(holder, previousPlayer);
+            }
+        });
+    }
+
+    @Test
+    public void quickEnqueueOnRecycledRowStartsInBackgroundAndHidesDuringSelection() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+            final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            final CapturingContext capture = new CapturingContext(context);
+            final Context themed = new ContextThemeWrapper(capture,
+                    ThemeHelper.getThemeForService(context, -1));
+            final var prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            final String experimentalKey = context.getString(R.string.use_experimental_new_ui_key);
+            final boolean hadPreference = prefs.contains(experimentalKey);
+            final boolean wasExperimental = prefs.getBoolean(experimentalKey, false);
+            prefs.edit().putBoolean(experimentalKey, false).apply();
+            final PlayerHolder holder = PlayerHolder.getInstance();
+            final Player previousPlayer = setHolderPlayer(holder, null);
+            try {
+                final InfoListAdapter adapter = new InfoListAdapter(themed);
+                adapter.setQuickEnqueueEnabled(true);
+                adapter.setOnStreamSelectedListener(new OnClickGesture<>() {
+                    @Override
+                    public void selected(final StreamInfoItem stream) {
+                        throw new AssertionError("The quick action opened the video");
+                    }
+                });
+                adapter.setInfoItemList(List.of(item("first"), item("recycled")));
+                for (final ItemViewMode mode : ItemViewMode.values()) {
+                    adapter.setItemViewMode(mode);
+                    final RecyclerView.ViewHolder row = adapter.onCreateViewHolder(
+                            new FrameLayout(themed), adapter.getItemViewType(0));
+                    adapter.onBindViewHolder(row, 0);
+                    adapter.onBindViewHolder(row, 1);
+                    final View button = row.itemView.findViewById(R.id.itemQuickEnqueue);
+                    assertEquals(View.VISIBLE, button.getVisibility());
+                    assertTrue(button.isFocusable());
+                    assertEquals(context.getString(R.string.add_to_queue),
+                            button.getContentDescription());
+                    assertTrue(button.performClick());
+                    assertEquals(PlayerType.AUDIO.ordinal(), capture.intent.getIntExtra(
+                            PlayerIntentConstants.PLAYER_TYPE, -1));
+                    final PlayQueue queue = SerializedCache.getInstance().take(
+                            capture.intent.getStringExtra(PlayerIntentConstants.PLAY_QUEUE_KEY),
+                            PlayQueue.class);
+                    assertEquals("https://example.invalid/recycled", queue.getItem().getUrl());
+                    queue.dispose();
+
+                    adapter.setQuickEnqueueEnabled(false);
+                    adapter.onBindViewHolder(row, 1, List.of(InfoListAdapter.SELECTION_PAYLOAD));
+                    assertEquals(View.GONE, button.getVisibility());
+                    assertFalse(button.performClick());
+                    adapter.setQuickEnqueueEnabled(true);
+                    adapter.onBindViewHolder(row, 1, List.of(InfoListAdapter.SELECTION_PAYLOAD));
+                    assertEquals(View.VISIBLE, button.getVisibility());
+                }
+            } finally {
+                setHolderPlayer(holder, previousPlayer);
+                final var editor = prefs.edit();
+                if (hadPreference) {
+                    editor.putBoolean(experimentalKey, wasExperimental);
+                } else {
+                    editor.remove(experimentalKey);
+                }
+                editor.apply();
+            }
+        });
+    }
+
+    @Test
+    public void rapidQuickEnqueueKeepsSparseItemsInTapOrder() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+            final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            final CapturingContext capture = new CapturingContext(context);
+            final Context themed = new ContextThemeWrapper(capture,
+                    ThemeHelper.getThemeForService(context, -1));
+            final Player player = createPlayer(context);
+            final PlayQueue active = new SinglePlayQueue(List.of(item("playing"), item("next")), 0);
+            active.init();
+            final PlayerHolder holder = PlayerHolder.getInstance();
+            final Player previousPlayer = setHolderPlayer(holder, player);
+            try {
+                player.setPlayQueue(active);
+                player.setPlayerType(PlayerType.POPUP);
+                final var startController = new PlayerStartController(player);
+                final View row = LayoutInflater.from(themed).inflate(R.layout.list_stream_item,
+                        new FrameLayout(themed), false);
+                final View button = row.findViewById(R.id.itemQuickEnqueue);
+                for (final String name : List.of("a", "sparse-b", "c")) {
+                    final StreamInfoItem stream = item(name);
+                    stream.setDuration(-1);
+                    QuickEnqueue.bind(row, QuickEnqueue.actionFor(row, stream));
+                    assertTrue(button.performClick());
+                    startController.handleIntent(capture.intent);
+                }
+                assertSame(active, player.getPlayQueue());
+                assertEquals(PlayerType.POPUP, player.getPlayerType());
+                assertEquals(0, active.getIndex());
+                assertEquals(List.of("playing", "next", "a", "sparse-b", "c"),
+                        active.getStreams().stream().map(item -> item.getTitle()).toList());
+            } finally {
+                setHolderPlayer(holder, previousPlayer);
+                try {
+                    player.destroy();
+                } finally {
+                    active.dispose();
+                    player.getTrackSelector().release();
+                }
             }
         });
     }

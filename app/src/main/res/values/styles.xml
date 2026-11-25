@@ -179,4 +179,14 @@
         <item name="android:background">@color/black_bottom_sheet_color</item>
     </style>
 
+    <style name="QuickEnqueueButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:contentDescription">@string/add_to_queue</item>
+        <item name="android:focusable">true</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:src">@drawable/ic_queue_add</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>

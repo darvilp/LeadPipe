@@ -1,6 +1,7 @@
 package org.schabi.newpipe.local.holder
 
 import android.view.ViewGroup
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import org.schabi.newpipe.database.LocalItem
@@ -34,6 +35,11 @@ class ComposeLocalItemHolder(
 ) {
 
     private val composeView = itemView as ComposeView
+    private val quickEnqueueAction = mutableStateOf<Runnable?>(null)
+
+    fun setQuickEnqueueAction(action: Runnable?) {
+        quickEnqueueAction.value = action
+    }
 
     override fun updateFromItem(
         item: LocalItem,
@@ -48,6 +54,7 @@ class ComposeLocalItemHolder(
                     isGridLayout = ThemeHelper.isGrid(itemViewMode),
                     isCardLayout = itemViewMode == ItemViewMode.CARD,
                     showDragHandle = showDragHandle,
+                    onQuickEnqueue = quickEnqueueAction.value?.let { it::run },
                     onClick = { localItemBuilder.getOnItemSelectedListener()?.selected(item) },
                     onLongClick = { localItemBuilder.getOnItemSelectedListener()?.held(item) },
                     onDragStart = {

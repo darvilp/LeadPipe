@@ -52,7 +52,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/video_item_search_title_text_size"
         app:layout_constraintBottom_toTopOf="@+id/itemUploaderView"
-        app:layout_constraintEnd_toEndOf="@+id/itemThumbnailView"
+        app:layout_constraintEnd_toStartOf="@+id/itemQuickEnqueue"
         app:layout_constraintStart_toStartOf="@+id/itemThumbnailView"
         app:layout_constraintTop_toBottomOf="@+id/itemThumbnailView"
         tools:text="@tools:sample/lorem[10]" />
@@ -66,7 +66,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="@dimen/video_item_search_uploader_text_size"
         app:layout_constraintBottom_toTopOf="@+id/itemAdditionalDetails"
-        app:layout_constraintEnd_toEndOf="@+id/itemThumbnailView"
+        app:layout_constraintEnd_toStartOf="@+id/itemQuickEnqueue"
         app:layout_constraintStart_toStartOf="@+id/itemThumbnailView"
         app:layout_constraintTop_toBottomOf="@+id/itemVideoTitleView"
         tools:text="Uploader name long very very long long" />
@@ -80,12 +80,20 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="@dimen/video_item_search_upload_date_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/itemHandle"
+        app:layout_constraintEnd_toStartOf="@+id/itemQuickEnqueue"
         android:layout_marginEnd="4dp"
 
         app:layout_constraintStart_toStartOf="@+id/itemThumbnailView"
         app:layout_constraintTop_toBottomOf="@+id/itemUploaderView"
         tools:text="2 years ago • 10M views" />
+
+    <ImageButton
+        android:id="@+id/itemQuickEnqueue"
+        style="@style/QuickEnqueueButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemHandle"
+        app:layout_constraintTop_toTopOf="@id/itemVideoTitleView"
+        app:layout_constraintVertical_bias="0" />
 
     <org.schabi.newpipe.views.AnimatedProgressBar
         android:id="@+id/itemProgressView"

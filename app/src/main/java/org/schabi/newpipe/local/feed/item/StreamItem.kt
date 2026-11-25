@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.AUDIO_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.VIDEO_STREAM
+import org.schabi.newpipe.info_list.QuickEnqueue
 import org.schabi.newpipe.util.Localization
 import org.schabi.newpipe.util.dearrow.DeArrowBinder
 import org.schabi.newpipe.util.dearrow.DeArrowRow
@@ -35,6 +36,7 @@ data class StreamItem(
 
     /** Whether the item is selected in the multi-selection mode of the feed. */
     var isItemSelected: Boolean = false
+    var isSelectionActive: Boolean = false
 
     private val stream: StreamEntity = streamWithState.stream
     private val stateProgressTime: Long? = streamWithState.stateProgressMillis
@@ -81,6 +83,9 @@ data class StreamItem(
         } else {
             root.foreground = null
         }
+        val enqueue = if (isSelectionActive) null
+        else QuickEnqueue.actionFor(root, stream.toStreamInfoItem())
+        QuickEnqueue.bind(root, enqueue)
     }
 
     override fun bind(viewBinding: ListStreamItemBinding, position: Int) {

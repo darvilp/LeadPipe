@@ -1,6 +1,7 @@
 package org.schabi.newpipe.info_list.holder
 
 import android.view.ViewGroup
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import org.schabi.newpipe.extractor.InfoItem
@@ -28,6 +29,11 @@ class ComposeInfoItemHolder(
 ) {
 
     private val composeView = itemView as ComposeView
+    private val quickEnqueueAction = mutableStateOf<Runnable?>(null)
+
+    fun setQuickEnqueueAction(action: Runnable?) {
+        quickEnqueueAction.value = action
+    }
 
     override fun updateFromItem(infoItem: InfoItem, historyRecordManager: HistoryRecordManager) {
         val state = buildInfoItemState(composeView.context, infoItem, historyRecordManager) ?: return
@@ -38,6 +44,7 @@ class ComposeInfoItemHolder(
                     isGridLayout = ThemeHelper.isGrid(itemViewMode),
                     isCardLayout = itemViewMode == ItemViewMode.CARD,
                     showDragHandle = false,
+                    onQuickEnqueue = quickEnqueueAction.value?.let { it::run },
                     onClick = {
                         when (infoItem) {
                             is org.schabi.newpipe.extractor.stream.StreamInfoItem -> infoItemBuilder.getOnStreamSelectedListener()?.selected(infoItem)

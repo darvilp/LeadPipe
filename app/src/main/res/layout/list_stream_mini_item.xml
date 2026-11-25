@@ -48,6 +48,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/itemThumbnailView"
         android:layout_toRightOf="@+id/itemThumbnailView"
+        android:layout_toStartOf="@+id/itemQuickEnqueue"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -61,10 +62,17 @@
         android:layout_below="@+id/itemVideoTitleView"
         android:layout_toEndOf="@+id/itemThumbnailView"
         android:layout_toRightOf="@+id/itemThumbnailView"
+        android:layout_toStartOf="@+id/itemQuickEnqueue"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="@dimen/video_item_search_uploader_text_size"
         tools:text="Uploader" />
+
+    <ImageButton
+        android:id="@+id/itemQuickEnqueue"
+        style="@style/QuickEnqueueButton"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
 
     <org.schabi.newpipe.views.AnimatedProgressBar
         android:id="@+id/itemProgressView"
