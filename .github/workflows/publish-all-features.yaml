@@ -6,6 +6,7 @@ on:
       - unofficial/all-features
       - integration/pipepipe-5.6.0
       - candidate/leadpipe-5.6.0.25
+      - feat/sponsorblock-server-urls
     tags:
       - leadpipe/v*
 

@@ -120,6 +120,9 @@ public class SponsorBlockServerTest {
 
         @Override
         public Response execute(final Request request) throws IOException {
+            assertTrue(request.url().startsWith("https://"));
+            assertTrue(request.followRedirects());
+            assertFalse(request.followSslRedirects());
             requests.add(request);
             if (offline) {
                 throw new IOException("Simulated connection failure");
