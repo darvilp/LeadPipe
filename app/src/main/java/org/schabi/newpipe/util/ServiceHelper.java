@@ -333,7 +333,7 @@ public final class ServiceHelper {
             getCommentFilterMinLikes(context)
         );
 
-        SponsorBlockApiSettings sponsorBlockApiSettings = buildSponsorBlockApiSettings(context);
+        refreshSponsorBlockSettings(context);
         int loadingTimeoutInt = Integer.parseInt(sharedPreferences.getString("loading_timeout_key", "10"));
         boolean fetchFullPlaylist = sharedPreferences.getBoolean(context.getString(R.string.fetch_full_playlist_key), false);
         boolean fetchDislike = sharedPreferences.getBoolean(context.getString(R.string.show_dislike_key), false);
@@ -344,7 +344,6 @@ public final class ServiceHelper {
             s.setFilterConfig(filterConfig);
             s.setCommentsFilterConfig(commentsFilterConfig);
             s.setFilterTypes(blockingFields);
-            s.setSponsorBlockApiSettings(sponsorBlockApiSettings);
             s.setLoadingTimeout(loadingTimeoutInt);
             s.setFetchFullPlaylist(fetchFullPlaylist);
             s.setFetchDislike(fetchDislike);
@@ -364,6 +363,13 @@ public final class ServiceHelper {
         }
     }
 
+    public static void refreshSponsorBlockSettings(final Context context) {
+        final SponsorBlockApiSettings settings = buildSponsorBlockApiSettings(context);
+        for (final StreamingService service : ServiceList.all()) {
+            service.setSponsorBlockApiSettings(settings);
+        }
+    }
+
     private static SponsorBlockApiSettings buildSponsorBlockApiSettings(
             final Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -376,8 +382,10 @@ public final class ServiceHelper {
         }
 
         final SponsorBlockApiSettings result = new SponsorBlockApiSettings();
-        result.apiUrl =
-                prefs.getString(context.getString(R.string.sponsor_block_api_url_key), null);
+        result.youTubeApiUrl =
+                prefs.getString(context.getString(R.string.sponsor_block_youtube_api_url_key), null);
+        result.biliBiliApiUrl =
+                prefs.getString(context.getString(R.string.sponsor_block_bilibili_api_url_key), null);
         result.userId = SponsorBlockHelper.getUserId(context);
 
         result.includeSponsorCategory =

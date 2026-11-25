@@ -26,6 +26,18 @@
             android:summary="@string/sponsor_block_enable_summary"
             android:title="@string/sponsor_block_enable_title"/>
 
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            android:dependency="@string/sponsor_block_enable_key"
+            android:key="@string/sponsor_block_youtube_api_url_key"
+            android:title="@string/sponsor_block_youtube_api_url_title"/>
+
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            android:dependency="@string/sponsor_block_enable_key"
+            android:key="@string/sponsor_block_bilibili_api_url_key"
+            android:title="@string/sponsor_block_bilibili_api_url_title"/>
+
         <SwitchPreference
             app:iconSpaceReserved="false"
             android:dependency="@string/sponsor_block_enable_key"

@@ -703,6 +703,11 @@
 <string name="sponsor_block_enable_title">Enable SponsorBlock</string>
 <string name="sponsor_block_enable_summary">Automatically skip sponsors in videos. Works for YouTube and BiliBili.</string>
 <string name="sponsor_block_api_url_title">API Url</string>
+<string name="sponsor_block_youtube_api_url_title">YouTube SponsorBlock server</string>
+<string name="sponsor_block_bilibili_api_url_title">BiliBili SponsorBlock server</string>
+<string name="sponsor_block_api_url_default_summary">Default: %s</string>
+<string name="sponsor_block_api_url_hint">HTTPS server URL. Leave blank to use the default.</string>
+<string name="sponsor_block_api_url_invalid">Enter an HTTPS URL without credentials, a query, or a fragment.</string>
 <string name="sponsor_block_notifications_title">Notify when sponsors are skipped</string>
 <string name="sponsor_block_notifications_summary">Show a toast notification when a sponsor is automatically skipped.</string>
 <string name="sponsor_block_privacy_title">View Privacy Policy</string>

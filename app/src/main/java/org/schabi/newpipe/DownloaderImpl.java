@@ -433,10 +433,10 @@ public final class DownloaderImpl extends Downloader {
         OkHttpClient tmpClient = client;
         okhttp3.Response response = null;
 
-        if (url.contains("pipepipe.dev") || customTimeout != null || !request.followRedirects()) {
+        if (url.contains("pipepipe.dev") || customTimeout != null || !request.followSslRedirects()) {
             final OkHttpClient.Builder builder = client.newBuilder()
                     .followRedirects(request.followRedirects())
-                    .followSslRedirects(request.followRedirects());
+                    .followSslRedirects(request.followSslRedirects());
             if (url.contains("pipepipe.dev")) {
                 builder.readTimeout(30, TimeUnit.SECONDS);
             } else if (customTimeout != null) {
@@ -603,10 +603,10 @@ public final class DownloaderImpl extends Downloader {
         applyHeaders(requestBuilder, url, headers);
 
         OkHttpClient tmpClient = client;
-        if (customTimeout != null || !request.followRedirects()) {
+        if (customTimeout != null || !request.followSslRedirects()) {
             final OkHttpClient.Builder builder = client.newBuilder()
                     .followRedirects(request.followRedirects())
-                    .followSslRedirects(request.followRedirects());
+                    .followSslRedirects(request.followSslRedirects());
             if (customTimeout != null) {
                 builder.readTimeout(customTimeout, TimeUnit.SECONDS);
             }
