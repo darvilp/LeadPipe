@@ -1,0 +1,61 @@
+name: Verify LeadPipe repository redirects
+
+on:
+  push:
+    branches:
+      - test/leadpipe-rename-redirects
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.repository == 'darvilp/LeadPipe'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Compare update endpoints before and after following redirects
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo_id=1316188248
+          tag=leadpipe/v5.6.0.25
+          file=LeadPipe-5.6.0.25-d19b1b6d5-20261124T224011Z-arm64-v8a.apk
+          legacy=repos/darvilp/PipePipeClient/releases/latest
+          canonical=repos/darvilp/LeadPipe/releases/latest
+          by_id=repositories/$repo_id/releases/latest
+
+          actual_id=$(gh api 'repos/darvilp/LeadPipe' --jq .id)
+          [[ "$actual_id" == "$repo_id" ]]
+          release_id=$(gh api "$canonical" --jq .id)
+          verify_release() {
+            jq -e --argjson id "$release_id" --arg tag "$tag" --arg file "$file" '
+              .id == $id and .tag_name == $tag and (.draft == false) and (.prerelease == false)
+              and .html_url == ("https://github.com/darvilp/LeadPipe/releases/tag/" + $tag)
+              and ([.assets[] | select(.name == $file and .state == "uploaded")
+                | select(.browser_download_url | startswith("https://github.com/darvilp/LeadPipe/releases/download/"))]
+                | length == 1)
+            ' >/dev/null
+          }
+
+          for endpoint in "$legacy" "$canonical" "$by_id"; do
+            gh api "$endpoint" | verify_release
+            echo "PASS: authenticated $endpoint returned $tag and the canonical ARM64 asset."
+          done
+
+          for endpoint in "$legacy" "$by_id"; do
+            output=$(mktemp)
+            status=$(curl --silent --show-error --location --max-time 25 \
+              --output "$output" --write-out '%{http_code}' "https://api.github.com/$endpoint")
+            if [[ "$status" == 200 ]]; then
+              verify_release < "$output"
+              echo "PASS: anonymous $endpoint returned $tag and the canonical ARM64 asset."
+            elif [[ "$status" == 403 || "$status" == 429 ]] &&
+              jq -e '.message | test("rate limit"; "i")' "$output" >/dev/null; then
+              echo "NOTICE: anonymous $endpoint hit GitHub's rate limit (HTTP $status)."
+            else
+              echo "Unexpected anonymous endpoint result for $endpoint (HTTP $status)."
+              exit 1
+            fi
+          done
