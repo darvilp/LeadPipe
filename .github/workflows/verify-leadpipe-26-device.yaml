@@ -1,0 +1,65 @@
+name: Verify signed LeadPipe .26 on Android
+
+on:
+  push:
+    branches:
+      - test/leadpipe-26-device
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+        with:
+          packages: platform-tools
+      - name: Download verified candidate and published .25 baseline
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14986969705/zip" > candidate.zip
+          echo '272d4f9c9c79e0f4a2c156e2083a7714837d3323741e5243b28cc418758b8c0b  candidate.zip' | sha256sum -c
+          unzip -q candidate.zip '*-x86_64.apk' SHA256SUMS source-manifest.json -d candidate
+          (cd candidate && grep -E -- '-x86_64.apk$' SHA256SUMS | sha256sum -c)
+          jq -e '.client_commit == "6ee7f04899adbb344bab493a95a05af0849213a6"
+            and .extractor_commit == "698207f4768900fba7474a4dd79b53bfedd45e47"' \
+            candidate/source-manifest.json
+          curl -fsSL --retry 3 \
+            'https://github.com/darvilp/LeadPipe/releases/download/leadpipe%2Fv5.6.0.25/LeadPipe-5.6.0.25-d19b1b6d5-20261124T224011Z-x86_64.apk' \
+            -o baseline.apk
+          echo 'f64ecef023b12ab317e49f24944675e2369854fa938b11ea064bd90bdbc72bab  baseline.apk' | sha256sum -c
+      - name: Install Android emulator
+        run: sdkmanager 'emulator' 'system-images;android-35;default;x86_64'
+      - name: Try the signed upgrade and SponsorBlock settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          adb start-server
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/avd"
+          mkdir "$ANDROID_AVD_HOME"
+          avdmanager create avd --name leadpipe-26 --package 'system-images;android-35;default;x86_64' \
+            --device pixel_6 --path "$ANDROID_AVD_HOME/leadpipe-26.avd" </dev/null
+          if [[ -c /dev/kvm ]]; then
+            if [[ ! -r /dev/kvm || ! -w /dev/kvm ]]; then
+              sudo setfacl -m "u:$USER:rw" /dev/kvm
+            fi
+            accel=on
+          else
+            export ANDROID_I_WANT_MY_TCG=yes
+            accel=off
+          fi
+          "$ANDROID_HOME/emulator/emulator" -avd leadpipe-26 -port 5584 -accel "$accel" \
+            -no-window -no-snapshot -no-audio -no-boot-anim -no-metrics -gpu swiftshader_indirect \
+            -memory 3072 -cores 2 > "$RUNNER_TEMP/emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
+          python3 -u tools/verify-leadpipe-26-device.py seed "$RUNNER_TEMP/baseline.apk"
+          python3 -u tools/verify-leadpipe-26-device.py verify "$RUNNER_TEMP"/candidate/*-x86_64.apk
