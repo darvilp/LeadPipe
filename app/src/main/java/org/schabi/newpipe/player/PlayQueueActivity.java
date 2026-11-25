@@ -170,6 +170,7 @@ public final class PlayQueueActivity extends AppCompatActivity
     }
 
     private void unbind() {
+        queueControlBinding.queuePlaytime.clearQueue();
         if (serviceBound) {
             unbindService(serviceConnection);
             serviceBound = false;
@@ -195,6 +196,7 @@ public final class PlayQueueActivity extends AppCompatActivity
             @Override
             public void onServiceDisconnected(final ComponentName name) {
                 Log.d(TAG, "Player service is disconnected");
+                queueControlBinding.queuePlaytime.clearQueue();
                 player = null;
                 invalidateOptionsMenu();
             }
@@ -232,6 +234,7 @@ public final class PlayQueueActivity extends AppCompatActivity
 
     private void buildComponents() {
         buildQueue();
+        queueControlBinding.queuePlaytime.update(player);
         buildMetadata();
         buildSeekBar();
         buildControls();
@@ -444,6 +447,7 @@ public final class PlayQueueActivity extends AppCompatActivity
 
     @Override
     public void onQueueUpdate(final PlayQueue queue) {
+        queueControlBinding.queuePlaytime.update(player);
         invalidateOptionsMenu();
     }
 
@@ -462,6 +466,8 @@ public final class PlayQueueActivity extends AppCompatActivity
     @Override
     public void onProgressUpdate(final int currentProgress, final int duration,
                                  final int bufferPercent) {
+        queueControlBinding.queuePlaytime.update(player);
+
         // Set buffer progress
         queueControlBinding.seekBar.setSecondaryProgress((int) (queueControlBinding.seekBar.getMax()
                 * ((float) bufferPercent / 100)));

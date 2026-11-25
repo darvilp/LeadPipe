@@ -125,6 +125,11 @@ public abstract class PlayQueue implements Serializable {
      */
     public abstract boolean isComplete();
 
+    /** Whether all items were loaded successfully, including any remote pages. */
+    public boolean isFullyLoaded() {
+        return isComplete();
+    }
+
     /**
      * Load partial queue in the background, does nothing if the queue is complete.
      */

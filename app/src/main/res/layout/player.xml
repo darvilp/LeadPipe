@@ -685,17 +685,6 @@
                 app:srcCompat="@drawable/ic_shuffle"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/itemsListHeaderDuration"
-                style="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/addToPlaylistButton"
-                android:layout_toEndOf="@id/shuffleButton"
-                android:gravity="center"
-                android:textColor="@android:color/white" />
-
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/addToPlaylistButton"
                 android:layout_width="50dp"
@@ -729,11 +718,25 @@
 
         </RelativeLayout>
 
+        <org.schabi.newpipe.player.QueuePlaytimeView
+            android:id="@+id/itemsListHeaderDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemsListControl"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            tools:text="Elapsed 12:34 · Total 1:23:45"
+            tools:visibility="visible" />
+
         <org.schabi.newpipe.views.ItemDragRecyclerView
             android:id="@+id/itemsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/itemsListControl"
+            android:layout_below="@id/itemsListHeaderDuration"
             android:scrollbars="vertical"
             android:theme="@style/PlayQueueItemTextTheme"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

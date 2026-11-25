@@ -1305,9 +1305,6 @@ public final class Player {
         layoutController.updateStreamRelatedViews();
     }
 
-    void updateQueueTime(final int currentTime) {
-        queueController.updateQueueTime(currentTime);
-    }
     //endregion
 
 

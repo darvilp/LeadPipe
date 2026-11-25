@@ -99,6 +99,40 @@ public class PlayerModeSwitchingTest {
     }
 
     @Test
+    public void queuePlaytimeUpdatesOnBothSurfacesWhilePaused() throws Exception {
+        start(PlayerType.VIDEO);
+        final Player player = activity.player;
+        final PlayQueue queue = player.getPlayQueue();
+        final QueuePlaytimeView summary = activity.findViewById(R.id.queue_playtime);
+        final QueuePlaytimeView overlay = player.getBinding().itemsListHeaderDuration;
+        instrumentation.runOnMainSync(() -> {
+            player.pause();
+            player.getQueueController().onQueueClicked();
+            player.seekTo(5000);
+        });
+        await(() -> summariesMatch(summary, overlay, "Elapsed 0:05 · Total 1:00"),
+                "Both summaries show the paused seek and full queue");
+
+        instrumentation.runOnMainSync(() -> queue.move(1, 0));
+        await(() -> summariesMatch(summary, overlay, "Elapsed 0:35 · Total 1:00"),
+                "Reordering adds the full duration of the item moved ahead");
+
+        instrumentation.runOnMainSync(() -> queue.append(new PlayerMediaItem.Builder()
+                .url(queue.getItem().getUrl()).title("Duration unavailable").build()));
+        await(() -> summariesMatch(summary, overlay, "Elapsed 0:35 · Total 1:00+"),
+                "Appending an unknown duration marks the known total as a lower bound");
+
+        instrumentation.runOnMainSync(() -> queue.remove(0));
+        await(() -> summariesMatch(summary, overlay, "Elapsed 0:05 · Total 0:30+"),
+                "Removing an earlier entry updates both elapsed and total");
+    }
+
+    private static boolean summariesMatch(final QueuePlaytimeView summary,
+                                          final QueuePlaytimeView overlay, final String expected) {
+        return expected.contentEquals(summary.getText()) && expected.contentEquals(overlay.getText());
+    }
+
+    @Test
     public void pausedLiveSelectionAndModeSwitchKeepSourceReleasedUntilPlay() throws Exception {
         start(PlayerType.AUDIO, false, false, false, false, true);
         final Player original = activity.player;
@@ -1095,6 +1129,9 @@ public class PlayerModeSwitchingTest {
         final StreamInfoItem item = new StreamInfoItem(0, url, title, streamType);
         item.setUploaderName("Synthetic fixture");
         item.setThumbnailUrl(fixtureArtworkUri());
+        if (streamType != StreamType.LIVE_STREAM) {
+            item.setDuration(30);
+        }
         return item;
     }
 

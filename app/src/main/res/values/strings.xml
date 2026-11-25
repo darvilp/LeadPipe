@@ -373,6 +373,11 @@
 <string name="conferences">Conferences</string>
 <!-- Play Queue -->
 <string name="title_activity_play_queue">Play queue</string>
+<string name="play_queue_elapsed_time">Elapsed %1$s</string>
+<string name="play_queue_total_time">Total %1$s</string>
+<string name="play_queue_loaded_time">Loaded total %1$s</string>
+<string name="play_queue_total_unknown">Total unknown</string>
+<string name="play_queue_time_summary">%1$s · %2$s</string>
 <string name="play_queue_remove">Remove</string>
 <string name="play_queue_stream_detail">Details</string>
 <string name="play_queue_audio_settings">Audio Settings</string>

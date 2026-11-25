@@ -174,7 +174,7 @@ class PlayerProgressController(private val player: Player) : SeekBar.OnSeekBarCh
         }
 
         if (player.isQueueVisible) {
-            player.updateQueueTime(currentProgress)
+            player.queueController.updateQueueTime()
         }
     }
 

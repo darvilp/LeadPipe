@@ -10,7 +10,6 @@ import org.schabi.newpipe.info_list.StreamSegmentAdapter
 import org.schabi.newpipe.info_list.StreamSegmentItem
 import org.schabi.newpipe.ktx.AnimationType
 import org.schabi.newpipe.ktx.animate
-import org.schabi.newpipe.player.helper.PlayerHelper
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem
 import org.schabi.newpipe.player.playqueue.PlayQueueAdapter
 import org.schabi.newpipe.player.playqueue.PlayQueueItemBuilder
@@ -40,9 +39,13 @@ class PlayerQueueController(private val player: Player) {
         queueAdapter?.dispose()
         queueAdapter = PlayQueueAdapter(player.context, playQueue)
         segmentsAdapter = StreamSegmentAdapter(getStreamSegmentListener())
+        if (queueVisible) {
+            updateQueueTime()
+        }
     }
 
     fun disposeAdapters() {
+        player.binding?.itemsListHeaderDuration?.clearQueue()
         queueAdapter?.let {
             it.unsetSelectedListener()
             it.dispose()
@@ -97,7 +100,7 @@ class PlayerQueueController(private val player: Player) {
 
         player.playQueue?.let { player.binding.itemsList.scrollToPosition(it.index) }
 
-        updateQueueTime(player.simpleExoPlayer.currentPosition.toInt())
+        updateQueueTime()
     }
 
     private fun buildQueue() {
@@ -125,6 +128,7 @@ class PlayerQueueController(private val player: Player) {
 
         player.binding.itemsListHeaderTitle.visibility = View.VISIBLE
         player.binding.itemsListHeaderDuration.visibility = View.GONE
+        player.binding.itemsListHeaderDuration.clearQueue()
         player.binding.shuffleButton.visibility = View.GONE
         player.binding.repeatButton.visibility = View.GONE
         player.binding.addToPlaylistButton.visibility = View.GONE
@@ -163,6 +167,7 @@ class PlayerQueueController(private val player: Player) {
         if (queueVisible || segmentsVisible) {
             queueVisible = false
             segmentsVisible = false
+            player.binding.itemsListHeaderDuration.clearQueue()
 
             itemTouchHelper?.attachToRecyclerView(null)
 
@@ -182,29 +187,8 @@ class PlayerQueueController(private val player: Player) {
         }
     }
 
-    fun updateQueueTime(currentTime: Int) {
-        val playQueue = player.playQueue ?: return
-        val currentStream = playQueue.index
-        var before = 0
-        var after = 0
-
-        val streams = playQueue.streams
-        for (i in streams.indices) {
-            if (i < currentStream) {
-                before += streams[i].duration.toInt()
-            } else {
-                after += streams[i].duration.toInt()
-            }
-        }
-
-        before *= 1000
-        after *= 1000
-
-        player.binding.itemsListHeaderDuration.text = String.format(
-            "%s/%s",
-            PlayerHelper.getTimeString(currentTime + before),
-            PlayerHelper.getTimeString(before + after)
-        )
+    fun updateQueueTime() {
+        player.binding.itemsListHeaderDuration.update(player)
     }
 
     fun getNearestStreamSegmentPosition(playbackPosition: Long): Int {
