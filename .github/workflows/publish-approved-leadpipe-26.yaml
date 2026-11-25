@@ -6,6 +6,7 @@ on:
       - release/publish-leadpipe-5.6.0.26
 
 permissions:
+  actions: read
   contents: write
 
 jobs:
@@ -73,6 +74,18 @@ jobs:
             [[ "${matching[0]##*/}" =~ $release_name ]]
             python3 tools/verify-unofficial-apk.py "${matching[0]}" --sdk "$ANDROID_HOME" --abi "$abi"
           done
+
+          tested_archive="$RUNNER_TEMP/device-tested-candidate.zip"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14986969705/zip" > "$tested_archive"
+          echo "272d4f9c9c79e0f4a2c156e2083a7714837d3323741e5243b28cc418758b8c0b  $tested_archive" | sha256sum -c
+          tested_hash=$(unzip -p "$tested_archive" SHA256SUMS | awk '/-x86_64\.apk$/ { print $1 }')
+          release_hash=$(awk '/-x86_64\.apk$/ { print $1 }' "$assets/SHA256SUMS")
+          [[ "$tested_hash" =~ ^[0-9a-f]{64}$ && "$release_hash" =~ ^[0-9a-f]{64}$ ]]
+          if [[ "$tested_hash" == "$release_hash" ]]; then
+            echo 'The tagged x86_64 APK matches the Android-tested candidate byte-for-byte.'
+          else
+            echo 'The tagged x86_64 APK was rebuilt from the same source tree and has a different checksum.'
+          fi
 
           previous=$(gh api "$releases/latest" --jq .tag_name)
           [[ "$previous" == 'leadpipe/v5.6.0.25' ]]
