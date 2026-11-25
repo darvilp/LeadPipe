@@ -1,0 +1,87 @@
+name: Publish approved LeadPipe .26
+
+on:
+  push:
+    branches:
+      - release/publish-leadpipe-5.6.0.26
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'darvilp/LeadPipe'
+    runs-on: ubuntu-24.04
+    env:
+      RELEASE_TAG: leadpipe/v5.6.0.26
+      ACCEPTED_COMMIT: 5ff3fd78ddbdb4e5e1f1d87269f0967aec45f778
+    steps:
+      - name: Check out the accepted release
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: refs/tags/leadpipe/v5.6.0.26
+          persist-credentials: false
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+        with:
+          packages: platform-tools
+
+      - name: Install Android SDK build tools
+        run: sdkmanager "build-tools;37.0.0"
+
+      - name: Verify the draft and publish it as a regular release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          [[ "$(git rev-parse HEAD)" == "$ACCEPTED_COMMIT" ]]
+          releases="repos/$GITHUB_REPOSITORY/releases"
+          release_id=$(gh api --paginate "$releases?per_page=100" |
+            jq -ers --arg tag "$RELEASE_TAG" '
+              [.[][] | select(.tag_name == $tag and .draft) | .id]
+              | select(length == 1) | .[0]
+            ')
+          [[ "$release_id" =~ ^[0-9]+$ ]]
+          release="$releases/$release_id"
+          release_meta="$RUNNER_TEMP/release.json"
+          gh api "$release" > "$release_meta"
+          jq -e --arg tag "$RELEASE_TAG" '
+            .tag_name == $tag and .name == "LeadPipe 5.6.0.26"
+            and .draft and (.prerelease | not)
+            and (.assets | length == 11 and all(.state == "uploaded"))
+          ' "$release_meta"
+
+          assets="$RUNNER_TEMP/leadpipe-26"
+          mkdir "$assets"
+          jq -r '.assets[] | [.id, .name, .digest] | @tsv' "$release_meta" |
+          while IFS=$'\t' read -r id name digest; do
+            [[ "$id" =~ ^[0-9]+$ && "$name" =~ ^[A-Za-z0-9][A-Za-z0-9._-]+$ ]]
+            [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+            gh api -H 'Accept: application/octet-stream' "$releases/assets/$id" > "$assets/$name"
+            printf '%s  %s\n' "${digest#sha256:}" "$assets/$name" | sha256sum -c
+          done
+          (cd "$assets" && sha256sum -c SHA256SUMS)
+          jq -e --arg commit "$ACCEPTED_COMMIT" --slurpfile policy release/source-manifest.json '
+            .client_commit == $commit and (del(.client_commit) == $policy[0])
+          ' "$assets/source-manifest.json"
+          for abi in armeabi-v7a arm64-v8a x86 x86_64; do
+            mapfile -t matching < <(find "$assets" -maxdepth 1 -type f -name "*-$abi.apk")
+            ((${#matching[@]} == 1))
+            release_name="^LeadPipe-5\.6\.0\.26-${ACCEPTED_COMMIT:0:9}-[0-9]{8}T[0-9]{6}Z-$abi\.apk$"
+            [[ "${matching[0]##*/}" =~ $release_name ]]
+            python3 tools/verify-unofficial-apk.py "${matching[0]}" --sdk "$ANDROID_HOME" --abi "$abi"
+          done
+
+          previous=$(gh api "$releases/latest" --jq .tag_name)
+          [[ "$previous" == 'leadpipe/v5.6.0.25' ]]
+          gh api --method PATCH "$release" -F draft=false -F prerelease=false -f make_latest=true > "$release_meta"
+          jq -e --arg tag "$RELEASE_TAG" '
+            select(.tag_name == $tag and (.draft | not) and (.prerelease | not)) |
+            {id, tag_name, draft, prerelease, published_at, html_url}
+          ' "$release_meta"
+          [[ "$(gh api "$releases/latest" --jq .tag_name)" == "$RELEASE_TAG" ]]
+          [[ "$(gh api "repositories/1316188248/releases/latest" --jq .tag_name)" == "$RELEASE_TAG" ]]
+          [[ "$(gh api 'repos/darvilp/PipePipeClient/releases/latest' --jq .tag_name)" == "$RELEASE_TAG" ]]
+          echo "Both updater paths and the legacy repository URL point to $RELEASE_TAG"
