@@ -1,9 +1,10 @@
-# LeadPipe 5.6.0.29
+# LeadPipe 5.6.0.30
 
 - Add a one-tap enqueue button to video rows. Enqueue starts background playback when the queue is empty.
 - Long-press the enqueue button to queue the video immediately after the current item.
 - Show elapsed and total playtime on the Play Queue screen and in the player's queue panel.
 - Show a loaded total while pages are pending. A trailing plus marks a lower bound when a duration is unknown.
+- Tap the right-hand player timer to switch between total duration and remaining media time.
 
 The PipePipe base is v5.6.0 at client commit `43ef494c1`. This release uses the existing application ID, signing certificate and Room schema 903 for in-place upgrades.
 
