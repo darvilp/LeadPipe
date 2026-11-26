@@ -53,7 +53,7 @@
         android:maxLines="2"
         android:layout_marginTop="@dimen/margin_small"
         android:textAppearance="?textAppearanceListItem"
-        app:layout_constraintEnd_toEndOf="@id/itemThumbnailView"
+        app:layout_constraintEnd_toStartOf="@+id/itemQuickEnqueue"
         app:layout_constraintStart_toStartOf="@id/itemThumbnailView"
         app:layout_constraintTop_toBottomOf="@id/itemThumbnailView"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tristique vitae sem vitae blanditLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum" />
@@ -82,10 +82,19 @@
         android:includeFontPadding="false"
         android:textAppearance="?android:textAppearanceSmall"
         app:layout_constraintBottom_toBottomOf="@id/itemUploaderView"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@+id/itemVideoTitleView"
         app:layout_constraintStart_toEndOf="@id/itemUploaderView"
         app:layout_constraintTop_toTopOf="@id/itemUploaderView"
         tools:text="2 years ago • 10M views" />
+
+    <ImageButton
+        android:id="@+id/itemQuickEnqueue"
+        style="@style/QuickEnqueueButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemHandle"
+        app:layout_constraintTop_toTopOf="@id/itemVideoTitleView"
+        app:layout_constraintVertical_bias="0" />
 
     <org.schabi.newpipe.views.AnimatedProgressBar
         android:id="@+id/itemProgressView"

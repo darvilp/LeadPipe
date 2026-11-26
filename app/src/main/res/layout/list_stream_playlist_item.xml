@@ -45,10 +45,10 @@
         android:id="@+id/itemHandle"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_gravity="center_vertical"
         android:contentDescription="@string/detail_drag_description"
-        android:paddingLeft="@dimen/video_item_search_image_right_margin"
+        android:paddingStart="@dimen/video_item_search_image_right_margin"
         android:scaleType="center"
         app:srcCompat="@drawable/ic_drag_handle"
         tools:ignore="RtlHardcoded,RtlSymmetry" />
@@ -58,8 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@id/itemHandle"
-        android:layout_toLeftOf="@id/itemHandle"
+        android:layout_toStartOf="@+id/itemQuickEnqueue"
         android:layout_toEndOf="@+id/itemThumbnailView"
         android:layout_toRightOf="@+id/itemThumbnailView"
         android:ellipsize="end"
@@ -73,8 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/itemVideoTitleView"
-        android:layout_toStartOf="@id/itemHandle"
-        android:layout_toLeftOf="@id/itemHandle"
+        android:layout_toStartOf="@+id/itemQuickEnqueue"
         android:layout_toEndOf="@+id/itemThumbnailView"
         android:layout_toRightOf="@+id/itemThumbnailView"
         android:ellipsize="end"
@@ -82,6 +80,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="@dimen/video_item_search_uploader_text_size"
         tools:text="Uploader" />
+
+    <ImageButton
+        android:id="@+id/itemQuickEnqueue"
+        style="@style/QuickEnqueueButton"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/itemHandle" />
 
     <org.schabi.newpipe.views.AnimatedProgressBar
         android:id="@+id/itemProgressView"

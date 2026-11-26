@@ -443,6 +443,7 @@ public abstract class BaseListFragment<I, N> extends BaseStateFragment<I>
             infoListAdapter.setHeaderSupplier(listHeaderSupplier);
         }
 
+        infoListAdapter.setQuickEnqueueEnabled(!selection.isActive());
         itemsList.setAdapter(infoListAdapter);
 
         if (supportsMultiSelect()) {
@@ -455,6 +456,7 @@ public abstract class BaseListFragment<I, N> extends BaseStateFragment<I>
                     selectionToolbar.update(controller);
                 }
                 if (infoListAdapter != null) {
+                    infoListAdapter.setQuickEnqueueEnabled(!controller.isActive());
                     infoListAdapter.notifySelectionChanged();
                 }
             });

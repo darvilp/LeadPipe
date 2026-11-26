@@ -190,6 +190,7 @@ public abstract class BaseLocalListFragment<I, N> extends BaseStateFragment<I>
         footerRootBinding = getListFooter();
         itemListAdapter.setFooter(footerRootBinding.getRoot());
 
+        itemListAdapter.setQuickEnqueueEnabled(!selection.isActive());
         itemsList.setAdapter(itemListAdapter);
 
         if (getSelectionMenu() != 0) {
@@ -202,6 +203,7 @@ public abstract class BaseLocalListFragment<I, N> extends BaseStateFragment<I>
                     selectionToolbar.update(controller);
                 }
                 if (itemListAdapter != null) {
+                    itemListAdapter.setQuickEnqueueEnabled(!controller.isActive());
                     itemListAdapter.notifySelectionChanged();
                 }
                 onSelectionChanged();

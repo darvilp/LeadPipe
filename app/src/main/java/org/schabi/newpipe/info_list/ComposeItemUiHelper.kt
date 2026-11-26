@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ColorScheme
@@ -48,6 +49,9 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -415,7 +419,8 @@ fun CommonItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
-    onDragStart: (() -> Unit)? = null
+    onDragStart: (() -> Unit)? = null,
+    onQuickEnqueue: (() -> Unit)? = null
 ) {
     if (state.isChannel) {
         if (isGridLayout || isCardLayout) {
@@ -441,6 +446,7 @@ fun CommonItem(
             onLongClick = onLongClick,
             showDragHandle = showDragHandle,
             onDragStart = onDragStart,
+            onQuickEnqueue = onQuickEnqueue,
             isCardLayout = isCardLayout
         )
     } else {
@@ -450,7 +456,8 @@ fun CommonItem(
             onClick = onClick,
             onLongClick = onLongClick,
             showDragHandle = showDragHandle,
-            onDragStart = onDragStart
+            onDragStart = onDragStart,
+            onQuickEnqueue = onQuickEnqueue
         )
     }
 }
@@ -713,6 +720,21 @@ private fun DragHandle(
     )
 }
 
+@Composable
+private fun QuickEnqueueButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val label = stringResource(R.string.add_to_queue)
+    IconButton(
+        onClick = onClick,
+        modifier = modifier.size(48.dp).semantics { contentDescription = label }
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_queue_add),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StreamOrPlaylistListItem(
@@ -721,7 +743,8 @@ private fun StreamOrPlaylistListItem(
     onClick: () -> Unit,
     onLongClick: (() -> Unit)?,
     showDragHandle: Boolean,
-    onDragStart: (() -> Unit)?
+    onDragStart: (() -> Unit)?,
+    onQuickEnqueue: (() -> Unit)?
 ) {
     Row(
         modifier = modifier
@@ -776,6 +799,10 @@ private fun StreamOrPlaylistListItem(
             }
         }
 
+        if (onQuickEnqueue != null) {
+            QuickEnqueueButton(onQuickEnqueue, Modifier.align(Alignment.CenterVertically))
+        }
+
         if (showDragHandle) {
             DragHandle(
                 onDragStart = onDragStart,
@@ -796,6 +823,7 @@ private fun StreamOrPlaylistGridItem(
     onLongClick: (() -> Unit)?,
     showDragHandle: Boolean,
     onDragStart: (() -> Unit)?,
+    onQuickEnqueue: (() -> Unit)?,
     isCardLayout: Boolean
 ) {
     Column(
@@ -812,47 +840,54 @@ private fun StreamOrPlaylistGridItem(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = state.title,
-                style = TextStyle(fontSize = 13.5.sp, fontWeight = FontWeight.Medium),
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = if (showDragHandle) 28.dp else 0.dp)
-            )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = state.title,
+                        style = TextStyle(fontSize = 13.5.sp, fontWeight = FontWeight.Medium),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = if (showDragHandle) 28.dp else 0.dp)
+                    )
 
-            if (showDragHandle) {
-                DragHandle(
-                    onDragStart = onDragStart,
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
+                    if (showDragHandle) {
+                        DragHandle(
+                            onDragStart = onDragStart,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        )
+                    }
+                }
+
+                state.subtitle?.let {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                state.details?.let {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
-        }
-
-        state.subtitle?.let {
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        state.details?.let {
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (onQuickEnqueue != null) {
+                QuickEnqueueButton(onQuickEnqueue)
+            }
         }
     }
 }
