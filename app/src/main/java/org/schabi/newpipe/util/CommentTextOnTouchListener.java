@@ -25,8 +25,7 @@ public class CommentTextOnTouchListener implements View.OnTouchListener {
         }
         final TextView widget = (TextView) v;
         final Object text = widget.getText();
-        if (text instanceof Spanned) {
-            final Spannable buffer = (Spannable) text;
+        if (text instanceof Spanned buffer) {
 
             final int action = event.getAction();
 
@@ -42,8 +41,18 @@ public class CommentTextOnTouchListener implements View.OnTouchListener {
                 y += widget.getScrollY();
 
                 final Layout layout = widget.getLayout();
+                if (layout == null || y < 0 || y >= layout.getHeight()) {
+                    return false;
+                }
                 final int line = layout.getLineForVertical(y);
+                if (x < layout.getLineLeft(line) || x > layout.getLineRight(line)) {
+                    return false;
+                }
                 final int off = layout.getOffsetForHorizontal(line, x);
+                if (layout.getEllipsisCount(line) > 0
+                        && off >= layout.getLineStart(line) + layout.getEllipsisStart(line)) {
+                    return false;
+                }
 
                 final ClickableSpan[] link = buffer.getSpans(off, off,
                         ClickableSpan.class);
@@ -57,8 +66,8 @@ public class CommentTextOnTouchListener implements View.OnTouchListener {
                                 ShareUtils.openUrlInBrowser(v.getContext(), url, false);
                             }
                         }
-                    } else if (action == MotionEvent.ACTION_DOWN) {
-                        Selection.setSelection(buffer,
+                    } else if (buffer instanceof Spannable selection) {
+                        Selection.setSelection(selection,
                                 buffer.getSpanStart(link[0]),
                                 buffer.getSpanEnd(link[0]));
                     }

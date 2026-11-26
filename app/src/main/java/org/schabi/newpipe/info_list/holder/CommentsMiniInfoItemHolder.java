@@ -2,6 +2,7 @@ package org.schabi.newpipe.info_list.holder;
 
 import android.content.SharedPreferences;
 import android.text.SpannableStringBuilder;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
@@ -34,8 +35,6 @@ import org.schabi.newpipe.util.PicassoHelper;
 import org.schabi.newpipe.util.external_communication.ShareUtils;
 import org.schabi.newpipe.util.external_communication.TimestampExtractor;
 
-import java.util.Objects;
-
 public class CommentsMiniInfoItemHolder extends InfoItemHolder {
     private static final String TAG = "CommentsMiniIIHolder";
 
@@ -56,7 +55,8 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
     private CharSequence commentContent;
     private String streamUrl;
 
-    private boolean shouldEllipsize = false;
+    private final boolean shouldEllipsize;
+    private boolean collapsed;
 
     CommentsMiniInfoItemHolder(final InfoItemBuilder infoItemBuilder, final int layoutId,
                                final ViewGroup parent) {
@@ -68,6 +68,10 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
         itemPublishedTime = itemView.findViewById(R.id.itemPublishedTime);
         itemContentView = itemView.findViewById(R.id.itemCommentContentView);
         itemContentReplyButton = itemView.findViewById(R.id.itemContentReplyButton);
+        itemContentView.setOnTouchListener(CommentTextOnTouchListener.INSTANCE);
+        // Link movement makes the body clickable. Regular taps still act on the comment row.
+        itemContentView.setOnClickListener(view -> itemView.performClick());
+        itemContentView.setOnLongClickListener(view -> itemView.performLongClick());
 
         commentHorizontalPadding = (int) infoItemBuilder.getContext()
                 .getResources().getDimension(R.dimen.comments_horizontal_padding);
@@ -109,16 +113,8 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
 
         itemContentView.setMinLines(COMMENT_DEFAULT_LINES);
         setCommentContent(item.getCommentText());
-        itemContentView.setOnTouchListener(CommentTextOnTouchListener.INSTANCE);
-
-        if (shouldEllipsize) {
-            if (itemContentView.getLineCount() == 0) {
-                itemContentView.post(this::ellipsize);
-            } else {
-                ellipsize();
-            }
-        }
-        linkify();
+        collapsed = shouldEllipsize;
+        renderComment();
 
 
         if (item.getLikeCount() >= 0) {
@@ -171,21 +167,20 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
 
     private void setCommentContent(final Description description) {
         final String content = description.getContent();
+        CharSequence formattedContent = content;
         if (description.getType() == Description.HTML) {
             try {
                 // YouTube comments carry their formatting (bold/italic/strikethrough and links)
                 // as HTML, with user text HTML-escaped
-                commentContent = HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY);
+                formattedContent = HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY);
             } catch (final RuntimeException e) {
                 Log.e(TAG, "Unable to parse comment HTML, falling back to plain text", e);
-                commentContent = content;
             }
-        } else {
-            commentContent = content;
         }
-        itemContentView.setText(commentContent, TextView.BufferType.SPANNABLE);
-        // The plain text of the full comment, used for copying and collapse comparisons
-        commentText = itemContentView.getText().toString();
+        commentText = formattedContent.toString();
+        final SpannableStringBuilder linkedContent = new SpannableStringBuilder(formattedContent);
+        linkify(linkedContent);
+        commentContent = SpannedString.valueOf(linkedContent);
     }
 
     private void openCommentAuthor(final CommentsInfoItem item) {
@@ -204,14 +199,6 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
         }
     }
 
-    private void allowLinkFocus() {
-        itemContentView.setMovementMethod(LinkMovementMethod.getInstance());
-    }
-
-    private void denyLinkFocus() {
-        itemContentView.setMovementMethod(null);
-    }
-
     private boolean shouldFocusLinks() {
         if (itemView.isInTouchMode()) {
             return false;
@@ -222,61 +209,29 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
         return urls != null && urls.length != 0;
     }
 
-    private void determineLinkFocus() {
-        if (shouldFocusLinks()) {
-            allowLinkFocus();
-        } else {
-            denyLinkFocus();
-        }
-    }
-
-    private void ellipsize() {
-        boolean hasEllipsis = false;
-
-        if (itemContentView.getLineCount() > COMMENT_DEFAULT_LINES) {
-            final int endOfLastLine = itemContentView
-                    .getLayout()
-                    .getLineEnd(COMMENT_DEFAULT_LINES - 1);
-            int end = itemContentView.getText().toString().lastIndexOf(' ', endOfLastLine - 2);
-            if (end == -1) {
-                end = Math.max(endOfLastLine - 2, 0);
-            }
-            final CharSequence text = itemContentView.getText();
-            final SpannableStringBuilder newVal =
-                    new SpannableStringBuilder(text.subSequence(0, end)).append(" …");
-            itemContentView.setText(newVal, TextView.BufferType.SPANNABLE);
-            hasEllipsis = true;
-        }
-
-        linkify();
-
-        if (hasEllipsis) {
-            denyLinkFocus();
-        } else {
-            determineLinkFocus();
+    private void renderComment() {
+        // Use an immutable spanned buffer for the preview so TextView applies its line limit
+        // and end ellipsis together. Switching to link movement needs a mutable buffer.
+        itemContentView.setMovementMethod(null);
+        itemContentView.setMaxLines(collapsed ? COMMENT_DEFAULT_LINES : COMMENT_EXPANDED_LINES);
+        itemContentView.setEllipsize(collapsed ? TextUtils.TruncateAt.END : null);
+        itemContentView.setText(commentContent, collapsed
+                ? TextView.BufferType.NORMAL : TextView.BufferType.SPANNABLE);
+        if (!collapsed && shouldFocusLinks()) {
+            itemContentView.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
     private void toggleEllipsize() {
-        if (itemContentView.getText().toString().equals(commentText)) {
-            if (itemContentView.getLineCount() > COMMENT_DEFAULT_LINES) {
-                ellipsize();
-            }
-        } else {
-            expand();
+        if (collapsed || itemContentView.getLineCount() > COMMENT_DEFAULT_LINES) {
+            collapsed = !collapsed;
+            renderComment();
         }
     }
 
-    private void expand() {
-        itemContentView.setMaxLines(COMMENT_EXPANDED_LINES);
-        itemContentView.setText(commentContent, TextView.BufferType.SPANNABLE);
-        linkify();
-        determineLinkFocus();
-    }
-
-    private void linkify() {
-        LinkifyCompat.addLinks(itemContentView, Linkify.WEB_URLS);
-        LinkifyCompat.addLinks(itemContentView, TimestampExtractor.TIMESTAMPS_PATTERN, null, null,
+    private void linkify(final SpannableStringBuilder content) {
+        LinkifyCompat.addLinks(content, Linkify.WEB_URLS);
+        LinkifyCompat.addLinks(content, TimestampExtractor.TIMESTAMPS_PATTERN, null, null,
                 (match, url) -> {
                     try { //here url is like 15:38 or 01:00:00
                         final var timestampMatch = TimestampExtractor
