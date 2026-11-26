@@ -203,10 +203,22 @@ public final class HeaderEnqueueNavigationTest {
                     assertEquals("https://example.invalid/recycled", queue.getItem().getUrl());
                     queue.dispose();
 
+                    assertTrue(button.performLongClick());
+                    assertTrue(capture.intent.getBooleanExtra(PlayerIntentConstants.ENQUEUE_NEXT,
+                            false));
+                    assertEquals(PlayerType.AUDIO.ordinal(), capture.intent.getIntExtra(
+                            PlayerIntentConstants.PLAYER_TYPE, -1));
+                    final PlayQueue next = SerializedCache.getInstance().take(
+                            capture.intent.getStringExtra(PlayerIntentConstants.PLAY_QUEUE_KEY),
+                            PlayQueue.class);
+                    assertEquals("https://example.invalid/recycled", next.getItem().getUrl());
+                    next.dispose();
+
                     adapter.setQuickEnqueueEnabled(false);
                     adapter.onBindViewHolder(row, 1, List.of(InfoListAdapter.SELECTION_PAYLOAD));
                     assertEquals(View.GONE, button.getVisibility());
                     assertFalse(button.performClick());
+                    assertFalse(button.performLongClick());
                     adapter.setQuickEnqueueEnabled(true);
                     adapter.onBindViewHolder(row, 1, List.of(InfoListAdapter.SELECTION_PAYLOAD));
                     assertEquals(View.VISIBLE, button.getVisibility());
@@ -225,7 +237,7 @@ public final class HeaderEnqueueNavigationTest {
     }
 
     @Test
-    public void rapidQuickEnqueueKeepsSparseItemsInTapOrder() {
+    public void quickEnqueueAppendsInTapOrderAndLongPressInsertsAfterCurrent() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
             final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             final CapturingContext capture = new CapturingContext(context);
@@ -254,6 +266,15 @@ public final class HeaderEnqueueNavigationTest {
                 assertEquals(PlayerType.POPUP, player.getPlayerType());
                 assertEquals(0, active.getIndex());
                 assertEquals(List.of("playing", "next", "a", "sparse-b", "c"),
+                        active.getStreams().stream().map(item -> item.getTitle()).toList());
+
+                QuickEnqueue.bind(row, QuickEnqueue.actionFor(row, item("priority")));
+                assertTrue(button.performLongClick());
+                startController.handleIntent(capture.intent);
+                assertSame(active, player.getPlayQueue());
+                assertEquals(PlayerType.POPUP, player.getPlayerType());
+                assertEquals(0, active.getIndex());
+                assertEquals(List.of("playing", "priority", "next", "a", "sparse-b", "c"),
                         active.getStreams().stream().map(item -> item.getTitle()).toList());
             } finally {
                 setHolderPlayer(holder, previousPlayer);

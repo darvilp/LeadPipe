@@ -9,6 +9,7 @@ import org.schabi.newpipe.info_list.CommonItem
 import org.schabi.newpipe.info_list.InfoItemBuilder
 import org.schabi.newpipe.info_list.ItemViewMode
 import org.schabi.newpipe.info_list.PipePipeComposeTheme
+import org.schabi.newpipe.info_list.QuickEnqueue
 import org.schabi.newpipe.info_list.buildInfoItemState
 import org.schabi.newpipe.local.history.HistoryRecordManager
 import org.schabi.newpipe.util.ThemeHelper
@@ -29,9 +30,9 @@ class ComposeInfoItemHolder(
 ) {
 
     private val composeView = itemView as ComposeView
-    private val quickEnqueueAction = mutableStateOf<Runnable?>(null)
+    private val quickEnqueueAction = mutableStateOf<QuickEnqueue?>(null)
 
-    fun setQuickEnqueueAction(action: Runnable?) {
+    fun setQuickEnqueueAction(action: QuickEnqueue?) {
         quickEnqueueAction.value = action
     }
 
@@ -44,7 +45,7 @@ class ComposeInfoItemHolder(
                     isGridLayout = ThemeHelper.isGrid(itemViewMode),
                     isCardLayout = itemViewMode == ItemViewMode.CARD,
                     showDragHandle = false,
-                    onQuickEnqueue = quickEnqueueAction.value?.let { it::run },
+                    quickEnqueue = quickEnqueueAction.value,
                     onClick = {
                         when (infoItem) {
                             is org.schabi.newpipe.extractor.stream.StreamInfoItem -> infoItemBuilder.getOnStreamSelectedListener()?.selected(infoItem)

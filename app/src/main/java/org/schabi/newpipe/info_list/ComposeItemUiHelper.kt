@@ -26,7 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ColorScheme
@@ -50,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -420,7 +420,7 @@ fun CommonItem(
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     onDragStart: (() -> Unit)? = null,
-    onQuickEnqueue: (() -> Unit)? = null
+    quickEnqueue: QuickEnqueue? = null
 ) {
     if (state.isChannel) {
         if (isGridLayout || isCardLayout) {
@@ -446,7 +446,7 @@ fun CommonItem(
             onLongClick = onLongClick,
             showDragHandle = showDragHandle,
             onDragStart = onDragStart,
-            onQuickEnqueue = onQuickEnqueue,
+            quickEnqueue = quickEnqueue,
             isCardLayout = isCardLayout
         )
     } else {
@@ -457,7 +457,7 @@ fun CommonItem(
             onLongClick = onLongClick,
             showDragHandle = showDragHandle,
             onDragStart = onDragStart,
-            onQuickEnqueue = onQuickEnqueue
+            quickEnqueue = quickEnqueue
         )
     }
 }
@@ -720,12 +720,23 @@ private fun DragHandle(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun QuickEnqueueButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun QuickEnqueueButton(action: QuickEnqueue, modifier: Modifier = Modifier) {
     val label = stringResource(R.string.add_to_queue)
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.size(48.dp).semantics { contentDescription = label }
+    val nextLabel = stringResource(R.string.enqueue_next_stream)
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .combinedClickable(
+                role = Role.Button,
+                onClick = action::enqueue,
+                onLongClick = action::enqueueNext,
+                onLongClickLabel = nextLabel
+            )
+            .semantics { contentDescription = label },
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_queue_add),
@@ -744,7 +755,7 @@ private fun StreamOrPlaylistListItem(
     onLongClick: (() -> Unit)?,
     showDragHandle: Boolean,
     onDragStart: (() -> Unit)?,
-    onQuickEnqueue: (() -> Unit)?
+    quickEnqueue: QuickEnqueue?
 ) {
     Row(
         modifier = modifier
@@ -799,8 +810,8 @@ private fun StreamOrPlaylistListItem(
             }
         }
 
-        if (onQuickEnqueue != null) {
-            QuickEnqueueButton(onQuickEnqueue, Modifier.align(Alignment.CenterVertically))
+        if (quickEnqueue != null) {
+            QuickEnqueueButton(quickEnqueue, Modifier.align(Alignment.CenterVertically))
         }
 
         if (showDragHandle) {
@@ -823,7 +834,7 @@ private fun StreamOrPlaylistGridItem(
     onLongClick: (() -> Unit)?,
     showDragHandle: Boolean,
     onDragStart: (() -> Unit)?,
-    onQuickEnqueue: (() -> Unit)?,
+    quickEnqueue: QuickEnqueue?,
     isCardLayout: Boolean
 ) {
     Column(
@@ -885,8 +896,8 @@ private fun StreamOrPlaylistGridItem(
                     )
                 }
             }
-            if (onQuickEnqueue != null) {
-                QuickEnqueueButton(onQuickEnqueue)
+            if (quickEnqueue != null) {
+                QuickEnqueueButton(quickEnqueue)
             }
         }
     }

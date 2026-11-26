@@ -11,6 +11,7 @@ import org.schabi.newpipe.database.playlist.model.PlaylistRemoteEntity
 import org.schabi.newpipe.database.stream.StreamStatisticsEntry
 import org.schabi.newpipe.info_list.CommonItem
 import org.schabi.newpipe.info_list.PipePipeComposeTheme
+import org.schabi.newpipe.info_list.QuickEnqueue
 import org.schabi.newpipe.info_list.buildLocalItemState
 import org.schabi.newpipe.info_list.ItemViewMode
 import org.schabi.newpipe.local.LocalItemBuilder
@@ -35,9 +36,9 @@ class ComposeLocalItemHolder(
 ) {
 
     private val composeView = itemView as ComposeView
-    private val quickEnqueueAction = mutableStateOf<Runnable?>(null)
+    private val quickEnqueueAction = mutableStateOf<QuickEnqueue?>(null)
 
-    fun setQuickEnqueueAction(action: Runnable?) {
+    fun setQuickEnqueueAction(action: QuickEnqueue?) {
         quickEnqueueAction.value = action
     }
 
@@ -54,7 +55,7 @@ class ComposeLocalItemHolder(
                     isGridLayout = ThemeHelper.isGrid(itemViewMode),
                     isCardLayout = itemViewMode == ItemViewMode.CARD,
                     showDragHandle = showDragHandle,
-                    onQuickEnqueue = quickEnqueueAction.value?.let { it::run },
+                    quickEnqueue = quickEnqueueAction.value,
                     onClick = { localItemBuilder.getOnItemSelectedListener()?.selected(item) },
                     onLongClick = { localItemBuilder.getOnItemSelectedListener()?.held(item) },
                     onDragStart = {

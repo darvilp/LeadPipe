@@ -143,7 +143,7 @@ public class InfoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else {
             holder.itemView.setForeground(null);
         }
-        final Runnable enqueue = quickEnqueueEnabled && item instanceof StreamInfoItem stream
+        final QuickEnqueue enqueue = quickEnqueueEnabled && item instanceof StreamInfoItem stream
                 ? QuickEnqueue.actionFor(holder.itemView, stream) : null;
         if (holder instanceof ComposeInfoItemHolder composeHolder) {
             composeHolder.setQuickEnqueueAction(enqueue);

@@ -157,7 +157,7 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
             case StreamStatisticsEntry entry -> entry.getStreamEntity();
             default -> null;
         };
-        final Runnable enqueue = quickEnqueueEnabled && stream != null
+        final QuickEnqueue enqueue = quickEnqueueEnabled && stream != null
                 ? QuickEnqueue.actionFor(holder.itemView, stream.toStreamInfoItem()) : null;
         if (holder instanceof ComposeLocalItemHolder composeHolder) {
             composeHolder.setQuickEnqueueAction(enqueue);
