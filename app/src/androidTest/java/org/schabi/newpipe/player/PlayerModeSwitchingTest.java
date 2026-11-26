@@ -133,6 +133,36 @@ public class PlayerModeSwitchingTest {
     }
 
     @Test
+    public void durationToggleKeepsMediaTimeWhenPausedAndSeekingAtDoubleSpeed() throws Exception {
+        start(PlayerType.VIDEO);
+        final Player player = activity.player;
+        final var binding = player.getBinding();
+        await(() -> binding.playbackEndTime.isEnabled()
+                        && "00:30".contentEquals(binding.playbackEndTime.getText()),
+                "Finite fixture displays its total duration");
+        instrumentation.runOnMainSync(player::pause);
+        await(() -> player.getCurrentState().isPaused(), "Fixture is paused");
+        instrumentation.runOnMainSync(() -> player.seekTo(5_000));
+        await(() -> "00:05".contentEquals(binding.playbackCurrentTime.getText()),
+                "First paused seek updates the elapsed timestamp");
+
+        instrumentation.runOnMainSync(() -> {
+            final String elapsed = binding.playbackCurrentTime.getText().toString();
+            binding.playbackEndTime.performClick();
+            assertEquals("−00:25", binding.playbackEndTime.getText().toString());
+            assertEquals(elapsed, binding.playbackCurrentTime.getText().toString());
+            player.setPlaybackSpeed(2f);
+            player.seekTo(15_000);
+        });
+        await(() -> "−00:15".contentEquals(binding.playbackEndTime.getText()),
+                "Paused seek updates remaining media time at double speed");
+        instrumentation.runOnMainSync(() -> {
+            binding.playbackEndTime.performClick();
+            assertEquals("00:30", binding.playbackEndTime.getText().toString());
+        });
+    }
+
+    @Test
     public void pausedLiveSelectionAndModeSwitchKeepSourceReleasedUntilPlay() throws Exception {
         start(PlayerType.AUDIO, false, false, false, false, true);
         final Player original = activity.player;

@@ -1031,6 +1031,13 @@ public final class Player {
             case DISCONTINUITY_REASON_SKIP:
                 break; // only makes Android Studio linter happy, as there are no ads
         }
+        if (isPrepared && getCurrentState().isPaused()) {
+            final long positionMs = Math.max(0, newPosition.positionMs);
+            transportController.updatePlayBackElementsCurrentDuration(
+                    (int) Math.min(positionMs, Integer.MAX_VALUE));
+        } else {
+            transportController.updatePlaybackEndTime(newPosition.positionMs);
+        }
     }
 
     static boolean shouldAdoptPlayerIndex(@DiscontinuityReason final int reason) {
@@ -1724,6 +1731,11 @@ public final class Player {
     @NonNull
     PlayerClickController getClickController() {
         return clickController;
+    }
+
+    @NonNull
+    PlayerTransportController getTransportController() {
+        return transportController;
     }
 
     @NonNull

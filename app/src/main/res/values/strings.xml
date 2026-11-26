@@ -142,6 +142,10 @@
 <string name="restricted_video">This video is age restricted.\n\nTurn on \"%1$s\" in the settings if you want to see it.</string>
 <string name="restricted_video_no_stream_new">This video is age-restricted. \nLog in through Settings if you want to see it.</string>
 <string name="duration_live">Live</string>
+<string name="playback_duration_unavailable" translatable="false">--:--</string>
+<string name="playback_remaining_time" translatable="false">−%1$s</string>
+<string name="playback_show_remaining_time">Total duration %1$s. Show time remaining</string>
+<string name="playback_show_total_duration">Time remaining %1$s. Show total duration</string>
 <string name="downloads">Downloads</string>
 <string name="downloads_title">Downloads</string>
 <string name="error_report_title">Error report</string>
