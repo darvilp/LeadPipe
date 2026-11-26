@@ -283,6 +283,7 @@ class PlayerProgressController(private val player: Player) : SeekBar.OnSeekBarCh
 
         val binding = player.binding
         binding.playbackCurrentTime.text = PlayerHelper.getTimeString(seekBar.progress)
+        player.transportController.updatePlaybackEndTime(seekBar.progress.toLong())
         binding.currentDisplaySeek.animate(false, 200, AnimationType.SCALE_AND_ALPHA)
         binding.currentSeekbarPreviewThumbnail.animate(
             false, 200, AnimationType.SCALE_AND_ALPHA

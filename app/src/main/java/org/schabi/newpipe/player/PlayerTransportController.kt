@@ -7,6 +7,7 @@ import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.player.helper.PlayerHelper
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem
 import org.schabi.newpipe.player.playqueue.PlayQueue
+import org.schabi.newpipe.util.Localization
 import org.schabi.newpipe.util.StreamTypeUtil
 import java.util.Date
 
@@ -20,6 +21,7 @@ import java.util.Date
  * contract used by the gestures, the notification, the media session and the queue activity.
  */
 class PlayerTransportController(private val player: Player) {
+    private var showRemainingTime = false
 
     fun play() {
         if (Player.DEBUG) {
@@ -311,6 +313,54 @@ class PlayerTransportController(private val player: Player) {
         } else {
             binding.playbackCurrentTime.text = PlayerHelper.getTimeString(currentProgress)
         }
+        updatePlaybackEndTime(currentProgress.toLong())
+    }
+
+    fun togglePlaybackEndTime() {
+        if (player.binding.playbackEndTime.isEnabled) {
+            showRemainingTime = !showRemainingTime
+            updatePlaybackEndTime(player.currentPosition)
+        }
+    }
+
+    fun updatePlaybackEndTime(positionMs: Long) {
+        val endTime = player.binding.playbackEndTime
+        val durationMs = player.duration
+        val remainingMs = if (StreamTypeUtil.isLiveStream(player.currentItem?.streamType)) {
+            null
+        } else {
+            remainingPlaybackTimeMillis(durationMs, positionMs)
+        }
+        endTime.isEnabled = remainingMs != null
+        if (remainingMs == null) {
+            endTime.setText(R.string.playback_duration_unavailable)
+            endTime.contentDescription = null
+            return
+        }
+
+        val timeMs = if (showRemainingTime) remainingMs else durationMs
+        val time = if (timeMs <= Int.MAX_VALUE) {
+            PlayerHelper.getTimeString(timeMs.toInt())
+        } else {
+            Localization.getDurationString(timeMs / 1000)
+        }
+        val context = endTime.context
+        val text = if (showRemainingTime) {
+            context.getString(R.string.playback_remaining_time, time)
+        } else {
+            time
+        }
+        if (endTime.text != text) {
+            endTime.text = text
+        }
+        val description = context.getString(
+            if (showRemainingTime) R.string.playback_show_total_duration
+            else R.string.playback_show_remaining_time,
+            time
+        )
+        if (endTime.contentDescription != description) {
+            endTime.contentDescription = description
+        }
     }
 
     /**
@@ -319,7 +369,7 @@ class PlayerTransportController(private val player: Player) {
      */
     fun setVideoDurationToControls(duration: Int) {
         val binding = player.binding
-        binding.playbackEndTime.text = PlayerHelper.getTimeString(duration)
+        updatePlaybackEndTime(player.currentPosition)
 
         binding.playbackSeekBar.setMax(duration)
         // This is important for Android TVs otherwise it would apply the default from
@@ -328,4 +378,9 @@ class PlayerTransportController(private val player: Player) {
             PlayerHelper.retrieveSeekDurationFromPreferences(player)
         )
     }
+}
+
+internal fun remainingPlaybackTimeMillis(durationMs: Long, positionMs: Long): Long? {
+    if (durationMs <= 0) return null
+    return durationMs - positionMs.coerceIn(0, durationMs)
 }

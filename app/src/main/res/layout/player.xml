@@ -532,10 +532,16 @@
                     android:id="@+id/playbackEndTime"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:enabled="false"
+                    android:focusable="true"
                     android:gravity="center"
-                    android:text="-:--:--"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="@string/playback_duration_unavailable"
                     android:textColor="@android:color/white"
-                    tools:ignore="HardcodedText"
                     tools:text="1:23:49" />
 
                 <org.schabi.newpipe.views.NewPipeTextView

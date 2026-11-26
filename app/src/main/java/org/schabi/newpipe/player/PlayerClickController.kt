@@ -50,6 +50,9 @@ class PlayerClickController(private val player: Player) :
         binding.audioTrackTextView.setOnClickListener(this)
         binding.resizeTextView.setOnClickListener(this)
         binding.playbackLiveSync.setOnClickListener(this)
+        binding.playbackEndTime.setOnClickListener {
+            player.transportController.togglePlaybackEndTime()
+        }
 
         binding.queueButton.setOnClickListener { player.queueController.onQueueClicked() }
         binding.segmentsButton.setOnClickListener { player.queueController.onSegmentsClicked() }
