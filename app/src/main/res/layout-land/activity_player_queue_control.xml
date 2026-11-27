@@ -27,12 +27,24 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <org.schabi.newpipe.player.QueuePlaytimeView
+        android:id="@+id/queue_playtime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appbar"
+        android:layout_toStartOf="@id/control_pane"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Elapsed 12:34 · Total 1:23:45" />
+
     <org.schabi.newpipe.views.ItemDragRecyclerView
         android:id="@+id/play_queue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/progress_bar"
-        android:layout_below="@+id/appbar"
+        android:layout_below="@id/queue_playtime"
         android:layout_toStartOf="@+id/control_pane"
         android:layout_toLeftOf="@+id/control_pane"
         android:scrollbars="vertical"
