@@ -26,6 +26,10 @@ class QueueSnapshotTest {
         assertEquals(entries[42].uuid, queue.item?.uuid)
         assertEquals(23_000L, queue.getRecoveryPosition(queue.index))
         assertTrue(queue.isShuffled)
+        // The player enables shuffle on its new engine after restoring the ordered queue.
+        queue.shuffle()
+        assertEquals(entries.asReversed().map { it.uuid }, queue.streams.map { it.uuid })
+        assertEquals(entries.lastIndex - 42, queue.index)
         queue.unshuffle()
         assertEquals(entries.map { it.uuid }, queue.streams.map { it.uuid })
         assertEquals(42, queue.index)

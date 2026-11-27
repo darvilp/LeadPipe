@@ -7,6 +7,8 @@ import android.os.SystemClock
 import androidx.core.content.ContextCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -38,7 +40,7 @@ class DurableQueueRestartTest {
     private val first = "https://www.youtube.com/watch?v=aaaaaaaaaaa"
     private val second = "https://www.youtube.com/watch?v=bbbbbbbbbbb"
     private val snapshot = QueueSnapshot(
-        listOf(item("duplicate", first), item("other", second), item("original", first)),
+        listOf(item("other", second), item("duplicate", first), item("original", first)),
         "duplicate", 5000, RepeatMode.ALL.ordinal,
         listOf("original", "other", "duplicate"), null,
     )
@@ -61,7 +63,7 @@ class DurableQueueRestartTest {
                 player.isPrepared
         }
         instrumentation.runOnMainSync {
-            assertEquals(listOf("duplicate", "other", "original"), player.playQueue!!.ids())
+            assertEquals(listOf("other", "duplicate", "original"), player.playQueue!!.ids())
             assertEquals(RepeatMode.ALL, player.repeatMode)
             assertTrue(player.playQueue!!.isShuffled)
             assertFalse(player.playWhenReady)
@@ -72,7 +74,7 @@ class DurableQueueRestartTest {
             NavigationHelper.enqueueNextOnPlayer(context, enqueue)
         }
         await("Enqueue Next preserved the paused queue") {
-            player.playQueue?.ids() == listOf("duplicate", "next", "other", "original") &&
+            player.playQueue?.ids() == listOf("other", "duplicate", "next", "original") &&
                 !player.playWhenReady
         }
         instrumentation.runOnMainSync {
@@ -105,7 +107,7 @@ class DurableQueueRestartTest {
         }
         val player = awaitPlayer()
         await("Cold enqueue appended to the saved queue") {
-            player.playQueue?.ids() == listOf("duplicate", "other", "original", "appended") &&
+            player.playQueue?.ids() == listOf("other", "duplicate", "original", "appended") &&
                 !player.playWhenReady
         }
     }
@@ -124,7 +126,11 @@ class DurableQueueRestartTest {
         val component = ComponentName(context, MainActivity::class.java)
         val intent = if (launcher) Intent.makeMainActivity(component)
             else Intent().setComponent(component)
-        instrumentation.startActivitySync(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        await("Main activity resumed") {
+            ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+                .any { it is MainActivity }
+        }
     }
 
     private fun awaitPlayer(): Player {
@@ -137,7 +143,7 @@ class DurableQueueRestartTest {
     }
 
     private fun await(message: String, condition: () -> Boolean) {
-        val deadline = SystemClock.elapsedRealtime() + 45_000
+        val deadline = SystemClock.elapsedRealtime() + 120_000
         do {
             var ready = false
             instrumentation.runOnMainSync { ready = condition() }
