@@ -48,4 +48,10 @@
         android:orderInCategory="4"
         android:title="@string/cast_remote_menu"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_clear_queue"
+        android:orderInCategory="5"
+        android:title="@string/clear_play_queue"
+        app:showAsAction="never" />
 </menu>

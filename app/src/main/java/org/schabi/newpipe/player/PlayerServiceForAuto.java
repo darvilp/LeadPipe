@@ -44,6 +44,7 @@ import org.schabi.newpipe.databinding.PlayerBinding;
 import org.schabi.newpipe.player.mediabrowser.MediaBrowserImpl;
 import org.schabi.newpipe.player.mediabrowser.MediaBrowserPlaybackPreparer;
 import org.schabi.newpipe.player.mediasession.PlayerServiceInterface;
+import org.schabi.newpipe.player.playqueue.DurableQueueStore;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.ThemeHelper;
 
@@ -156,12 +157,15 @@ public final class PlayerServiceForAuto extends MediaBrowserServiceCompat implem
             player.setupFromView(binding);
         }
 
+        player.handleIntent(intent);
         if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())
                 || intent.getStringExtra(PlayerIntentConstants.PLAY_QUEUE_KEY) != null) {
-            NotificationUtil.getInstance().createNotificationAndStartForeground(player, this);
+            if (player.getMediaSessionManager() == null) {
+                NotificationUtil.getInstance().startForegroundWithDummyNotification(this);
+            } else {
+                NotificationUtil.getInstance().createNotificationAndStartForeground(player, this);
+            }
         }
-
-        player.handleIntent(intent);
         if (player.getMediaSessionManager() != null) {
             player.getMediaSessionManager().handleMediaButtonIntent(intent);
         }
@@ -197,12 +201,15 @@ public final class PlayerServiceForAuto extends MediaBrowserServiceCompat implem
     @Override
     public void onTaskRemoved(final Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        if (!player.videoPlayerSelected()) {
+        if (player == null || !player.videoPlayerSelected()) {
             return;
         }
         onDestroy();
-        // Unload from memory completely
-        Runtime.getRuntime().halt(0);
+        DurableQueueStore.afterPendingWrites(() -> {
+            if (player == null) {
+                Runtime.getRuntime().halt(0);
+            }
+        });
     }
 
     @Override
@@ -229,6 +236,7 @@ public final class PlayerServiceForAuto extends MediaBrowserServiceCompat implem
 
             player.saveStreamProgressState();
             player.setRecovery();
+            player.getQueueCheckpoint().save();
             player.stopActivityBinding();
             player.removePopupFromView();
             player.destroy();

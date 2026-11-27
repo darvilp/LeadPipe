@@ -143,6 +143,9 @@ class PlayerProgressController(private val player: Player) : SeekBar.OnSeekBarCh
         if (!player.currentState.isPaused) {
             player.updatePlayBackElementsCurrentDuration(currentProgress)
         }
+        if (player.currentState.isPlaying) {
+            player.queueCheckpoint.tick()
+        }
         if (player.simpleExoPlayer.isLoading || bufferPercent > 90) {
             binding.playbackSeekBar.secondaryProgress =
                 (binding.playbackSeekBar.max * (bufferPercent / 100f)).toInt()

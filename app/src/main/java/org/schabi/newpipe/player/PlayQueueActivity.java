@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
@@ -104,6 +106,7 @@ public final class PlayQueueActivity extends AppCompatActivity
         m.findItem(R.id.action_cast_pipepipe)
                 .setVisible(!org.schabi.newpipe.util.DeviceUtils.isTv(this));
         final boolean ready = player != null && player.isModeSwitchReady();
+        m.findItem(R.id.action_clear_queue).setEnabled(ready);
         m.findItem(R.id.action_switch_popup).setEnabled(ready)
                 .setVisible(player == null || !player.popupPlayerSelected());
         m.findItem(R.id.action_switch_main).setEnabled(ready)
@@ -120,6 +123,9 @@ public final class PlayQueueActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.action_settings) {
             NavigationHelper.openSettings(this);
+            return true;
+        } else if (item.getItemId() == R.id.action_clear_queue) {
+            confirmClearQueue();
             return true;
         } else if (item.getItemId() == R.id.action_append_playlist) {
             player.onAddToPlaylistClicked(getSupportFragmentManager());
@@ -147,6 +153,31 @@ public final class PlayQueueActivity extends AppCompatActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void confirmClearQueue() {
+        final Player active = player;
+        if (active == null) {
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.clear_play_queue)
+                .setMessage(R.string.clear_play_queue_confirmation)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.clear, (dialog, which) -> {
+                    if (player != active) {
+                        return;
+                    }
+                    active.getQueueCheckpoint().clear(cleared -> {
+                        if (cleared) {
+                            active.service.stopService();
+                        } else if (player == active) {
+                            Toast.makeText(this, R.string.clear_play_queue_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .show();
     }
 
     @Override

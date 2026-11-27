@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SinglePlayQueue extends PlayQueue {
+    SinglePlayQueue(final int index, final List<PlayerMediaItem> items) {
+        super(index, items);
+    }
+
     public SinglePlayQueue(final StreamInfoItem item) {
         super(0, Collections.singletonList(PlayerMediaItem.forStreamInfoItem(item)));
     }

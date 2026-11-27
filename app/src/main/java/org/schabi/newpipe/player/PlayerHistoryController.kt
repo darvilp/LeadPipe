@@ -19,6 +19,17 @@ class PlayerHistoryController(private val player: Player) {
     private val prefs = player.prefs
     private val recordManager = HistoryRecordManager(context)
     private val databaseUpdateDisposable = CompositeDisposable()
+    private var restoredViewId: String? = null
+
+    fun deferViewFor(item: PlayerMediaItem?) {
+        restoredViewId = item?.uuid
+    }
+
+    fun registerRestoredView() {
+        if (restoredViewId != null && player.currentItem?.uuid == restoredViewId) {
+            registerStreamViewed()
+        }
+    }
 
     fun clear() {
         databaseUpdateDisposable.clear()
@@ -26,11 +37,16 @@ class PlayerHistoryController(private val player: Player) {
 
     fun registerStreamViewed() {
         player.currentStreamInfo.ifPresent { info ->
+            if (restoredViewId != null && player.currentItem?.uuid == restoredViewId &&
+                !player.currentState.isPlaying
+            ) return@ifPresent
+            restoredViewId = null
             databaseUpdateDisposable.add(recordManager.onViewed(info).onErrorComplete().subscribe())
         }
     }
 
     private fun saveStreamProgressState(progressMillis: Long) {
+        if (restoredViewId != null && player.currentItem?.uuid == restoredViewId) return
         val info = player.currentStreamInfo.orElse(null) ?: return
         if (!prefs.getBoolean(context.getString(R.string.enable_watch_history_key), true)) {
             return

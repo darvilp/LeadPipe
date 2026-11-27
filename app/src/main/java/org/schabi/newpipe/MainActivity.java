@@ -76,6 +76,7 @@ import org.schabi.newpipe.player.PlayerIntentConstants;
 import org.schabi.newpipe.player.event.DetailPlayerEvents;
 import org.schabi.newpipe.player.event.OnKeyDownListener;
 import org.schabi.newpipe.player.helper.PlayerHolder;
+import org.schabi.newpipe.player.playqueue.DurableQueueStore;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.util.selection.SelectionToolbar;
 import org.schabi.newpipe.util.*;
@@ -97,6 +98,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean restoreQueueOnResume;
     private static final String TAG = "MainActivity";
     private static final String LAST_SHOWN_VERSION = "version_code";
     @SuppressWarnings("ConstantConditions")
@@ -175,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             FocusOverlayView.setupFocusObserver(this);
         }
         openMiniPlayerUponPlayerStarted();
+        restoreQueueOnResume = isLauncherIntent(getIntent());
 
         // Schedule worker for checking for new streams and creating corresponding notifications
         // if this is enabled by the user.
@@ -564,20 +567,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (restoreQueueOnResume) {
+            restoreQueueOnResume = false;
+            if (playerStartedListener == null && !PlayerHolder.getInstance().isPlayerOpen()) {
+                openMiniPlayerUponPlayerStarted();
+            }
+            DurableQueueStore.restoreFromLauncher(this);
+        }
+    }
+
+    private static boolean isLauncherIntent(final Intent intent) {
+        return intent != null && Intent.ACTION_MAIN.equals(intent.getAction())
+                && (intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                    || intent.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER));
+    }
+
+    @Override
     protected void onNewIntent(final Intent intent) {
         if (DEBUG) {
             Log.d(TAG, "onNewIntent() called with: intent = [" + intent + "]");
         }
-        if (intent != null) {
-            // Return if launched from a launcher (e.g. Nova Launcher, Pixel Launcher ...)
-            // to not destroy the already created backstack
-            final String action = intent.getAction();
-            if ((action != null && action.equals(Intent.ACTION_MAIN))
-                    && intent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
-                return;
-            }
+        if (isLauncherIntent(intent)) {
+            // Preserve the current back stack on launcher reentry.
+            restoreQueueOnResume = true;
+            return;
         }
 
+        restoreQueueOnResume = false;
+        DurableQueueStore.cancelLauncherRestore();
         super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);

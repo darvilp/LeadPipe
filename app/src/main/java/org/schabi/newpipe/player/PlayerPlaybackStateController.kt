@@ -236,6 +236,7 @@ class PlayerPlaybackStateController(private val player: Player) {
     }
 
     private fun onPlaying() {
+        player.historyController.registerRestoredView()
         if (Player.DEBUG) {
             Log.d(Player.TAG, "onPlaying() called")
         }
@@ -295,6 +296,7 @@ class PlayerPlaybackStateController(private val player: Player) {
     }
 
     private fun onPaused() {
+        player.queueCheckpoint.request()
         if (Player.DEBUG) {
             Log.d(Player.TAG, "onPaused() called")
         }

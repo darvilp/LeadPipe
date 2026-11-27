@@ -146,6 +146,7 @@ public final class Player {
     @NonNull private final PlayerControlsVisibilityController controlsVisibilityController;
     @NonNull private final AutoQueueController autoQueueController;
     @NonNull private final PlayerStartController startController;
+    @NonNull private final QueueCheckpoint queueCheckpoint = new QueueCheckpoint(this);
     @NonNull private final PlayerTransportController transportController;
     @NonNull private final PlayerHistoryController historyController;
     @NonNull private final PlayerClickController clickController;
@@ -412,6 +413,7 @@ public final class Player {
     //region Destroy and recovery
 
     void destroyPlayer() {
+        queueCheckpoint.detach();
         sourceController.setSourceSwitchRecoveryItem(null);
         if (DEBUG) {
             Log.d(TAG, "destroyPlayer() called");
@@ -452,6 +454,8 @@ public final class Player {
     }
 
     public void destroy() {
+        org.schabi.newpipe.player.playqueue.DurableQueueStore.cancelLauncherRestore();
+        startController.discardPendingRequests();
         startController.cancelModeRequest();
         if (DEBUG) {
             Log.d(TAG, "destroy() called");
@@ -908,10 +912,12 @@ public final class Player {
 
     void onRepeatModeChanged(final int repeatMode) {
         repeatShuffleController.onRepeatModeChanged(repeatMode);
+        queueCheckpoint.request();
     }
 
     void onShuffleModeEnabledChanged(final boolean shuffleModeEnabled) {
         repeatShuffleController.onShuffleModeEnabledChanged(shuffleModeEnabled);
+        queueCheckpoint.request();
     }
 
     void onShuffleOrRepeatModeChanged() {
@@ -995,6 +1001,7 @@ public final class Player {
         if (playQueue == null) {
             return;
         }
+        queueCheckpoint.request();
 
         if (oldPosition.mediaItemIndex != newPosition.mediaItemIndex) {
             sponsorBlockController.clearEditing();
@@ -1786,6 +1793,11 @@ public final class Player {
     @NonNull
     PlayerProgressController getProgressController() {
         return progressController;
+    }
+
+    @NonNull
+    QueueCheckpoint getQueueCheckpoint() {
+        return queueCheckpoint;
     }
 
     @NonNull

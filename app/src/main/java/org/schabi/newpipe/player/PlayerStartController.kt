@@ -5,7 +5,9 @@ import android.view.View
 import com.google.android.exoplayer2.C
 import org.schabi.newpipe.R
 import org.schabi.newpipe.player.helper.PlayerHelper
+import org.schabi.newpipe.player.playqueue.DurableQueueStore
 import org.schabi.newpipe.player.playqueue.PlayQueue
+import org.schabi.newpipe.player.playqueue.QueueSnapshot
 import org.schabi.newpipe.util.NavigationHelper
 import org.schabi.newpipe.util.SerializedCache
 
@@ -25,6 +27,17 @@ class PlayerStartController(private val player: Player) {
     }
 
     private var pendingMainModeRequest = 0L
+    private val pendingEnqueues = ArrayDeque<Pair<Intent, PlayQueue>>()
+    private var requestGeneration = 0L
+    private var startingFromHistory = false
+    private var waitingForSavedQueue = false
+
+    fun discardPendingRequests() {
+        requestGeneration++
+        startingFromHistory = false
+        waitingForSavedQueue = false
+        pendingEnqueues.clear()
+    }
 
     fun cancelModeRequest() {
         pendingMainModeRequest = 0L
@@ -90,6 +103,64 @@ class PlayerStartController(private val player: Player) {
         val newQueue = SerializedCache.getInstance().take(queueCache, PlayQueue::class.java)
             ?: return
 
+        val restoring = intent.getBooleanExtra(PlayerIntentConstants.RESTORE_DURABLE_QUEUE, false)
+        if (restoring) {
+            if (DurableQueueStore.isLauncherRestoreCurrent(
+                    intent.getLongExtra(PlayerIntentConstants.QUEUE_RESTORE_GENERATION, -1)
+                ) && player.playQueue == null && !startingFromHistory && !waitingForSavedQueue
+            ) {
+                startQueue(intent, newQueue)
+            }
+            return
+        }
+        DurableQueueStore.cancelLauncherRestore()
+        val enqueue = intent.getBooleanExtra(PlayerIntentConstants.ENQUEUE, false)
+            || intent.getBooleanExtra(PlayerIntentConstants.ENQUEUE_NEXT, false)
+        if (enqueue && (player.playQueue == null || startingFromHistory)) {
+            pendingEnqueues.addLast(intent to newQueue)
+            if (!startingFromHistory && !waitingForSavedQueue) {
+                waitingForSavedQueue = true
+                val generation = requestGeneration
+                DurableQueueStore.read(player.context.applicationContext) { snapshot ->
+                    if (requestGeneration != generation) return@read
+                    waitingForSavedQueue = false
+                    if (snapshot != null && player.playQueue == null) {
+                        restoreSavedQueue(snapshot)
+                    }
+                    drainEnqueues()
+                }
+            }
+            return
+        }
+        if (!enqueue) discardPendingRequests()
+        startQueue(intent, newQueue)
+    }
+
+    private fun restoreSavedQueue(snapshot: QueueSnapshot) {
+        val queue = PlayQueue.restore(snapshot) ?: return
+        startQueue(
+            Intent()
+                .putExtra(PlayerIntentConstants.RESTORE_DURABLE_QUEUE, true)
+                .putExtra(PlayerIntentConstants.PLAYER_TYPE, PlayerService.PlayerType.VIDEO.ordinal)
+                .putExtra(PlayerIntentConstants.PLAY_WHEN_READY, false)
+                .putExtra(PlayerIntentConstants.REPEAT_MODE, snapshot.repeatMode),
+            queue,
+        )
+    }
+
+    private fun drainEnqueues() {
+        while (pendingEnqueues.isNotEmpty()) {
+            val (intent, queue) = pendingEnqueues.removeFirst()
+            startQueue(intent, queue)
+        }
+        if (player.mediaSessionManager != null) {
+            NotificationUtil.getInstance()
+                .createNotificationAndStartForeground(player, player.service.getInstance())
+        }
+    }
+
+    private fun startQueue(intent: Intent, newQueue: PlayQueue) {
+        val restoring = intent.getBooleanExtra(PlayerIntentConstants.RESTORE_DURABLE_QUEUE, false)
         val activeQueue = player.playQueue
         if (intent.getBooleanExtra(PlayerIntentConstants.ENQUEUE_NEXT_AND_PLAY, false)
             && activeQueue != null
@@ -216,26 +287,31 @@ class PlayerStartController(private val player: Player) {
             && newQueue.getItem() != null
             && newQueue.getRecoveryPosition(newQueue.getItem()!!) == PlayQueue.RECOVERY_UNSET
         ) {
+            val generation = requestGeneration
+            startingFromHistory = true
             player.historyController.startPlaybackWithSavedProgress(
                 newQueue.getItem()!!
             ) { savedMillis ->
+                if (requestGeneration != generation) return@startPlaybackWithSavedProgress
                 if (savedMillis != null) {
                     // resume playback only if the stream was not played to the end
                     newQueue.setRecovery(newQueue.index, savedMillis)
                 }
                 initPlayback(newQueue, repeatMode, playbackSpeed, playbackPitch,
                     playbackSkipSilence, playWhenReady, isMuted)
+                startingFromHistory = false
+                drainEnqueues()
             }
         } else {
             // Good to go...
             // In a case of equal PlayQueues we can re-init old one but only when it is disposed
             initPlayback(
                 if (samePlayQueue) playQueue!! else newQueue, repeatMode, playbackSpeed,
-                playbackPitch, playbackSkipSilence, playWhenReady, isMuted
+                playbackPitch, playbackSkipSilence, playWhenReady, isMuted, restoring
             )
         }
 
-        if (oldPlayerType != player.playerType && player.playQueue != null) {
+        if (!restoring && oldPlayerType != player.playerType && player.playQueue != null) {
             player.setRecovery()
             player.reloadPlayQueueManager()
         }
@@ -275,6 +351,7 @@ class PlayerStartController(private val player: Player) {
         playbackSkipSilence: Boolean,
         playOnReady: Boolean,
         muted: Boolean,
+        restoring: Boolean = false,
     ) {
         PlaybackStartupTrace.mark(player.startupTraceId, "player_init_started")
         player.destroyPlayer()
@@ -282,6 +359,9 @@ class PlayerStartController(private val player: Player) {
 
         player.playQueue = queue
         queue.init()
+        val restoredItem = if (restoring) queue.item else null
+        player.historyController.deferViewFor(restoredItem)
+        player.sourceController.sourceSwitchRecoveryItem = restoredItem
         player.reloadPlayQueueManager()
         PlaybackStartupTrace.mark(player.startupTraceId, "media_source_manager_ready")
 
@@ -299,6 +379,7 @@ class PlayerStartController(private val player: Player) {
         player.repeatShuffleController.updateShuffleButton()
         player.setPlaybackParameters(playbackSpeed, playbackPitch, playbackSkipSilence)
 
+        player.queueCheckpoint.attach(queue)
         player.notifyQueueUpdateToListeners()
     }
 }

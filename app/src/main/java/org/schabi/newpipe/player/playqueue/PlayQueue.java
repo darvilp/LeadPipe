@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -81,6 +83,59 @@ public abstract class PlayQueue implements Serializable {
         }
 
         queueIndex = new AtomicInteger(index);
+    }
+
+    public synchronized QueueSnapshot snapshot(final long positionMs, final int repeatMode) {
+        final PlayerMediaItem selected = getItem();
+        if (selected == null) {
+            return QueueSnapshot.Companion.getEMPTY();
+        }
+        List<String> originalOrder = null;
+        if (backup != null) {
+            final Set<String> liveIds = new LinkedHashSet<>();
+            streams.forEach(item -> liveIds.add(item.getUuid()));
+            originalOrder = new ArrayList<>(streams.size());
+            for (final PlayerMediaItem item : backup) {
+                if (liveIds.remove(item.getUuid())) {
+                    originalOrder.add(item.getUuid());
+                }
+            }
+            originalOrder.addAll(liveIds);
+        }
+        final String automaticTail = streams.get(streams.size() - 1).getUuid().equals(autoQueuedUuid)
+                ? autoQueuedUuid : null;
+        return new QueueSnapshot(List.copyOf(streams), selected.getUuid(), positionMs, repeatMode,
+                originalOrder, automaticTail);
+    }
+
+    @Nullable
+    public static PlayQueue restore(final QueueSnapshot snapshot) {
+        final List<PlayerMediaItem> entries = snapshot.getEntries();
+        final Map<String, PlayerMediaItem> byId = new HashMap<>();
+        int index = -1;
+        for (int i = 0; i < entries.size(); i++) {
+            final PlayerMediaItem entry = entries.get(i);
+            byId.put(entry.getUuid(), entry);
+            if (entry.getUuid().equals(snapshot.getSelectedId())) {
+                index = i;
+            }
+        }
+        if (index < 0) {
+            return null;
+        }
+        final PlayQueue restored = new SinglePlayQueue(index, entries);
+        restored.autoQueuedUuid = snapshot.getAutomaticTailId();
+        if (snapshot.getOriginalOrder() != null) {
+            restored.backup = new ArrayList<>(entries.size());
+            for (final String id : snapshot.getOriginalOrder()) {
+                restored.backup.add(byId.get(id));
+            }
+        }
+        if (!org.schabi.newpipe.util.StreamTypeUtil.isLiveStream(
+                entries.get(index).getStreamType())) {
+            restored.setRecovery(index, snapshot.getPositionMs());
+        }
+        return restored;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

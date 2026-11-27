@@ -25,6 +25,10 @@ object PlayerIntentConstants {
     /** Whether playback should start as soon as the player is ready. */
     const val PLAY_WHEN_READY = "play_when_ready"
 
+    /** Restore a checkpoint into an idle player after a foreground launcher entry. */
+    const val RESTORE_DURABLE_QUEUE = "restore_durable_queue"
+    const val QUEUE_RESTORE_GENERATION = "queue_restore_generation"
+
     /** Whether the queue should be appended to the current one instead of replacing it. */
     const val ENQUEUE = "enqueue"
 

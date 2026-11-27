@@ -38,6 +38,7 @@ import org.schabi.newpipe.App;
 import org.schabi.newpipe.databinding.PlayerBinding;
 import org.schabi.newpipe.player.mediabrowser.MediaBrowserPlaybackPreparer;
 import org.schabi.newpipe.player.mediasession.PlayerServiceInterface;
+import org.schabi.newpipe.player.playqueue.DurableQueueStore;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.ThemeHelper;
 
@@ -149,7 +150,11 @@ public class PlayerService extends Service implements PlayerServiceInterface {
         player.handleIntent(intent);
         if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())
                 || intent.getStringExtra(PlayerIntentConstants.PLAY_QUEUE_KEY) != null) {
-            NotificationUtil.getInstance().createNotificationAndStartForeground(player, this);
+            if (player.getMediaSessionManager() == null) {
+                NotificationUtil.getInstance().startForegroundWithDummyNotification(this);
+            } else {
+                NotificationUtil.getInstance().createNotificationAndStartForeground(player, this);
+            }
         }
         if (player.getMediaSessionManager() != null) {
             player.getMediaSessionManager().handleMediaButtonIntent(intent);
@@ -186,12 +191,16 @@ public class PlayerService extends Service implements PlayerServiceInterface {
     @Override
     public void onTaskRemoved(final Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        if (!player.videoPlayerSelected()) {
+        if (player == null || !player.videoPlayerSelected()) {
             return;
         }
         onDestroy();
-        // Unload from memory completely
-        Runtime.getRuntime().halt(0);
+        // Let the final checkpoint finish before the existing process teardown.
+        DurableQueueStore.afterPendingWrites(() -> {
+            if (player == null) {
+                Runtime.getRuntime().halt(0);
+            }
+        });
     }
 
     @Override
@@ -212,6 +221,7 @@ public class PlayerService extends Service implements PlayerServiceInterface {
 
             player.saveStreamProgressState();
             player.setRecovery();
+            player.getQueueCheckpoint().save();
             player.stopActivityBinding();
             player.removePopupFromView();
             player.destroy();
