@@ -13,6 +13,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import org.schabi.newpipe.BuildConfig
 import org.schabi.newpipe.LeadPipeRelease
+import org.schabi.newpipe.NewVersionWorker
 import org.schabi.newpipe.R
 import org.schabi.newpipe.databinding.ActivityAboutBinding
 import org.schabi.newpipe.databinding.FragmentAboutBinding
@@ -70,6 +71,9 @@ class AboutActivity : AppCompatActivity() {
         ): View {
             FragmentAboutBinding.inflate(inflater, container, false).apply {
                 aboutAppVersion.text = BuildConfig.VERSION_NAME
+                aboutCheckForUpdates.setOnClickListener {
+                    NewVersionWorker.checkForUpdatesManually(requireContext())
+                }
                 aboutSourceLink.openLink(getString(R.string.github_url))
                 aboutReleasesLink.openLink(LeadPipeRelease.RELEASES_URL)
                 aboutIssuesLink.openLink(getString(R.string.leadpipe_issues_url))

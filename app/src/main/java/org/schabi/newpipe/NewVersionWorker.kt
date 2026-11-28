@@ -257,6 +257,12 @@ class NewVersionWorker(
             return RELEASE_APK_ABIS.firstOrNull { name.contains("-$it-") }
         }
 
+        @JvmStatic
+        fun checkForUpdatesManually(context: Context) {
+            Toast.makeText(context, R.string.checking_updates_toast, Toast.LENGTH_SHORT).show()
+            enqueueNewVersionCheckingWork(context, true)
+        }
+
         /**
          * Check for an app update after a manual request or when startup update checks are enabled.
          * Automatic checks are throttled using the previous response's expiry time.

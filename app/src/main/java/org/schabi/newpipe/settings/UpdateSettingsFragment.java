@@ -1,7 +1,6 @@
 package org.schabi.newpipe.settings;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.preference.Preference;
 
@@ -25,8 +24,7 @@ public class UpdateSettingsFragment extends BasePreferenceFragment {
 
     private final Preference.OnPreferenceClickListener manualUpdateClick
             = preference -> {
-        Toast.makeText(getContext(), R.string.checking_updates_toast, Toast.LENGTH_SHORT).show();
-        NewVersionWorker.enqueueNewVersionCheckingWork(requireContext(), true);
+        NewVersionWorker.checkForUpdatesManually(requireContext());
         return true;
     };
 
