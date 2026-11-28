@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a problem in LeadPipe with steps to reproduce it.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. This report is public. Review pasted reports and attachments for account details, tokens, cookies, and private URLs before submitting.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Start from a screen or action we can repeat. Include a public video or channel link when relevant. Mention rotation, switching player modes, or leaving and returning to the app if they were part of the sequence.
+      placeholder: |
+        1. Open …
+        2. Tap …
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Say what you saw and whether the app closed, showed an error, or kept running. A screenshot or short recording can help with visual bugs.
+    validations:
+      required: true
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: How often does it happen?
+      options:
+        - Every time
+        - Sometimes
+        - Happened once
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Device, build, and relevant settings
+      description: Include the device make and model, Android version, and LeadPipe version if they are missing from the report below. For a test build, include its download link or APK filename. Mention settings that affect the issue, such as experimental UI, fast feed, playback mode, or orientation.
+  - type: textarea
+    id: error_report
+    attributes:
+      label: LeadPipe error report
+      description: If LeadPipe showed an Error report screen, use Copy for GitHub and paste it here. Review the text before posting.
