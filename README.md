@@ -10,7 +10,7 @@ LeadPipe uses four-part versions. In `5.6.0.24`, `5.6.0` is the PipePipe base an
 
 See the [Subscription Groups guide](docs/wiki/Subscription-Groups.md) and the [wiki comparison draft](docs/wiki/LeadPipe-vs-PipePipe.md).
 
-Rows marked **CI candidate** are in the [LeadPipe 5.6.0.35 test build](https://github.com/darvilp/LeadPipe/actions/runs/46097266380).
+Rows marked **CI candidate** are in the [LeadPipe 5.6.0.36 test build](https://github.com/darvilp/LeadPipe/commits/candidate/leadpipe-5.6.0.36/).
 
 ### Features
 
@@ -21,9 +21,12 @@ Rows marked **CI candidate** are in the [LeadPipe 5.6.0.35 test build](https://g
 | Quick Enqueue | Tap the enqueue button on a video row to add it to the end. Hold it to play the video next. Enqueue starts background playback if the queue is empty. | Enqueue and Enqueue next are available in item menus. |
 | Switch playback modes | Move the active session between main, background and popup playback while keeping the queue, position and play/pause state. | Mode switching is available from some player controls, such as background to main or popup. |
 | Queue playtime | See elapsed and total media time in the full queue and in the player's queue panel. Queues with more pages show a subtotal for the loaded entries. A plus sign marks a lower bound when a duration is unknown. | The play queue shows individual entries and their durations. |
+| Remaining queue time | **CI candidate.** Tap the playtime summary in either queue view to switch between elapsed and remaining media time. | The play queue shows individual entries and their durations. |
 | Remaining playback time | Tap the timer on the right of the player to switch between total duration and remaining media time for the current video. | The player shows the current position and total duration. |
 | Restore the play queue | Reopen LeadPipe to restore the active queue paused at the saved position. Use **Clear queue** in the Play Queue menu to discard it. | The active queue is kept for the player session. |
 | Undo a queue removal | **CI candidate.** Tap **Undo** after swiping away an entry or choosing **Remove** to put it back beside its previous neighbors. | Swipe or use the item menu to remove an entry. |
+| Remove before current | **CI candidate.** Use the Play Queue menu to remove every entry before the current one after confirming the count. | Swipe or use the item menu to remove individual entries. |
+| Move to play next | **CI candidate.** Long-press an existing queue entry and choose **Move to play next**. | Drag a queued entry to change its position. |
 | Subscription-group content | Choose videos, Shorts and live streams for each group, with per-channel overrides. | Subscription groups organize channels. |
 | Feed refresh | Keep browsing the existing feed while newer items load. | The feed list is hidden while refresh is in progress. |
 | SponsorBlock editing | Edit exact segment times and keep unfinished drafts tied to their video while browsing. | Enter exact segment times in the editor for the current video. |
@@ -40,7 +43,7 @@ Rows marked **CI candidate** are in the [LeadPipe 5.6.0.35 test build](https://g
 | Queue and playlist dragging | Keeps the list steady and prevents extra reorders when dragging near the edges. | **Merged upstream** in PipePipe 5.6.0 [#118](https://github.com/InfinityLoop1308/PipePipeClient/pull/118) |
 | Long comments with links | Tap the text to collapse a long comment, including replies. Links remain tappable. | LeadPipe fix |
 | Play Queue in landscape | Fixes a crash opening the full queue in landscape and shows elapsed and total playtime above the list. | LeadPipe fix |
-| Rapid swipe and Undo | Fixes a crash in the queue list during rapid removals and Undo. | **In development** |
+| Rapid swipe and Undo | Fixes a crash in the queue list during rapid removals and Undo. | **CI candidate** |
 
 ## Build and release
 

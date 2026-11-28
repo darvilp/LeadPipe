@@ -1,6 +1,10 @@
-# LeadPipe 5.6.0.35
+# LeadPipe 5.6.0.36
 
+- Tap the playtime summary in either queue view to switch between elapsed and remaining media time.
+- Choose **Remove before current** in the full Play Queue menu to trim earlier entries after confirming the count.
+- Long-press an existing queue entry and choose **Move to play next** to put it immediately after the current item.
 - Tap **Undo** after swiping away an entry or choosing **Remove** in either queue view. Undo restores the most recently removed entry beside its previous neighbors, including when the queue contains duplicate videos.
+- Fix a crash in the queue list during rapid swipes and Undo.
 - Check for updates directly from **About**.
 - Error reports include the device make and model, installed build, and report orientation. **Report on GitHub** opens the bug form for reproduction steps and relevant settings.
 
