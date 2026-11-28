@@ -7,19 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem;
-import org.schabi.newpipe.player.playqueue.events.AppendEvent;
-import org.schabi.newpipe.player.playqueue.events.ErrorEvent;
-import org.schabi.newpipe.player.playqueue.events.InsertEvent;
 import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
-import org.schabi.newpipe.player.playqueue.events.RemoveEvent;
-import org.schabi.newpipe.player.playqueue.events.SelectEvent;
+import org.schabi.newpipe.player.playqueue.events.PlayQueueEventType;
 import org.schabi.newpipe.util.FallbackViewHolder;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observer;
@@ -57,6 +57,8 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private final PlayQueueItemBuilder playQueueItemBuilder;
     private final PlayQueue playQueue;
+    private List<PlayerMediaItem> displayedItems = Collections.emptyList();
+    private int displayedSelection = RecyclerView.NO_POSITION;
     private boolean showFooter = false;
     private View footer = null;
 
@@ -69,6 +71,7 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         this.playQueueItemBuilder = new PlayQueueItemBuilder(context);
         this.playQueue = playQueue;
+        updateRows(null);
 
         playQueue.getBroadcastReceiver().toObservable().subscribe(getReactor());
     }
@@ -85,8 +88,9 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             @Override
             public void onNext(@NonNull final PlayQueueEvent playQueueMessage) {
-                if (playQueueReactor != null) {
-                    onPlayQueueChanged(playQueueMessage);
+                if (playQueueReactor != null
+                        && playQueueMessage.type() != PlayQueueEventType.RECOVERY) {
+                    updateRows(playQueueMessage);
                 }
             }
 
@@ -101,45 +105,89 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
-    private void onPlayQueueChanged(final PlayQueueEvent message) {
-        switch (message.type()) {
-            case RECOVERY:
-                // Do nothing.
-                break;
-            case SELECT:
-                final SelectEvent selectEvent = (SelectEvent) message;
-                notifyItemChanged(selectEvent.getOldIndex());
-                notifyItemChanged(selectEvent.getNewIndex());
-                break;
-            case APPEND:
-                final AppendEvent appendEvent = (AppendEvent) message;
-                notifyItemRangeInserted(playQueue.size(), appendEvent.getAmount());
-                break;
-            case INSERT:
-                notifyItemInserted(((InsertEvent) message).getIndex());
-                break;
-            case ERROR:
-                final ErrorEvent errorEvent = (ErrorEvent) message;
-                notifyItemChanged(errorEvent.getErrorIndex());
-                notifyItemChanged(errorEvent.getQueueIndex());
-                break;
-            case REMOVE:
-                final RemoveEvent removeEvent = (RemoveEvent) message;
-                notifyItemRemoved(removeEvent.getRemoveIndex());
-                if (!playQueue.isEmpty()) {
-                    notifyItemChanged(removeEvent.getQueueIndex());
-                }
-                break;
-            case MOVE:
-                final MoveEvent moveEvent = (MoveEvent) message;
-                notifyItemMoved(moveEvent.getFromIndex(), moveEvent.getToIndex());
-                break;
-            case INIT:
-            case REORDER:
-            default:
-                notifyDataSetChanged();
-                break;
+    private void updateRows(@Nullable final PlayQueueEvent event) {
+        final List<PlayerMediaItem> previousItems = displayedItems;
+        final int previousSelection = displayedSelection;
+        final List<PlayerMediaItem> nextItems;
+        final int nextSelection;
+        synchronized (playQueue) {
+            nextItems = Collections.unmodifiableList(new ArrayList<>(playQueue.getStreams()));
+            nextSelection = nextItems.isEmpty() ? RecyclerView.NO_POSITION : playQueue.getIndex();
         }
+
+        // Queue events are delivered after mutations. Publish one row snapshot and notify
+        // RecyclerView about the actual differences, even if more edits have already landed.
+        displayedItems = nextItems;
+        displayedSelection = nextSelection;
+        if (event != null && event.type() == PlayQueueEventType.REORDER) {
+            // Shuffle can reorder the entire queue, so keep the full refresh for it.
+            notifyDataSetChanged();
+            return;
+        }
+        if (event instanceof MoveEvent) {
+            final MoveEvent move = (MoveEvent) event;
+            if (matchesMove(previousItems, nextItems, previousSelection, nextSelection, move)) {
+                // The drag callback tracks the exact from/to pair to keep the viewport anchored.
+                notifyItemMoved(move.getFromIndex(), move.getToIndex());
+                return;
+            }
+        }
+
+        DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return previousItems.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return nextItems.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(final int oldPosition, final int newPosition) {
+                return previousItems.get(oldPosition).equals(nextItems.get(newPosition));
+            }
+
+            @Override
+            public boolean areContentsTheSame(final int oldPosition, final int newPosition) {
+                final PlayerMediaItem oldItem = previousItems.get(oldPosition);
+                final PlayerMediaItem newItem = nextItems.get(newPosition);
+                return oldItem == newItem
+                        && (oldPosition == previousSelection) == (newPosition == nextSelection);
+            }
+        }).dispatchUpdatesTo(this);
+    }
+
+    private static boolean matchesMove(final List<PlayerMediaItem> before,
+                                       final List<PlayerMediaItem> after, final int previousSelection,
+                                       final int nextSelection, final MoveEvent move) {
+        final int from = move.getFromIndex();
+        final int to = move.getToIndex();
+        if (before.size() != after.size() || from < 0 || from >= before.size()
+                || to < 0 || to >= before.size()
+                || positionAfterMove(previousSelection, from, to) != nextSelection) {
+            return false;
+        }
+        for (int position = 0; position < before.size(); position++) {
+            if (before.get(position) != after.get(positionAfterMove(position, from, to))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static int positionAfterMove(final int position, final int from, final int to) {
+        if (position == from) {
+            return to;
+        }
+        if (from < position && position <= to) {
+            return position - 1;
+        }
+        if (to <= position && position < from) {
+            return position + 1;
+        }
+        return position;
     }
 
     public void dispose() {
@@ -159,21 +207,31 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void setFooter(final View footer) {
         this.footer = footer;
-        notifyItemChanged(playQueue.size());
+        notifyItemChanged(displayedItems.size());
     }
 
     public void showFooter(final boolean show) {
         showFooter = show;
-        notifyItemChanged(playQueue.size());
+        notifyItemChanged(displayedItems.size());
     }
 
     public List<PlayerMediaItem> getItems() {
-        return playQueue.getStreams();
+        return displayedItems;
+    }
+
+    int queueIndexForRow(final int position) {
+        if (position < 0 || position >= displayedItems.size()) {
+            return RecyclerView.NO_POSITION;
+        }
+        final PlayerMediaItem item = displayedItems.get(position);
+        synchronized (playQueue) {
+            return playQueue.getItem(position) == item ? position : playQueue.indexOf(item);
+        }
     }
 
     @Override
     public int getItemCount() {
-        int count = playQueue.getStreams().size();
+        int count = displayedItems.size();
         if (footer != null && showFooter) {
             count++;
         }
@@ -182,7 +240,7 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(final int position) {
-        if (footer != null && position == playQueue.getStreams().size() && showFooter) {
+        if (footer != null && position == displayedItems.size() && showFooter) {
             return FOOTER_VIEW_TYPE_ID;
         }
 
@@ -210,15 +268,14 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                  final int position) {
         if (holder instanceof PlayQueueItemHolder) {
             final PlayQueueItemHolder itemHolder = (PlayQueueItemHolder) holder;
+            final PlayerMediaItem item = displayedItems.get(position);
 
             // Build the list item
-            playQueueItemBuilder
-                    .buildStreamInfoItem(itemHolder, playQueue.getStreams().get(position));
+            playQueueItemBuilder.buildStreamInfoItem(itemHolder, item);
 
             // Check if the current item should be selected/highlighted
-            final boolean isSelected = playQueue.getIndex() == position;
-            itemHolder.itemView.setSelected(isSelected);
-        } else if (holder instanceof HFHolder && position == playQueue.getStreams().size()
+            itemHolder.itemView.setSelected(position == displayedSelection);
+        } else if (holder instanceof HFHolder && position == displayedItems.size()
                 && footer != null && showFooter) {
             ((HFHolder) holder).view = footer;
         }

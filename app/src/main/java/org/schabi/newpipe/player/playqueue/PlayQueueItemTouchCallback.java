@@ -34,6 +34,10 @@ public abstract class PlayQueueItemTouchCallback extends ItemDragTouchHelperCall
                 || sourceIndex == targetIndex) {
             return false;
         }
+        if (queueIndexForRow(source, sourceIndex) != sourceIndex
+                || queueIndexForRow(target, targetIndex) != targetIndex) {
+            return false;
+        }
 
         if (pendingViewportAnchor != null && pendingViewportAnchor.isWaiting()) {
             // Binding positions still describe the previous order until the MOVE event arrives.
@@ -170,6 +174,12 @@ public abstract class PlayQueueItemTouchCallback extends ItemDragTouchHelperCall
 
     @Override
     public void onSwiped(final RecyclerView.ViewHolder viewHolder, final int swipeDir) {
-        onSwiped(viewHolder.getBindingAdapterPosition());
+        onSwiped(queueIndexForRow(viewHolder, viewHolder.getBindingAdapterPosition()));
+    }
+
+    private static int queueIndexForRow(final RecyclerView.ViewHolder holder, final int position) {
+        final RecyclerView.Adapter<?> adapter = holder.getBindingAdapter();
+        return adapter instanceof PlayQueueAdapter
+                ? ((PlayQueueAdapter) adapter).queueIndexForRow(position) : position;
     }
 }
