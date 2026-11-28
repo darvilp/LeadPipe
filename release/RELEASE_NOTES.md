@@ -1,5 +1,6 @@
-# LeadPipe 5.6.0.37
+# LeadPipe 5.6.0.38
 
+- Tap the playing title in fullscreen or on the Play Queue screen to open the current video's details while keeping your queue and playback position.
 - Tap the playtime summary in either queue view to switch between elapsed and remaining media time.
 - Keep the queue timer and saved playback position tied to the current entry, including when the same video appears more than once.
 - Choose **Remove before current** in the full Play Queue menu to trim earlier entries after confirming the count.
