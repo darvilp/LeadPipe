@@ -4,6 +4,7 @@ import android.content.Context
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.schabi.newpipe.NewPipeDatabase
 import org.schabi.newpipe.database.feed.model.FeedGroupEntity
@@ -11,6 +12,7 @@ import org.schabi.newpipe.database.stream.model.StreamEntity
 import org.schabi.newpipe.database.subscription.NotificationMode
 import org.schabi.newpipe.database.subscription.SubscriptionDAO
 import org.schabi.newpipe.database.subscription.SubscriptionEntity
+import org.schabi.newpipe.database.subscription.SubscriptionMembership
 import org.schabi.newpipe.extractor.ListInfo
 import org.schabi.newpipe.extractor.channel.ChannelInfo
 import org.schabi.newpipe.extractor.feed.FeedInfo
@@ -18,9 +20,12 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem
 import org.schabi.newpipe.local.feed.FeedDatabaseManager
 import org.schabi.newpipe.local.feed.service.FeedUpdateInfo
+import org.schabi.newpipe.sync.subscriptions.SubscriptionSync
 import org.schabi.newpipe.util.ExtractorHelper
+import java.util.concurrent.Callable
 
 class SubscriptionManager(context: Context) {
+    private val appContext = context.applicationContext
     private val database = NewPipeDatabase.getInstance(context)
     private val subscriptionTable = database.subscriptionDAO()
     private val feedDatabaseManager = FeedDatabaseManager(context)
@@ -53,23 +58,34 @@ class SubscriptionManager(context: Context) {
     }
 
     fun upsertAll(infoList: List<ChannelInfo>): List<SubscriptionEntity> {
-        val listEntities = subscriptionTable.upsertAll(
-            infoList.map { SubscriptionEntity.from(it) }
-        )
-
-        database.runInTransaction {
-            infoList.forEachIndexed { index, info ->
-                feedDatabaseManager.upsertAll(listEntities[index].uid, info.relatedItems)
+        return database.runInTransaction(Callable {
+            val entities = infoList.map { SubscriptionEntity.from(it) }
+            val newChannels = entities.filter {
+                subscriptionTable.exactId(it.serviceId, it.url) == null
             }
-        }
-
-        return listEntities
+            val subscriptions = subscriptionTable.upsertAll(entities)
+            newChannels.forEach { markLocal(it.serviceId, it.url) }
+            infoList.forEachIndexed { index, info ->
+                feedDatabaseManager.upsertAll(subscriptions[index].uid, info.relatedItems)
+            }
+            subscriptions
+        })
     }
 
     fun insertAll(subscriptionItems: List<SubscriptionItem>): List<SubscriptionEntity> =
-        subscriptionTable.insertAllIgnoringExisting(
-            subscriptionItems.map { SubscriptionEntity.from(it) }
-        )
+        database.runInTransaction(Callable {
+            val inserted = subscriptionTable.insertAllIgnoringExisting(
+                subscriptionItems.map { SubscriptionEntity.from(it) }
+            )
+            subscriptionItems.forEach { markLocal(it.serviceId, it.url) }
+            inserted
+        })
+
+    private fun markLocal(serviceId: Int, url: String) {
+        subscriptionTable.exactId(serviceId, url)?.let {
+            subscriptionTable.addMembership(SubscriptionMembership(it, SubscriptionMembership.LOCAL))
+        }
+    }
 
     fun updateChannelInfo(subscriptionId: Long, info: ChannelInfo) {
         val subscriptionEntity = subscriptionTable.getSubscription(subscriptionId) ?: return
@@ -129,27 +145,39 @@ class SubscriptionManager(context: Context) {
         return true
     }
 
-    fun deleteSubscription(serviceId: Int, url: String): Completable {
-        return Completable.fromCallable { subscriptionTable.deleteSubscription(serviceId, url) }
+    fun deleteSubscription(serviceId: Int, url: String): Single<Boolean> {
+        return Single.fromCallable {
+            database.runInTransaction(Callable {
+                subscriptionTable.exactId(serviceId, url)?.let(::removeLocal) ?: false
+            })
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun deleteAllSubscriptions(): Completable {
-        return Completable.fromAction { subscriptionTable.deleteAll() }
+        return Completable.fromAction { SubscriptionSync.clearAll(appContext) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun insertSubscription(subscriptionEntity: SubscriptionEntity, info: ChannelInfo) {
         database.runInTransaction {
-            val subscriptionId = subscriptionTable.insert(subscriptionEntity)
+            val subscriptionId = subscriptionTable.exactId(subscriptionEntity.serviceId, subscriptionEntity.url)
+                ?: subscriptionTable.insert(subscriptionEntity)
+            subscriptionTable.addMembership(SubscriptionMembership(subscriptionId, SubscriptionMembership.LOCAL))
             feedDatabaseManager.upsertAll(subscriptionId, info.relatedItems)
         }
     }
 
     fun deleteSubscription(subscriptionEntity: SubscriptionEntity) {
-        subscriptionTable.delete(subscriptionEntity)
+        database.runInTransaction { removeLocal(subscriptionEntity.uid) }
+    }
+
+    private fun removeLocal(id: Long): Boolean {
+        val removed = subscriptionTable.removeMembership(id, SubscriptionMembership.LOCAL) > 0
+        if (removed) subscriptionTable.deleteIfUnowned(id)
+        return removed
     }
 
     /**

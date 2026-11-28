@@ -30,6 +30,7 @@ import com.jakewharton.rxbinding4.view.RxView;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.database.subscription.NotificationMode;
 import org.schabi.newpipe.database.subscription.SubscriptionEntity;
+import org.schabi.newpipe.database.subscription.SubscriptionOwnership;
 import org.schabi.newpipe.databinding.ChannelHeaderBinding;
 import org.schabi.newpipe.databinding.FragmentChannelVideosBinding;
 import org.schabi.newpipe.databinding.PlaylistControlBinding;
@@ -264,9 +265,9 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
                     "Get subscription status", currentInfo));
         };
 
-        final Observable<List<SubscriptionEntity>> observable = subscriptionManager
+        final Observable<List<SubscriptionOwnership>> observable = subscriptionManager
                 .subscriptionTable()
-                .getSubscriptionFlowable(info.getServiceId(), info.getUrl())
+                .observeOwnership(info.getServiceId(), info.getUrl())
                 .toObservable();
 
         disposables.add(observable
@@ -274,13 +275,12 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
                 .subscribe(getSubscribeUpdateMonitor(info), onError));
 
         disposables.add(observable
-                .map(List::isEmpty)
-                .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isEmpty -> updateSubscribeButton(!isEmpty), onError));
+                .subscribe(ownership -> updateSubscribeButton(!ownership.isEmpty(),
+                        !ownership.isEmpty() && ownership.get(0).getLocallyOwned()), onError));
 
         disposables.add(observable
-                .map(List::isEmpty)
+                .map(ownership -> ownership.isEmpty() || !ownership.get(0).getLocallyOwned())
                 .distinctUntilChanged()
                 .skip(1) // channel has just been opened
                 .filter(x -> NotificationHelper.areNewStreamsNotificationsEnabled(requireContext()))
@@ -348,8 +348,8 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
                 .subscribe(onNext, onError);
     }
 
-    private Consumer<List<SubscriptionEntity>> getSubscribeUpdateMonitor(final ChannelInfo info) {
-        return (List<SubscriptionEntity> subscriptionEntities) -> {
+    private Consumer<List<SubscriptionOwnership>> getSubscribeUpdateMonitor(final ChannelInfo info) {
+        return (List<SubscriptionOwnership> subscriptionEntities) -> {
             if (DEBUG) {
                 Log.d(TAG, "subscriptionManager.subscriptionTable.doOnNext() called with: "
                         + "subscriptionEntities = [" + subscriptionEntities + "]");
@@ -358,7 +358,7 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
                 subscribeButtonMonitor.dispose();
             }
 
-            if (subscriptionEntities.isEmpty()) {
+            if (subscriptionEntities.isEmpty() || !subscriptionEntities.get(0).getLocallyOwned()) {
                 if (DEBUG) {
                     Log.d(TAG, "No subscription to this channel!");
                 }
@@ -375,14 +375,14 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
                 if (DEBUG) {
                     Log.d(TAG, "Found subscription to this channel!");
                 }
-                final SubscriptionEntity subscription = subscriptionEntities.get(0);
+                final SubscriptionEntity subscription = subscriptionEntities.get(0).getSubscription();
                 subscribeButtonMonitor = monitorSubscribeButton(
                         headerBinding.channelSubscribeButton, mapOnUnsubscribe(subscription));
             }
         };
     }
 
-    private void updateSubscribeButton(final boolean isSubscribed) {
+    private void updateSubscribeButton(final boolean isSubscribed, final boolean locallyOwned) {
         if (DEBUG) {
             Log.d(TAG, "updateSubscribeButton() called with: "
                     + "isSubscribed = [" + isSubscribed + "]");
@@ -407,7 +407,8 @@ public class ChannelVideosFragment extends BaseListInfoFragment<StreamInfoItem, 
             animateTextColor(headerBinding.channelSubscribeButton, textDuration, subscribedText,
                     subscribeText);
         } else {
-            headerBinding.channelSubscribeButton.setText(R.string.subscribed_button_title);
+            headerBinding.channelSubscribeButton.setText(locallyOwned
+                    ? R.string.subscribed_button_title : R.string.subscription_sync_keep_local);
             animateBackgroundColor(headerBinding.channelSubscribeButton, backgroundDuration,
                     subscribeBackground, subscribedBackground);
             animateTextColor(headerBinding.channelSubscribeButton, textDuration, subscribeText,

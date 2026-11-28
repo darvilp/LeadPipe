@@ -70,6 +70,14 @@
                 app:iconSpaceReserved="false" />
 
         <Preference
+                android:key="experimental_subscription_sync"
+                android:fragment="org.schabi.newpipe.settings.SubscriptionSyncSettingsFragment"
+                android:title="@string/subscription_sync_title"
+                android:summary="@string/subscription_sync_summary"
+                app:singleLineTitle="false"
+                app:iconSpaceReserved="false" />
+
+        <Preference
                 android:key="@string/clear_subscriptions_key"
                 android:summary="@string/clear_subscriptions_summary"
                 android:title="@string/clear_subscriptions_title"

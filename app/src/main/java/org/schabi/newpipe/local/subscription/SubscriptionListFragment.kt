@@ -333,10 +333,10 @@ class SubscriptionListFragment : BaseStateFragment<FeedState>() {
         disposables.add(
             subscriptionManager.deleteSubscription(channel.serviceId, channel.url)
                 .subscribe(
-                    {
+                    { removed ->
                         Toast.makeText(
                             requireContext(),
-                            getString(R.string.channel_unsubscribed),
+                            getString(if (removed) R.string.channel_unsubscribed else R.string.subscription_sync_from_peer),
                             Toast.LENGTH_SHORT
                         ).show()
                         // Reload subscriptions to reflect the change
