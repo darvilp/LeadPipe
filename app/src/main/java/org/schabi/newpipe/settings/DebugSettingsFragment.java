@@ -14,6 +14,7 @@ import org.schabi.newpipe.error.UserAction;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.local.feed.notifications.NotificationWorker;
 import org.schabi.newpipe.sync.DebugSync;
+import org.schabi.newpipe.sync.subscriptions.SubscriptionSync;
 import org.schabi.newpipe.util.PicassoHelper;
 
 import java.util.Optional;
@@ -52,6 +53,11 @@ public class DebugSettingsFragment extends BasePreferenceFragment {
                 DebugSync.schedule(requireContext(), false);
                 return false;
             }
+            if (SubscriptionSync.isEnabled(requireContext())) {
+                Toast.makeText(requireContext(), R.string.subscription_sync_database_sync_disabled,
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
             Toast.makeText(requireContext(),
                     "Checking " + input + "…", Toast.LENGTH_SHORT).show();
             disposables.add(Single.fromCallable(() -> {
@@ -62,6 +68,12 @@ public class DebugSettingsFragment extends BasePreferenceFragment {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(url -> {
+                        if (SubscriptionSync.isEnabled(requireContext())) {
+                            Toast.makeText(requireContext(),
+                                    R.string.subscription_sync_database_sync_disabled,
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         pref.setText(url);
                         DebugSync.schedule(requireContext(), true);
                         Toast.makeText(requireContext(), "Sync server set",

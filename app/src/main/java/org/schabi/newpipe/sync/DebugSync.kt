@@ -20,6 +20,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.schabi.newpipe.NewPipeDatabase
 import org.schabi.newpipe.R
+import org.schabi.newpipe.sync.subscriptions.SubscriptionSync
 import org.schabi.newpipe.database.AppDatabase
 import org.schabi.newpipe.sync.DbDiff.reader
 import java.io.File
@@ -132,6 +133,7 @@ object DebugSync {
     @JvmStatic
     @Throws(Exception::class)
     fun sync(context: Context): Unit = synchronized(lock) {
+        if (SubscriptionSync.isEnabled(context)) return
         val url = normalize(serverUrl(context) ?: return)
         val name = clientName(context)
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

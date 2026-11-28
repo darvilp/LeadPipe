@@ -32,6 +32,7 @@ public final class Migrations {
     public static final int DB_VER_901 = 901;
     public static final int DB_VER_902 = 902;
     public static final int DB_VER_903 = 903;
+    public static final int DB_VER_904 = 904;
 
     private static final String TAG = Migrations.class.getName();
     public static final boolean DEBUG = MainActivity.DEBUG;
@@ -469,6 +470,23 @@ public final class Migrations {
                     + "`service_id` INTEGER NOT NULL, `plugin_id` TEXT NOT NULL, "
                     + "`name` TEXT NOT NULL, `repository_url` TEXT NOT NULL, "
                     + "PRIMARY KEY(`service_id`))");
+        }
+    };
+
+    public static final Migration MIGRATION_903_904 = new Migration(DB_VER_903, DB_VER_904) {
+        @Override
+        public void migrate(@NonNull final SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE subscription_memberships ("
+                    + "subscription_id INTEGER NOT NULL, origin TEXT NOT NULL, "
+                    + "PRIMARY KEY(subscription_id, origin), "
+                    + "FOREIGN KEY(subscription_id) REFERENCES subscriptions(uid) "
+                    + "ON UPDATE NO ACTION ON DELETE CASCADE)");
+            database.execSQL("CREATE INDEX index_subscription_memberships_origin "
+                    + "ON subscription_memberships(origin)");
+            database.execSQL("CREATE TABLE subscription_sync_revisions ("
+                    + "origin TEXT NOT NULL PRIMARY KEY, revision INTEGER NOT NULL)");
+            database.execSQL("INSERT INTO subscription_memberships (subscription_id, origin) "
+                    + "SELECT uid, 'local' FROM subscriptions");
         }
     };
 

@@ -318,8 +318,9 @@ class SubscriptionFragment : BaseStateFragment<SubscriptionState>() {
 
     private fun deleteChannel(selectedItem: ChannelInfoItem) {
         disposables.add(
-            subscriptionManager.deleteSubscription(selectedItem.serviceId, selectedItem.url).subscribe {
-                Toast.makeText(requireContext(), getString(R.string.channel_unsubscribed), Toast.LENGTH_SHORT).show()
+            subscriptionManager.deleteSubscription(selectedItem.serviceId, selectedItem.url).subscribe { removed ->
+                val message = if (removed) R.string.channel_unsubscribed else R.string.subscription_sync_from_peer
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         )
     }

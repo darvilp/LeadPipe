@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
+import androidx.room.Upsert
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import org.schabi.newpipe.database.BasicDAO
@@ -138,6 +139,68 @@ abstract class SubscriptionDAO : BasicDAO<SubscriptionEntity> {
             }
         }
     }
+
+    @Query("SELECT uid FROM subscriptions WHERE service_id = :serviceId AND url = :url")
+    abstract fun exactId(serviceId: Int, url: String): Long?
+
+    @Query(
+        """
+        SELECT s.*, EXISTS (SELECT 1 FROM subscription_memberships m
+            WHERE m.subscription_id = s.uid AND m.origin = 'local') AS locally_owned
+        FROM subscriptions s WHERE s.service_id = :serviceId AND s.url = :url
+        """
+    )
+    abstract fun observeOwnership(serviceId: Int, url: String): Flowable<List<SubscriptionOwnership>>
+
+    @Query(
+        "SELECT s.* FROM subscriptions s JOIN subscription_memberships m " +
+            "ON m.subscription_id = s.uid WHERE m.origin = 'local' ORDER BY s.uid"
+    )
+    abstract fun localSubscriptions(): List<SubscriptionEntity>
+
+    @Query("SELECT * FROM subscriptions WHERE service_id IN (:serviceIds) ORDER BY uid")
+    abstract fun syncCandidates(serviceIds: List<Int>): List<SubscriptionEntity>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun addMembership(membership: SubscriptionMembership)
+
+    @Query("SELECT subscription_id FROM subscription_memberships WHERE origin = :origin")
+    abstract fun memberIds(origin: String): List<Long>
+
+    @Query("DELETE FROM subscription_memberships WHERE subscription_id = :id AND origin = :origin")
+    abstract fun removeMembership(id: Long, origin: String): Int
+
+    @Query(
+        "DELETE FROM subscriptions WHERE uid = :id AND NOT EXISTS " +
+            "(SELECT 1 FROM subscription_memberships WHERE subscription_id = :id)"
+    )
+    abstract fun deleteIfUnowned(id: Long)
+
+    @Query(
+        "SELECT COUNT(*) FROM subscriptions WHERE EXISTS " +
+            "(SELECT 1 FROM subscription_memberships WHERE subscription_id = uid AND origin != 'local') " +
+            "AND NOT EXISTS (SELECT 1 FROM subscription_memberships WHERE subscription_id = uid AND origin = 'local')"
+    )
+    abstract fun peerOnlyCount(): Int
+
+    @Query(
+        "DELETE FROM subscriptions WHERE EXISTS " +
+            "(SELECT 1 FROM subscription_memberships WHERE subscription_id = uid AND origin != 'local') " +
+            "AND NOT EXISTS (SELECT 1 FROM subscription_memberships WHERE subscription_id = uid AND origin = 'local')"
+    )
+    abstract fun deletePeerOnly(): Int
+
+    @Query("DELETE FROM subscription_memberships WHERE origin != 'local'")
+    abstract fun deletePeerMemberships()
+
+    @Query("SELECT revision FROM subscription_sync_revisions WHERE origin = :origin")
+    abstract fun acceptedRevision(origin: String): Long?
+
+    @Upsert
+    abstract fun setAcceptedRevision(revision: SubscriptionSyncRevision)
+
+    @Query("UPDATE subscription_sync_revisions SET revision = -revision WHERE revision > 0")
+    abstract fun allowAcceptedRevisionReplay()
 
     @Transaction
     open fun upsertAll(entities: List<SubscriptionEntity>): List<SubscriptionEntity> {

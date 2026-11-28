@@ -12,6 +12,7 @@ def signingKeyAlias = System.getenv("KEY_ALIAS")
 def signingKeyPassword = System.getenv("KEY_PASSWORD")
 def baseVersionCode = 1146
 def appVersionName = "5.6.0.39"
+def leadPipeSyncTest = providers.gradleProperty("leadPipeSyncTest").map { it.toBoolean() }.getOrElse(false)
 def abiCodes = ['armeabi-v7a': 1, 'x86': 2, 'x86_64': 3, 'arm64-v8a': 4]
 def stableBuildConfigVersionCode =
         (100 * baseVersionCode) + abiCodes['armeabi-v7a']
@@ -48,7 +49,7 @@ android {
     splits {
         abi {
             reset()
-            enable true
+            enable !leadPipeSyncTest
             include "armeabi-v7a", "arm64-v8a", "x86_64", "x86"
         }
     }
@@ -68,8 +69,8 @@ android {
         debug {
             debuggable true
 
-            applicationIdSuffix ".debug.allfeatures"
-            resValue "string", "app_name", "LeadPipe"
+            applicationIdSuffix leadPipeSyncTest ? ".synctest" : ".debug.allfeatures"
+            resValue "string", "app_name", leadPipeSyncTest ? "LeadPipe Sync Test" : "LeadPipe"
         }
 
         release {
@@ -136,6 +137,12 @@ kapt {
     correctErrorTypes true
 }
 
+if (leadPipeSyncTest) {
+    androidComponents.beforeVariants(androidComponents.selector().withBuildType("release")) { variant ->
+        variant.enable = false
+    }
+}
+
 androidComponents.onVariants(androidComponents.selector().all()) { variant ->
     variant.buildConfigFields.put(
             "VERSION_CODE",
@@ -152,7 +159,8 @@ androidComponents.onVariants(androidComponents.selector().all()) { variant ->
         }
         output.versionCode.set(versionCode)
         output.outputFileName.set(
-                "LeadPipe_${appVersionName}-${abi ?: 'universal'}-${variant.name}.apk")
+                leadPipeSyncTest ? "LeadPipe-Sync-Test-${appVersionName}.apk"
+                        : "LeadPipe_${appVersionName}-${abi ?: 'universal'}-${variant.name}.apk")
     }
 }
 

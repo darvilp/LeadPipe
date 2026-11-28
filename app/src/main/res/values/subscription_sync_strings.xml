@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subscription_sync_title">Experimental subscription sync</string>
+    <string name="subscription_sync_summary">Sync built-in service subscriptions over your local network or a shared folder.</string>
+    <string name="subscription_sync_enable">Enable subscription sync</string>
+    <string name="subscription_sync_status">Sync status</string>
+    <string name="subscription_sync_status_waiting">No sync in this session.</string>
+    <string name="subscription_sync_ready">Ready to sync.</string>
+    <string name="subscription_sync_database_sync_disabled">Pause subscription sync before configuring full database sync.</string>
+    <string name="subscription_sync_failed">Subscription sync failed.</string>
+    <string name="subscription_sync_lan">Local network</string>
+    <string name="subscription_sync_lan_unavailable">LAN sync is unavailable.</string>
+    <string name="subscription_sync_nas">Shared folder</string>
+    <string name="subscription_sync_allow_pairing">Allow incoming pairing</string>
+    <string name="subscription_sync_nearby">Nearby devices</string>
+    <plurals name="subscription_sync_nearby_count">
+        <item quantity="one">%d device found</item>
+        <item quantity="other">%d devices found</item>
+    </plurals>
+    <string name="subscription_sync_now">Sync now</string>
+    <string name="subscription_sync_send">Send my subscriptions</string>
+    <string name="subscription_sync_receive">Receive this device’s subscriptions</string>
+    <string name="subscription_sync_keep_local">Keep on this device</string>
+    <string name="subscription_sync_from_peer">This subscription comes from another device.</string>
+    <string name="subscription_sync_pair">Pair device</string>
+    <string name="subscription_sync_pair_help">Keep the other device’s sync screen open and select Allow incoming pairing there.</string>
+    <string name="subscription_sync_compare">Compare this code on both devices and confirm when they match.\n\n%s</string>
+    <string name="subscription_sync_match">Codes match</string>
+    <string name="subscription_sync_forget">Forget pairing</string>
+    <string name="subscription_sync_forgotten">Pairing removed.</string>
+    <string name="subscription_sync_folder">Choose shared folder</string>
+    <string name="subscription_sync_folder_unset">No folder selected.</string>
+    <string name="subscription_sync_folder_access">The folder must grant read and write access.</string>
+    <string name="subscription_sync_folder_ready">Shared folder selected.</string>
+    <string name="subscription_sync_picker_missing">The Android folder picker is unavailable on this device.</string>
+    <string name="subscription_sync_folder_now">Sync shared folder now</string>
+    <string name="subscription_sync_nas_result">Folder sync complete. Updated device lists: %1$d. Skipped unsupported subscriptions: %2$d. Unreadable snapshots: %3$d.</string>
+    <string name="subscription_sync_purge">This device only</string>
+    <string name="subscription_sync_purge_summary">Pause subscription sync and remove subscriptions supplied only by other devices.</string>
+    <plurals name="subscription_sync_purge_confirm">
+        <item quantity="one">Pause sync and remove %d peer-only subscription from this device?</item>
+        <item quantity="other">Pause sync and remove %d peer-only subscriptions from this device?</item>
+    </plurals>
+    <plurals name="subscription_sync_purged">
+        <item quantity="one">Sync paused. Removed %d peer-only subscription.</item>
+        <item quantity="other">Sync paused. Removed %d peer-only subscriptions.</item>
+    </plurals>
+</resources>
