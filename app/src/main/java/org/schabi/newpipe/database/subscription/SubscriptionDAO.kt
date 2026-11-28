@@ -199,8 +199,8 @@ abstract class SubscriptionDAO : BasicDAO<SubscriptionEntity> {
     @Upsert
     abstract fun setAcceptedRevision(revision: SubscriptionSyncRevision)
 
-    @Query("DELETE FROM subscription_sync_revisions")
-    abstract fun clearAcceptedRevisions()
+    @Query("UPDATE subscription_sync_revisions SET revision = -revision WHERE revision > 0")
+    abstract fun allowAcceptedRevisionReplay()
 
     @Transaction
     open fun upsertAll(entities: List<SubscriptionEntity>): List<SubscriptionEntity> {

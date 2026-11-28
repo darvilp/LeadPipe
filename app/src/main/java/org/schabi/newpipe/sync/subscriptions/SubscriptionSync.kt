@@ -60,12 +60,13 @@ object SubscriptionSync {
         return SyncSession(state.getString("id"), generation)
     }
 
-    private fun requireActive(context: Context, session: SyncSession): JSONObject {
-        val state = settings(context)
-        check(state.optBoolean("enabled") && session.generation == generation
-            && state.optString("id") == session.deviceId) { "Subscription sync was paused" }
-        return state
-    }
+    private fun activeSettings(context: Context, session: SyncSession): JSONObject? =
+        settings(context).takeIf {
+            it.optBoolean("enabled") && session.generation == generation && it.optString("id") == session.deviceId
+        }
+
+    private fun requireActive(context: Context, session: SyncSession): JSONObject =
+        checkNotNull(activeSettings(context, session)) { "Subscription sync was paused" }
 
     @Synchronized
     internal fun outgoing(context: Context, session: SyncSession): OutgoingSubscriptions {
@@ -92,12 +93,13 @@ object SubscriptionSync {
         context: Context,
         session: SyncSession,
         snapshot: SubscriptionSnapshot,
-        lan: Boolean = false
+        lan: Boolean = false,
+        store: SubscriptionSyncStore? = null
     ): Boolean {
-        requireActive(context, session)
+        if (activeSettings(context, session) == null) return false
         if (snapshot.origin == session.deviceId) return false
         check(!lan || peer(context, snapshot.origin)?.receive == true) { "Receiving is disabled for this peer" }
-        return SubscriptionSyncStore(NewPipeDatabase.getInstance(context)).apply(snapshot)
+        return (store ?: SubscriptionSyncStore(NewPipeDatabase.getInstance(context))).apply(snapshot)
     }
 
     @Synchronized
@@ -105,9 +107,9 @@ object SubscriptionSync {
         NewPipeDatabase.getInstance(context).subscriptionDAO().peerOnlyCount()
 
     @Synchronized
-    internal fun purge(context: Context): Int {
+    internal fun purge(context: Context, store: SubscriptionSyncStore? = null): Int {
         pause(context)
-        return SubscriptionSyncStore(NewPipeDatabase.getInstance(context)).purge()
+        return (store ?: SubscriptionSyncStore(NewPipeDatabase.getInstance(context))).purge()
     }
 
     @Synchronized
@@ -116,7 +118,7 @@ object SubscriptionSync {
         val db = NewPipeDatabase.getInstance(context)
         db.runInTransaction {
             db.subscriptionDAO().deleteAll()
-            db.subscriptionDAO().clearAcceptedRevisions()
+            db.subscriptionDAO().allowAcceptedRevisionReplay()
         }
     }
 

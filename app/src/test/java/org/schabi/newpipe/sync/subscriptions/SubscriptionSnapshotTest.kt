@@ -1,6 +1,7 @@
 package org.schabi.newpipe.sync.subscriptions
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -34,6 +35,16 @@ class SubscriptionSnapshotTest {
         ).forEach {
             assertTrue(it, runCatching { SubscriptionSnapshot.decode(it) }.isFailure)
         }
+    }
+
+    @Test
+    fun aPurgedWatermarkPermitsOnlyTheSameOrANewerRevision() {
+        assertTrue(canApplySubscriptionRevision(7, null))
+        assertFalse(canApplySubscriptionRevision(7, -8))
+        assertTrue(canApplySubscriptionRevision(8, -8))
+        assertTrue(canApplySubscriptionRevision(9, -8))
+        assertFalse(canApplySubscriptionRevision(8, 8))
+        assertTrue(canApplySubscriptionRevision(Long.MAX_VALUE, -Long.MAX_VALUE))
     }
 
     @Test

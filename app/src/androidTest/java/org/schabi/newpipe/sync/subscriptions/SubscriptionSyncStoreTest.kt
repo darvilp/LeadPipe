@@ -1,6 +1,7 @@
 package org.schabi.newpipe.sync.subscriptions
 
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
@@ -20,6 +21,8 @@ import org.schabi.newpipe.database.Migrations.MIGRATION_903_904
 import org.schabi.newpipe.database.subscription.SubscriptionEntity
 import org.schabi.newpipe.database.subscription.SubscriptionMembership
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem
+import java.io.File
+import java.nio.file.Files
 
 @RunWith(AndroidJUnit4::class)
 class SubscriptionSyncStoreTest {
@@ -94,7 +97,7 @@ class SubscriptionSyncStoreTest {
             )
             assertEquals(1, store.purge())
             assertNull(dao.exactId(0, remote.url))
-            assertNull(dao.acceptedRevision(anotherOrigin))
+            assertEquals(-1L, dao.acceptedRevision(anotherOrigin))
             assertEquals(setOf(shared.url, adopted.url, local.url), dao.localSubscriptions().map { it.url }.toSet())
             db.openHelper.readableDatabase.query("SELECT COUNT(*) FROM feed_group_subscription_join").use {
                 assertTrue(it.moveToFirst())
@@ -103,6 +106,50 @@ class SubscriptionSyncStoreTest {
             assertTrue(store.apply(SubscriptionSnapshot(anotherOrigin, 1, listOf(remote))))
         } finally {
             db.close()
+        }
+    }
+
+    @Test
+    fun purgeRejectsOlderNasFallbackAndInvalidatesPendingPull() {
+        val directory = Files.createTempDirectory(context.cacheDir.toPath(), "subscription-sync-test").toFile()
+        val isolatedContext = object : ContextWrapper(context) {
+            override fun getNoBackupFilesDir(): File = directory
+        }
+        val db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        try {
+            val dao = db.subscriptionDAO()
+            val store = SubscriptionSyncStore(db)
+            val removed = channel("removed")
+            val kept = channel("kept")
+            val revision7 = SubscriptionSnapshot(origin, 7, listOf(kept, removed))
+            val revision8 = SubscriptionSnapshot(origin, 8, listOf(kept))
+
+            SubscriptionSync.enable(isolatedContext)
+            val pendingPull = SubscriptionSync.session(isolatedContext)
+            assertTrue(SubscriptionSync.apply(isolatedContext, pendingPull, revision7, store = store))
+            assertTrue(SubscriptionSync.apply(isolatedContext, pendingPull, revision8, store = store))
+            assertNull(dao.exactId(0, removed.url))
+
+            assertEquals(1, SubscriptionSync.purge(isolatedContext, store))
+            assertEquals(0, SubscriptionSync.purge(isolatedContext, store))
+            SubscriptionSync.enable(isolatedContext)
+            val resumed = SubscriptionSync.session(isolatedContext)
+
+            // Revision 8 is unavailable in the folder and the reader falls back to revision 7.
+            assertFalse(SubscriptionSync.apply(isolatedContext, resumed, revision7, store = store))
+            // Even the newest snapshot from a pull that started before the purge is stale.
+            assertFalse(SubscriptionSync.apply(isolatedContext, pendingPull, revision8, store = store))
+            assertFalse(SubscriptionSync.apply(isolatedContext, pendingPull, revision7.copy(revision = 9), store = store))
+            assertNull(dao.exactId(0, kept.url))
+            assertNull(dao.exactId(0, removed.url))
+
+            assertTrue(SubscriptionSync.apply(isolatedContext, resumed, revision8, store = store))
+            assertEquals(listOf(dao.exactId(0, kept.url)!!), dao.memberIds(origin))
+            assertNull(dao.exactId(0, removed.url))
+            assertFalse(SubscriptionSync.apply(isolatedContext, resumed, revision8, store = store))
+        } finally {
+            db.close()
+            directory.deleteRecursively()
         }
     }
 

@@ -6,12 +6,15 @@ import org.schabi.newpipe.database.subscription.SubscriptionMembership
 import org.schabi.newpipe.database.subscription.SubscriptionSyncRevision
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem
 import java.util.concurrent.Callable
+import kotlin.math.absoluteValue
 
 internal class SubscriptionSyncStore(private val db: AppDatabase) {
     fun apply(snapshot: SubscriptionSnapshot): Boolean {
         return db.runInTransaction(Callable {
             val dao = db.subscriptionDAO()
-            if (snapshot.revision <= (dao.acceptedRevision(snapshot.origin) ?: 0)) return@Callable false
+            if (!canApplySubscriptionRevision(snapshot.revision, dao.acceptedRevision(snapshot.origin))) {
+                return@Callable false
+            }
 
             val existing = dao.syncCandidates(SubscriptionSnapshot.serviceIds()).asReversed().mapNotNull {
                 val service = SubscriptionSnapshot.serviceKey(it.serviceId) ?: return@mapNotNull null
@@ -42,8 +45,14 @@ internal class SubscriptionSyncStore(private val db: AppDatabase) {
             val dao = db.subscriptionDAO()
             val count = dao.deletePeerOnly()
             dao.deletePeerMemberships()
-            dao.clearAcceptedRevisions()
+            dao.allowAcceptedRevisionReplay()
             count
         })
     }
+}
+
+// Purge negates the watermark to allow that same snapshot to materialize once again.
+internal fun canApplySubscriptionRevision(incoming: Long, stored: Long?): Boolean {
+    val revision = stored ?: 0
+    return incoming > revision.absoluteValue || (revision < 0 && incoming == -revision)
 }
