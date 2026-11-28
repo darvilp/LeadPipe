@@ -322,8 +322,8 @@ public final class PlayQueueActivity extends AppCompatActivity
 
     private void buildMetadata() {
         queueControlBinding.metadata.setOnClickListener(this);
-        queueControlBinding.songName.setOnClickListener(this);
-        TooltipCompat.setTooltipText(queueControlBinding.songName, getString(R.string.show_stream_details));
+        TooltipCompat.setTooltipText(queueControlBinding.metadata,
+                getString(R.string.show_stream_details));
         queueControlBinding.songName.setSelected(true);
         queueControlBinding.artistName.setSelected(true);
     }
@@ -457,10 +457,8 @@ public final class PlayQueueActivity extends AppCompatActivity
             player.playNext();
         } else if (view.getId() == queueControlBinding.controlShuffle.getId()) {
             player.onShuffleClicked();
-        } else if (view.getId() == queueControlBinding.songName.getId()) {
-            player.getClickController().openPlayingVideoDetails(this);
         } else if (view.getId() == queueControlBinding.metadata.getId()) {
-            scrollToSelected();
+            player.getClickController().openPlayingVideoDetails(this);
         } else if (view.getId() == queueControlBinding.liveSync.getId()) {
             player.seekToDefault();
         }

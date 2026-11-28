@@ -137,7 +137,9 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:descendantFocusability="afterDescendants"
+                    android:focusable="false"
                     android:gravity="top"
+                    android:importantForAccessibility="no"
                     android:minHeight="45dp"
                     tools:ignore="RtlHardcoded">
 

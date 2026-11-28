@@ -46,6 +46,8 @@ class PlayerClickController(private val player: Player) :
                 NavigationHelper.expandMainPlayer()
             }
         }
+        binding.primaryControls.setOnClickListener { binding.titleTextView.performClick() }
+        binding.primaryControls.isClickable = player.isFullscreen
         TooltipCompat.setTooltipText(
             binding.titleTextView, player.context.getString(R.string.show_stream_details)
         )

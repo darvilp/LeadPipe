@@ -119,6 +119,7 @@ class PlayerUiModeController(private val player: Player) {
         player.binding.subtitleView.post { player.layoutController.reapplyCues() }
 
         val binding = player.binding
+        binding.primaryControls.isClickable = isFullscreen
         if (isFullscreen) {
             binding.titleTextView.visibility = View.VISIBLE
             binding.channelTextView.visibility = View.VISIBLE

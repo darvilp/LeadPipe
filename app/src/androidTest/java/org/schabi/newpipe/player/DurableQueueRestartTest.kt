@@ -5,6 +5,8 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
+import android.view.InputDevice
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -222,7 +224,7 @@ class DurableQueueRestartTest {
     }
 
     @Test
-    fun playingTitlesRevealDetailsWithoutRestartingPlayback() {
+    fun playingTitleBarsRevealDetailsWithoutRestartingPlayback() {
         requireProbe()
         val player = startOfflineQueue(
             checkNotNull(PlayQueue.restore(snapshot.copy(originalOrder = null))),
@@ -232,14 +234,14 @@ class DurableQueueRestartTest {
         val queue = onMain { checkNotNull(player.playQueue) }
         val item = onMain { checkNotNull(queue.item) }
         val engine = onMain { player.simpleExoPlayer }
-        val queuePosition = onMain {
-            val position = player.currentPosition
-            assertTrue(screen.findViewById<View>(R.id.song_name).performClick())
-            position
+        val queuePosition = onMain { player.currentPosition }
+        tap(screen.findViewById(R.id.metadata)) {
+            // Tap the bar's padding, outside both text views.
+            (paddingLeft / 2) to (height / 2)
         }
 
         var host: MainActivity? = null
-        await("Queue title opens the current video details") {
+        await("Queue title bar opens the current video details") {
             host = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
                 .filterIsInstance<MainActivity>()
                 .firstOrNull { it.intent.getStringExtra(KEY_URL) == item.url && detailsAreExpanded(it) }
@@ -259,12 +261,17 @@ class DurableQueueRestartTest {
         await("Main player enters fullscreen") { player.isFullscreen && player.parentActivity != null }
         onMain { player.showControls(0) }
         await("Fullscreen title is visible") { player.binding.titleTextView.isShown }
-        val fullscreenPosition = onMain {
-            val position = player.currentPosition
-            assertTrue(player.binding.titleTextView.performClick())
-            position
+        val fullscreenPosition = onMain { player.currentPosition }
+        tap(player.binding.primaryControls) {
+            val title = player.binding.titleTextView
+            val barLocation = IntArray(2).also(::getLocationOnScreen)
+            val titleLocation = IntArray(2).also(title::getLocationOnScreen)
+            // Tap the blank strip directly above the title, still inside the bar.
+            val gap = titleLocation[1] - barLocation[1]
+            assertTrue(gap > 0)
+            (titleLocation[0] - barLocation[0] + title.width / 2) to (gap / 2)
         }
-        await("Fullscreen title reveals the same video's details") {
+        await("Fullscreen title bar reveals the same video's details") {
             !player.isFullscreen && player.parentActivity?.let(::detailsAreExpanded) == true
         }
         onMain {
@@ -273,6 +280,24 @@ class DurableQueueRestartTest {
             assertSame(engine, player.simpleExoPlayer)
             assertFalse(player.playWhenReady)
             assertEquals(fullscreenPosition, player.currentPosition)
+        }
+    }
+
+    private fun tap(view: View, offset: View.() -> Pair<Int, Int>) {
+        val (x, y) = onMain {
+            val location = IntArray(2).also(view::getLocationOnScreen)
+            val (dx, dy) = view.offset()
+            (location[0] + dx).toFloat() to (location[1] + dy).toFloat()
+        }
+        val downTime = SystemClock.uptimeMillis()
+        for (action in listOf(MotionEvent.ACTION_DOWN, MotionEvent.ACTION_UP)) {
+            val event = MotionEvent.obtain(downTime, SystemClock.uptimeMillis(), action, x, y, 0)
+            try {
+                event.source = InputDevice.SOURCE_TOUCHSCREEN
+                instrumentation.sendPointerSync(event)
+            } finally {
+                event.recycle()
+            }
         }
     }
 
