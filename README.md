@@ -10,7 +10,7 @@ LeadPipe uses four-part versions. In `5.6.0.24`, `5.6.0` is the PipePipe base an
 
 See the [Subscription Groups guide](docs/wiki/Subscription-Groups.md) and the [wiki comparison draft](docs/wiki/LeadPipe-vs-PipePipe.md).
 
-Rows marked **CI candidate** are in the [LeadPipe 5.6.0.36 test build](https://github.com/darvilp/LeadPipe/commits/candidate/leadpipe-5.6.0.36/).
+Rows marked **CI candidate** are in the [LeadPipe 5.6.0.37 test build](https://github.com/darvilp/LeadPipe/commits/candidate/leadpipe-5.6.0.37/).
 
 ### Features
 

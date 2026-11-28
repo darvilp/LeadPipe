@@ -16,6 +16,7 @@ on:
       - candidate/leadpipe-5.6.0.34
       - candidate/leadpipe-5.6.0.35
       - candidate/leadpipe-5.6.0.36
+      - candidate/leadpipe-5.6.0.37
       - feat/sponsorblock-server-urls
     tags:
       - leadpipe/v*
