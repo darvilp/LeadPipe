@@ -29,12 +29,15 @@ public final class QueueItemMenuUtil {
                                      final boolean hideDetails,
                                      @Nullable final FragmentManager fragmentManager,
                                      final Context context,
-                                     final Runnable onRemove) {
+                                     final Runnable onRemove,
+                                     @Nullable final Runnable onMoveToPlayNext) {
         final ContextThemeWrapper themeWrapper =
                 new ContextThemeWrapper(context, R.style.DarkPopupMenu);
 
         final PopupMenu popupMenu = new PopupMenu(themeWrapper, view);
         popupMenu.inflate(R.menu.menu_play_queue_item);
+        popupMenu.getMenu().findItem(R.id.menu_item_move_to_play_next)
+                .setVisible(onMoveToPlayNext != null);
 
         if (hideDetails) {
             popupMenu.getMenu().findItem(R.id.menu_item_details).setVisible(false);
@@ -47,7 +50,11 @@ public final class QueueItemMenuUtil {
         }
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
-            if (menuItem.getItemId() == R.id.menu_item_remove) {
+            if (menuItem.getItemId() == R.id.menu_item_move_to_play_next
+                    && onMoveToPlayNext != null) {
+                onMoveToPlayNext.run();
+                return true;
+            } else if (menuItem.getItemId() == R.id.menu_item_remove) {
                 onRemove.run();
                 return true;
             } else if (menuItem.getItemId() == R.id.menu_item_details) {

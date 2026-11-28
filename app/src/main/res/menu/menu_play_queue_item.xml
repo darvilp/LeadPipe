@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu_item_move_to_play_next"
+        android:title="@string/play_queue_move_to_play_next" />
+    <item
         android:id="@+id/menu_item_remove"
         android:title="@string/play_queue_remove" />
     <item

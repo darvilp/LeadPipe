@@ -594,6 +594,24 @@ public abstract class PlayQueue implements Serializable {
         }
     }
 
+    public synchronized boolean canMoveToPlayNext(@NonNull final PlayerMediaItem item) {
+        final int source = indexOf(item);
+        final int current = getIndex();
+        return !disposed && source >= 0 && getItem() != null
+                && source != current && source != current + 1;
+    }
+
+    public synchronized boolean moveToPlayNext(@NonNull final PlayerMediaItem item) {
+        if (!canMoveToPlayNext(item)) {
+            return false;
+        }
+        final int source = indexOf(item);
+        final int current = getIndex();
+        // Moving an earlier item shifts the current item one place to the left.
+        move(source, source < current ? current : current + 1);
+        return true;
+    }
+
     /**
      * Moves a queue item at the source index to the target index.
      * <p>

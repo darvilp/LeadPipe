@@ -1,6 +1,5 @@
 package org.schabi.newpipe.player;
 
-import static org.schabi.newpipe.QueueItemMenuUtil.openPopupMenu;
 import static org.schabi.newpipe.player.helper.PlayerHelper.formatSpeed;
 import static org.schabi.newpipe.util.Localization.assureCorrectAppLanguage;
 
@@ -357,12 +356,10 @@ public final class PlayQueueActivity extends AppCompatActivity
             @Override
             public void held(final PlayerMediaItem item, final View view) {
                 final Player active = player;
-                final PlayQueue queue = active == null ? null : active.getPlayQueue();
-                if (queue != null && queue.indexOf(item) != -1) {
-                    openPopupMenu(item, view, false,
-                            getSupportFragmentManager(), PlayQueueActivity.this,
-                            () -> active.getQueueController().removeWithUndo(queue,
-                                    queue.indexOf(item), queueControlBinding.getRoot()));
+                if (active != null) {
+                    active.getQueueController().openQueueItemMenu(
+                            item, view, false, getSupportFragmentManager(),
+                            queueControlBinding.getRoot());
                 }
             }
 

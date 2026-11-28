@@ -1,6 +1,7 @@
 package org.schabi.newpipe.player
 
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -93,6 +94,24 @@ class PlayerQueueController(private val player: Player) {
     fun dismissRemovalUndo() {
         removalSnackbar?.dismiss()
         removalSnackbar = null
+    }
+
+    fun openQueueItemMenu(
+        item: PlayerMediaItem,
+        view: View,
+        hideDetails: Boolean,
+        fragmentManager: FragmentManager?,
+        undoHost: View,
+    ) {
+        val queue = player.playQueue ?: return
+        if (queue.indexOf(item) < 0) return
+        val moveNext = if (queue.canMoveToPlayNext(item)) Runnable {
+            if (player.playQueue === queue) queue.moveToPlayNext(item)
+        } else null
+        QueueItemMenuUtil.openPopupMenu(
+            item, view, hideDetails, fragmentManager, view.context,
+            { removeWithUndo(queue, queue.indexOf(item), undoHost) }, moveNext
+        )
     }
 
     fun getPlayQueueAdapter(): PlayQueueAdapter? = queueAdapter
@@ -287,13 +306,10 @@ class PlayerQueueController(private val player: Player) {
         }
 
         override fun held(item: PlayerMediaItem, view: View) {
-            val playQueue = player.playQueue ?: return
-            if (playQueue.indexOf(item) != -1) {
-                QueueItemMenuUtil.openPopupMenu(
-                    item, view, true,
-                    player.parentActivity?.supportFragmentManager, player.context
-                ) { removeWithUndo(playQueue, playQueue.indexOf(item), player.binding.queueUndoHost) }
-            }
+            openQueueItemMenu(
+                item, view, true, player.parentActivity?.supportFragmentManager,
+                player.binding.queueUndoHost
+            )
         }
 
         override fun onStartDrag(viewHolder: PlayQueueItemHolder) {
