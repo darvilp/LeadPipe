@@ -17,6 +17,7 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.schabi.newpipe.MainActivity
+import org.schabi.newpipe.R
 import org.schabi.newpipe.extractor.InfoItem.InfoType
 import org.schabi.newpipe.extractor.MediaFormat
 import org.schabi.newpipe.extractor.stream.Description
@@ -124,20 +125,31 @@ class DurableQueueRestartTest {
         await("Single entry prepared at the saved position") {
             player.isPrepared && player.currentPosition == 5000L && !player.playWhenReady
         }
+        val fixtureInfo = player.currentStreamInfo.orElseThrow()
 
         val queue = checkNotNull(player.playQueue)
+        context.startActivity(NavigationHelper.getPlayQueueActivityIntent(context)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        var activity: PlayQueueActivity? = null
+        await("The full queue is attached to the playing service") {
+            activity = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED).filterIsInstance<PlayQueueActivity>()
+                .firstOrNull()
+            activity?.player === player
+        }
+        val screen = checkNotNull(activity)
         instrumentation.runOnMainSync {
-            player.queueController.onQueueClicked()
-            player.queueController.removeWithUndo(queue, 0, player.binding.queueUndoHost)
+            player.queueController.removeWithUndo(queue, 0, screen.findViewById(R.id.main_content))
         }
         await("Last removal leaves a visible Undo action and keeps the service alive") {
-            val undo = ActivityLifecycleMonitorRegistry.getInstance()
-                .getActivitiesInStage(Stage.RESUMED)
-                .firstNotNullOfOrNull { activity ->
-                    activity.findViewById<View>(com.google.android.material.R.id.snackbar_action)
-                }
-            queue.isEmpty && PlayerHolder.getInstance().player === player &&
-                undo?.isShown == true && undo.performClick()
+            val undo = screen.findViewById<View>(com.google.android.material.R.id.snackbar_action)
+            if (!queue.isEmpty || PlayerHolder.getInstance().player !== player ||
+                player.isPrepared || undo?.isShown != true
+            ) return@await false
+            // A fresh source is loaded after Undo. Keep this synthetic URL offline even if
+            // activity startup evicted its metadata from the shared cache.
+            InfoCache.getInstance().putInfo(entry.serviceId, entry.url, fixtureInfo, InfoType.STREAM)
+            undo.performClick()
         }
         await("Undo restores the same entry paused at the original position") {
             player.playQueue === queue && queue.ids() == listOf(entry.uuid) &&
