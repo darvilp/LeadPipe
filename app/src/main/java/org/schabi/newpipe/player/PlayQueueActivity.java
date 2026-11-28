@@ -105,6 +105,9 @@ public final class PlayQueueActivity extends AppCompatActivity
         m.findItem(R.id.action_cast_pipepipe)
                 .setVisible(!org.schabi.newpipe.util.DeviceUtils.isTv(this));
         final boolean ready = player != null && player.isModeSwitchReady();
+        final PlayQueue queue = player == null ? null : player.getPlayQueue();
+        m.findItem(R.id.action_remove_before_current)
+                .setEnabled(ready && queue != null && queue.getIndex() > 0);
         m.findItem(R.id.action_clear_queue).setEnabled(ready);
         m.findItem(R.id.action_switch_popup).setEnabled(ready)
                 .setVisible(player == null || !player.popupPlayerSelected());
@@ -125,6 +128,9 @@ public final class PlayQueueActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.action_clear_queue) {
             confirmClearQueue();
+            return true;
+        } else if (item.getItemId() == R.id.action_remove_before_current) {
+            confirmRemoveBeforeCurrent();
             return true;
         } else if (item.getItemId() == R.id.action_append_playlist) {
             player.onAddToPlaylistClicked(getSupportFragmentManager());
@@ -175,6 +181,35 @@ public final class PlayQueueActivity extends AppCompatActivity
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
+                })
+                .show();
+    }
+
+    private void confirmRemoveBeforeCurrent() {
+        final Player active = player;
+        if (active == null || !active.isModeSwitchReady()) {
+            return;
+        }
+        final PlayQueue queue = active.getPlayQueue();
+        final PlayQueue.PrefixRemoval preview = queue == null
+                ? null : queue.previewRemoveBeforeCurrent();
+        if (preview == null) {
+            return;
+        }
+        final int count = preview.getCount();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.play_queue_remove_before_current)
+                .setMessage(getResources().getQuantityString(
+                        R.plurals.play_queue_remove_before_current_confirmation, count, count))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.play_queue_remove, (dialog, which) -> {
+                    if (player == active && active.getPlayQueue() == queue
+                            && queue.removeBeforeCurrent(preview)) {
+                        active.getQueueController().dismissRemovalUndo();
+                    } else {
+                        Toast.makeText(this, R.string.play_queue_remove_before_current_stale,
+                                Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .show();
     }

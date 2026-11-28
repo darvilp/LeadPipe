@@ -26,6 +26,7 @@ import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
 import org.schabi.newpipe.player.playqueue.events.InsertEvent;
 import org.schabi.newpipe.player.playqueue.events.RemoveEvent;
+import org.schabi.newpipe.player.playqueue.events.RemovePrefixEvent;
 import org.schabi.newpipe.player.playqueue.events.ReorderEvent;
 import org.schabi.newpipe.util.ServiceHelper;
 
@@ -252,7 +253,7 @@ public class MediaSourceManager {
             case ERROR:
                 maybeBlock();
             case APPEND:
-                populateSources();
+                populateSources(playQueue.size());
                 break;
             case INSERT:
                 playlist.insertPlaceholder(((InsertEvent) event).getIndex());
@@ -263,6 +264,12 @@ public class MediaSourceManager {
             case REMOVE:
                 final RemoveEvent removeEvent = (RemoveEvent) event;
                 playlist.remove(removeEvent.getRemoveIndex());
+                break;
+            case REMOVE_PREFIX:
+                final RemovePrefixEvent removePrefix = (RemovePrefixEvent) event;
+                // A deferred append may have seen the shorter, already trimmed queue.
+                populateSources(removePrefix.getCount() + removePrefix.getRemainingCount());
+                playlist.removePrefix(removePrefix.getCount());
                 break;
             case MOVE:
                 final MoveEvent moveEvent = (MoveEvent) event;
@@ -285,7 +292,7 @@ public class MediaSourceManager {
             case INIT: case REORDER: case ERROR: case SELECT: case INSERT:
                 loadImmediate(); // low frequency, critical events
                 break;
-            case APPEND: case REMOVE: case MOVE: case RECOVERY:
+            case APPEND: case REMOVE: case REMOVE_PREFIX: case MOVE: case RECOVERY:
             default:
                 loadDebounced(); // high frequency or noncritical events
                 break;
@@ -293,7 +300,7 @@ public class MediaSourceManager {
 
         // update ui and notification
         switch (event.type()) {
-            case APPEND: case INSERT: case REMOVE: case MOVE: case REORDER:
+            case APPEND: case INSERT: case REMOVE: case REMOVE_PREFIX: case MOVE: case REORDER:
                 playbackListener.onPlayQueueEdited();
         }
 
@@ -574,11 +581,11 @@ public class MediaSourceManager {
         playlist = new ManagedMediaSourcePlaylist();
     }
 
-    private void populateSources() {
+    private void populateSources(final int size) {
         if (DEBUG) {
             Log.d(TAG, "populateSources() called.");
         }
-        while (playlist.size() < playQueue.size()) {
+        while (playlist.size() < size) {
             playlist.expand();
         }
     }

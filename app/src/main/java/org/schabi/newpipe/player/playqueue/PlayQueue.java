@@ -13,6 +13,7 @@ import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
 import org.schabi.newpipe.player.playqueue.events.RecoveryEvent;
 import org.schabi.newpipe.player.playqueue.events.RemoveEvent;
+import org.schabi.newpipe.player.playqueue.events.RemovePrefixEvent;
 import org.schabi.newpipe.player.playqueue.events.ReorderEvent;
 import org.schabi.newpipe.player.playqueue.events.SelectEvent;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -610,6 +612,60 @@ public abstract class PlayQueue implements Serializable {
         // Moving an earlier item shifts the current item one place to the left.
         move(source, source < current ? current : current + 1);
         return true;
+    }
+
+    @Nullable
+    public synchronized PrefixRemoval previewRemoveBeforeCurrent() {
+        final int count = getIndex();
+        final PlayerMediaItem selected = getItem();
+        if (disposed || count <= 0 || selected == null) {
+            return null;
+        }
+        return new PrefixRemoval(this, selected, List.copyOf(streams.subList(0, count)));
+    }
+
+    public synchronized boolean removeBeforeCurrent(@NonNull final PrefixRemoval preview) {
+        final int count = getIndex();
+        if (disposed || preview.queue != this || count != preview.getCount()
+                || !preview.selected.equals(getItem())
+                || !preview.items.equals(streams.subList(0, count))) {
+            return false;
+        }
+
+        final Set<PlayerMediaItem> removed = new HashSet<>(preview.items);
+        streams.subList(0, count).clear();
+        if (backup != null) {
+            backup.removeIf(removed::contains);
+        }
+        history.removeIf(removed::contains);
+        for (final PlayerMediaItem item : removed) {
+            final String id = item.getUuid();
+            recoveryPositions.remove(id);
+            if (id.equals(autoQueuedUuid)) {
+                autoQueuedUuid = null;
+            }
+        }
+        queueIndex.set(0);
+        invalidateRemovalUndo();
+        broadcast(new RemovePrefixEvent(count, streams.size()));
+        return true;
+    }
+
+    public static final class PrefixRemoval {
+        private final PlayQueue queue;
+        private final PlayerMediaItem selected;
+        private final List<PlayerMediaItem> items;
+
+        private PrefixRemoval(final PlayQueue queue, final PlayerMediaItem selected,
+                              final List<PlayerMediaItem> items) {
+            this.queue = queue;
+            this.selected = selected;
+            this.items = items;
+        }
+
+        public int getCount() {
+            return items.size();
+        }
     }
 
     /**

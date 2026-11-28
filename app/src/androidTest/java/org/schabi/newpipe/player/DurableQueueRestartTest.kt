@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import com.google.android.exoplayer2.Player as PlaybackPlayer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -33,6 +34,7 @@ import org.schabi.newpipe.util.DeviceUtils
 import org.schabi.newpipe.util.InfoCache
 import org.schabi.newpipe.util.NavigationHelper
 import java.io.File
+import java.util.concurrent.FutureTask
 
 /** Run seed, force-stop/reboot, then restore on an isolated emulator. */
 @RunWith(AndroidJUnit4::class)
@@ -128,16 +130,7 @@ class DurableQueueRestartTest {
         val fixtureInfo = player.currentStreamInfo.orElseThrow()
 
         val queue = checkNotNull(player.playQueue)
-        context.startActivity(NavigationHelper.getPlayQueueActivityIntent(context)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        var activity: PlayQueueActivity? = null
-        await("The full queue is attached to the playing service") {
-            activity = ActivityLifecycleMonitorRegistry.getInstance()
-                .getActivitiesInStage(Stage.RESUMED).filterIsInstance<PlayQueueActivity>()
-                .firstOrNull()
-            activity?.player === player
-        }
-        val screen = checkNotNull(activity)
+        val screen = openFullQueue(player)
         instrumentation.runOnMainSync {
             player.queueController.removeWithUndo(queue, 0, screen.findViewById(R.id.main_content))
         }
@@ -154,6 +147,93 @@ class DurableQueueRestartTest {
         await("Undo restores the same entry paused at the original position") {
             player.playQueue === queue && queue.ids() == listOf(entry.uuid) &&
                 player.isPrepared && player.currentPosition == 5000L && !player.playWhenReady
+        }
+    }
+
+    @Test
+    fun trimmingAndMovingTheQueueKeepPlaybackOnTheCurrentEntry() {
+        requireProbe()
+        val initial = checkNotNull(PlayQueue.restore(QueueSnapshot(
+            listOf(item("played-1", first), item("played-2", second), item("playing", first),
+                item("next", second), item("moved", first)),
+            "playing", 5000, RepeatMode.OFF.ordinal, null, null,
+        )))
+        launchMain(launcher = false)
+        val fixtures = cacheMedia()
+        onMain {
+            ContextCompat.startForegroundService(context, NavigationHelper.getPlayerIntent(
+                context, DeviceUtils.getPlayerServiceClass(), initial, false, false,
+            ).putExtra(PlayerIntentConstants.PLAYER_TYPE, PlayerService.PlayerType.VIDEO.ordinal))
+        }
+        val player = awaitPlayer()
+        await("Requested queue is attached") { player.playQueue?.ids() == initial.ids() }
+        onMain {
+            fixtures.forEach { (url, info) ->
+                InfoCache.getInstance().putInfo(0, url, info, InfoType.STREAM)
+            }
+            if (!player.isPrepared || player.currentStreamInfo.isEmpty) {
+                player.reloadPlayQueueManager()
+            }
+        }
+        await("The offline fixture is ready") {
+            player.isPrepared && player.currentStreamInfo.isPresent &&
+                player.simpleExoPlayer.currentMediaItem?.mediaId == "playing"
+        }
+        val screen = openFullQueue(player)
+        val queue = onMain { checkNotNull(player.playQueue) }
+        onMain {
+            val summary = screen.findViewById<QueuePlaytimeView>(R.id.queue_playtime)
+            val otherSummary = QueuePlaytimeView(screen, null)
+            assertEquals(screen.getString(R.string.play_queue_show_remaining, summary.text),
+                summary.contentDescription)
+            assertTrue(summary.performClick())
+            assertEquals(screen.getString(R.string.play_queue_show_elapsed, summary.text),
+                summary.contentDescription)
+            otherSummary.update(player)
+            assertEquals(summary.text.toString(), otherSummary.text.toString())
+            otherSummary.clearQueue()
+            player.play()
+        }
+
+        await("The fixture is playing") { player.isPlaying }
+        val interruptions = mutableListOf<Boolean>()
+        val listener = object : PlaybackPlayer.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                interruptions.add(isPlaying)
+            }
+        }
+        val startPosition = onMain {
+            player.simpleExoPlayer.addListener(listener)
+            val before = player.currentPosition
+            assertTrue(queue.removeBeforeCurrent(checkNotNull(queue.previewRemoveBeforeCurrent())))
+            before
+        }
+        await("The new timeline keeps advancing the same source") {
+            player.simpleExoPlayer.mediaItemCount == 3 &&
+                player.simpleExoPlayer.currentMediaItem?.mediaId == "playing" &&
+                player.simpleExoPlayer.currentMediaItemIndex == 0 &&
+                player.currentPosition >= startPosition + 500L && player.isPlaying
+        }
+        onMain {
+            player.simpleExoPlayer.removeListener(listener)
+            assertTrue(interruptions.isEmpty())
+            assertEquals(listOf("playing", "next", "moved"), queue.ids())
+            assertTrue(queue.moveToPlayNext(checkNotNull(queue.getItem(2))))
+            assertEquals(listOf("playing", "moved", "next"), queue.ids())
+        }
+        await("The moved item becomes next while the current item keeps playing") {
+            player.simpleExoPlayer.currentMediaItem?.mediaId == "playing" && player.isPlaying &&
+                player.simpleExoPlayer.getMediaItemAt(1).mediaId == "moved"
+        }
+        onMain { player.playNext() }
+        await("Advancing plays the moved entry") {
+            player.simpleExoPlayer.currentMediaItem?.mediaId == "moved" && player.isPlaying
+        }
+        await("The checkpoint records the edited queue") {
+            file.read()?.let {
+                it.entries.map { entry -> entry.uuid } == listOf("playing", "moved", "next") &&
+                    it.selectedId == "moved"
+            } == true
         }
     }
 
@@ -187,6 +267,25 @@ class DurableQueueRestartTest {
         return checkNotNull(active)
     }
 
+    private fun openFullQueue(player: Player): PlayQueueActivity {
+        context.startActivity(NavigationHelper.getPlayQueueActivityIntent(context)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        var activity: PlayQueueActivity? = null
+        await("The full queue is attached to the playing service") {
+            activity = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED).filterIsInstance<PlayQueueActivity>()
+                .firstOrNull { it.player === player }
+            activity != null
+        }
+        return checkNotNull(activity)
+    }
+
+    private fun <T> onMain(action: () -> T): T {
+        val task = FutureTask(action)
+        instrumentation.runOnMainSync(task)
+        return task.get()
+    }
+
     private fun await(message: String, condition: () -> Boolean) {
         val deadline = SystemClock.elapsedRealtime() + 120_000
         do {
@@ -198,12 +297,12 @@ class DurableQueueRestartTest {
         throw AssertionError(message)
     }
 
-    private fun cacheMedia() {
+    private fun cacheMedia(): Map<String, StreamInfo> {
         val asset = File(context.cacheDir, "durable-queue-fixture.mp4")
         instrumentation.context.assets.open("player-mode-fixture.mp4").use { source ->
             asset.outputStream().use { source.copyTo(it) }
         }
-        for (url in listOf(first, second)) {
+        return listOf(first, second).associateWith { url ->
             val info = StreamInfo(0, url, url, "Saved queue fixture").apply {
                 streamType = StreamType.VIDEO_STREAM
                 duration = 30
@@ -214,6 +313,7 @@ class DurableQueueRestartTest {
                     .setResolution("144p").setIsVideoOnly(false).build())
             }
             InfoCache.getInstance().putInfo(0, url, info, InfoType.STREAM)
+            info
         }
     }
 }

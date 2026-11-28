@@ -394,6 +394,12 @@
 <string name="clear_play_queue">Clear queue</string>
 <string name="clear_play_queue_confirmation">Stop playback and clear the saved queue?</string>
 <string name="clear_play_queue_failed">Couldn’t clear the saved queue</string>
+<string name="play_queue_remove_before_current">Remove before current</string>
+<plurals name="play_queue_remove_before_current_confirmation">
+    <item quantity="one">Remove %d entry before the current item?</item>
+    <item quantity="other">Remove %d entries before the current item?</item>
+</plurals>
+<string name="play_queue_remove_before_current_stale">The queue changed. Open the menu and try again.</string>
 <string name="play_queue_stream_detail">Details</string>
 <string name="play_queue_audio_settings">Audio Settings</string>
 <string name="main_player_queue_action_title">Play this video</string>

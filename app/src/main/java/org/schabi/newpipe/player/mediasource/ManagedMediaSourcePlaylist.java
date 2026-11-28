@@ -112,6 +112,11 @@ public class ManagedMediaSourcePlaylist {
         managedSources.remove(index);
     }
 
+    public synchronized void removePrefix(final int count) {
+        internalSource.removeMediaSourceRange(0, count);
+        managedSources.subList(0, count).clear();
+    }
+
     /**
      * Moves a {@link ManagedMediaSource} in {@link ConcatenatingMediaSource}
      * from the given source index to the target index. If either index is out of bound,

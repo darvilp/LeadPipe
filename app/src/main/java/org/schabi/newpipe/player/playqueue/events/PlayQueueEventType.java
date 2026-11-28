@@ -15,6 +15,8 @@ public enum PlayQueueEventType {
     // sent when a pending stream is removed from the play queue
     REMOVE,
 
+    REMOVE_PREFIX,
+
     // sent when two streams swap place in the play queue
     MOVE,
 
