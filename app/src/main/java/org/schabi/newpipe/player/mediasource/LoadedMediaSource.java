@@ -3,6 +3,7 @@ package org.schabi.newpipe.player.mediasource;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.CompositeMediaSource;
+import com.google.android.exoplayer2.source.ForwardingTimeline;
 import com.google.android.exoplayer2.source.MediaPeriod;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.upstream.Allocator;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 public class LoadedMediaSource extends CompositeMediaSource<Integer> implements ManagedMediaSource {
     private final MediaSource source;
     private final PlayerMediaItem stream;
+    private final PlayerMediaItem queueTag;
     private final MediaItem mediaItem;
     private final long expireTimestamp;
 
@@ -40,7 +42,8 @@ public class LoadedMediaSource extends CompositeMediaSource<Integer> implements 
         this.stream = stream;
         this.expireTimestamp = expireTimestamp;
 
-        this.mediaItem = ExoMediaItems.asExoMediaItem(tag.withUuid(stream.getUuid()));
+        this.queueTag = tag.withUuid(stream.getUuid());
+        this.mediaItem = ExoMediaItems.asExoMediaItem(queueTag);
     }
 
     public PlayerMediaItem getStream() {
@@ -82,7 +85,24 @@ public class LoadedMediaSource extends CompositeMediaSource<Integer> implements 
     protected void onChildSourceInfoRefreshed(final Integer id,
                                               final MediaSource mediaSource,
                                               final Timeline timeline) {
-        refreshSourceInfo(timeline);
+        final MediaItem childItem = mediaSource.getMediaItem();
+        final MediaItem queueItem = withQueueIdentity(childItem);
+        // ExoPlayer reads the current media item from the window. Keep the child timeline and
+        // playback configuration, while exposing the same queue identity as getMediaItem().
+        refreshSourceInfo(new ForwardingTimeline(timeline) {
+            @Override
+            public Window getWindow(final int windowIndex, final Window window,
+                                    final long defaultPositionProjectionUs) {
+                super.getWindow(windowIndex, window, defaultPositionProjectionUs);
+                window.mediaItem = window.mediaItem == childItem
+                        ? queueItem : withQueueIdentity(window.mediaItem);
+                return window;
+            }
+        });
+    }
+
+    private MediaItem withQueueIdentity(final MediaItem item) {
+        return item.buildUpon().setMediaId(queueTag.getUuid()).setTag(queueTag).build();
     }
 
     @Override
