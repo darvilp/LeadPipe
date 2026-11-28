@@ -113,7 +113,8 @@
                 android:id="@+id/errorCommentBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="" />
+                android:hint="@string/error_report_steps_hint"
+                android:inputType="textCapSentences|textMultiLine" />
 
             <org.schabi.newpipe.views.NewPipeTextView
                 android:layout_width="match_parent"

@@ -144,6 +144,8 @@ class ErrorUtil {
         private fun getErrorActivityIntent(context: Context, errorInfo: ErrorInfo): Intent {
             val intent = Intent(context, ErrorActivity::class.java)
             intent.putExtra(ErrorActivity.ERROR_INFO, errorInfo)
+            intent.putExtra(ErrorActivity.REPORT_ORIENTATION,
+                context.resources.configuration.orientation)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             return intent
         }
@@ -153,10 +155,11 @@ class ErrorUtil {
                 // fallback to showing a notification if no root view is available
                 createNotification(context, errorInfo)
             } else if (!showAntiBotSnackbar(context, rootView, errorInfo)) {
+                val reportIntent = getErrorActivityIntent(context, errorInfo)
                 Snackbar.make(rootView, R.string.error_snackbar_message, Snackbar.LENGTH_LONG)
                     .setActionTextColor(Color.YELLOW)
                     .setAction(context.getString(R.string.error_snackbar_action).uppercase()) {
-                        openActivity(context, errorInfo)
+                        context.startActivity(reportIntent)
                     }.show()
             }
         }

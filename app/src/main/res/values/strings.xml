@@ -238,7 +238,8 @@
 <string name="error_report_button_text">Report this error via e-mail</string>
 <string name="copy_for_github">Copy formatted report</string>
 <string name="error_report_open_issue_button_text_new">Report on GitHub</string>
-<string name="error_report_open_github_notice">Please check whether an issue discussing your crash already exists. When creating duplicate tickets, you take time from us which we could spend with fixing the actual bug.</string>
+<string name="error_report_open_github_notice">Search for an existing issue first. Review the report and remove private information before posting it publicly.</string>
+<string name="error_report_steps_hint">What did you do just before the error? Include rotation or player mode changes if relevant.</string>
 <string name="error_snackbar_message">Sorry, something went wrong.</string>
 <string name="error_snackbar_action">Report</string>
 <string name="what_device_headline">Info:</string>

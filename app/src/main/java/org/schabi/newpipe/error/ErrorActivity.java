@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.pm.PackageInfoCompat;
 import com.grack.nanojson.JsonWriter;
 import org.schabi.newpipe.BuildConfig;
 import org.schabi.newpipe.MainActivity;
@@ -70,6 +73,7 @@ public class ErrorActivity extends AppCompatActivity {
     public static final String TAG = ErrorActivity.class.toString();
     // BUNDLE TAGS
     public static final String ERROR_INFO = "error_info";
+    public static final String REPORT_ORIENTATION = "report_orientation";
 
     public static final DateTimeFormatter CURRENT_TIMESTAMP_FORMATTER
             = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -77,6 +81,8 @@ public class ErrorActivity extends AppCompatActivity {
 
     private ErrorInfo errorInfo;
     private String currentTimeStamp;
+    private String reportOrientation;
+    @Nullable private Long installedVersionCode;
 
     /**
      * The plugin this failure comes from, or null when it is the app's own. Bug reports of
@@ -125,12 +131,17 @@ public class ErrorActivity extends AppCompatActivity {
         // important add guru meditation
         addGuruMeditation();
         currentTimeStamp = CURRENT_TIMESTAMP_FORMATTER.format(LocalDateTime.now());
+        reportOrientation = orientationName(intent.getIntExtra(
+                REPORT_ORIENTATION, Configuration.ORIENTATION_UNDEFINED));
+        installedVersionCode = readInstalledVersionCode();
 
         activityErrorBinding.errorReportCopyButton.setOnClickListener(v ->
                 ShareUtils.copyToClipboard(this, buildMarkdown()));
 
         activityErrorBinding.errorReportGitHubButton.setOnClickListener(v ->
-                ShareUtils.openUrlInBrowser(this, getString(R.string.leadpipe_issues_url), false));
+                ShareUtils.openUrlInBrowser(this,
+                        getString(R.string.leadpipe_issues_url) + "/new?template=bug_report.yml",
+                        false));
 
         if (blamedPlugin != null) {
             activityErrorBinding.errorReportGitHubButton
@@ -320,7 +331,12 @@ public class ErrorActivity extends AppCompatActivity {
                     .value("endpoint", getEndpoint())
                     .value("package", getPackageName())
                     .value("version", BuildConfig.VERSION_NAME)
+                    .value("version_code", installedVersionCode)
+                    .value("build_type", BuildConfig.BUILD_TYPE)
                     .value("os", getOsString())
+                    .value("device_manufacturer", Build.MANUFACTURER)
+                    .value("device_model", Build.MODEL)
+                    .value("report_orientation", reportOrientation)
                     .value("time", currentTimeStamp)
                     .array("exceptions", Arrays.asList(errorInfo.getStackTraces()))
                     .value("user_comment", activityErrorBinding.errorCommentBox.getText()
@@ -356,7 +372,16 @@ public class ErrorActivity extends AppCompatActivity {
                     .append("\n* __Service:__ ").append(errorInfo.getServiceName())
                     .append("\n* __Endpoint:__ ").append(getEndpoint())
                     .append("\n* __Version:__ ").append(BuildConfig.VERSION_NAME)
-                    .append("\n* __OS:__ ").append(getOsString()).append("\n");
+                    .append("\n* __Version code:__ ")
+                        .append(installedVersionCode == null ? "unknown" : installedVersionCode)
+                    .append("\n* __Build type:__ ").append(BuildConfig.BUILD_TYPE)
+                    .append("\n* __Package:__ ").append(getPackageName())
+                    .append("\n* __OS:__ ").append(getOsString())
+                    .append("\n* __Device:__ ").append(Build.MANUFACTURER).append(' ')
+                        .append(Build.MODEL)
+                    .append("\n* __Report orientation:__ ").append(reportOrientation)
+                    .append("\n* __Report time (device local):__ ").append(currentTimeStamp)
+                    .append("\n");
 
             if (blamedPlugin != null) {
                 htmlErrorReport.append("* __Plugin:__ ").append(pluginReportLine()).append("\n");
@@ -368,24 +393,24 @@ public class ErrorActivity extends AppCompatActivity {
                 htmlErrorReport
                         .append("<details><summary><b>Exceptions (")
                         .append(errorInfo.getStackTraces().length)
-                        .append(")</b></summary><p>\n");
+                        .append(")</b></summary>\n\n");
             }
 
             // add the logs
             for (int i = 0; i < errorInfo.getStackTraces().length; i++) {
-                htmlErrorReport.append("<details><summary><b>Crash log ");
+                htmlErrorReport.append("<details><summary><b>Stack trace");
                 if (errorInfo.getStackTraces().length > 1) {
-                    htmlErrorReport.append(i + 1);
+                    htmlErrorReport.append(' ').append(i + 1);
                 }
                 htmlErrorReport.append("</b>")
-                        .append("</summary><p>\n")
+                        .append("</summary>\n")
                         .append("\n```\n").append(errorInfo.getStackTraces()[i]).append("\n```\n")
-                        .append("</details>\n");
+                        .append("\n</details>\n\n");
             }
 
             // make sure to close everything
             if (errorInfo.getStackTraces().length > 1) {
-                htmlErrorReport.append("</p></details>\n");
+                htmlErrorReport.append("</details>\n\n");
             }
             htmlErrorReport.append("<hr>\n");
             return htmlErrorReport.toString();
@@ -418,6 +443,24 @@ public class ErrorActivity extends AppCompatActivity {
 
     private String getEndpoint() {
         return getYoutubePlayerClient();
+    }
+
+    @Nullable
+    private Long readInstalledVersionCode() {
+        try {
+            return PackageInfoCompat.getLongVersionCode(
+                    getPackageManager().getPackageInfo(getPackageName(), 0));
+        } catch (final PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
+    private static String orientationName(final int orientation) {
+        return switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT -> "portrait";
+            case Configuration.ORIENTATION_LANDSCAPE -> "landscape";
+            default -> "unknown";
+        };
     }
 
     private String getOsString() {
