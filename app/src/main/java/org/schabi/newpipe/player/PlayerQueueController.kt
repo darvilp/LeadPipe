@@ -3,7 +3,9 @@ package org.schabi.newpipe.player
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import org.schabi.newpipe.QueueItemMenuUtil
+import org.schabi.newpipe.R
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.fragments.OnScrollBelowItemsListener
 import org.schabi.newpipe.info_list.StreamSegmentAdapter
@@ -11,10 +13,12 @@ import org.schabi.newpipe.info_list.StreamSegmentItem
 import org.schabi.newpipe.ktx.AnimationType
 import org.schabi.newpipe.ktx.animate
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem
+import org.schabi.newpipe.player.playqueue.PlayQueue
 import org.schabi.newpipe.player.playqueue.PlayQueueAdapter
 import org.schabi.newpipe.player.playqueue.PlayQueueItemBuilder
 import org.schabi.newpipe.player.playqueue.PlayQueueItemHolder
 import org.schabi.newpipe.player.playqueue.PlayQueueItemTouchCallback
+import org.schabi.newpipe.util.StreamTypeUtil
 
 /**
  * Owns the play-queue and stream-segments panels of a [Player].
@@ -30,6 +34,7 @@ class PlayerQueueController(private val player: Player) {
     private var queueAdapter: PlayQueueAdapter? = null
     private var segmentsAdapter: StreamSegmentAdapter? = null
     private var itemTouchHelper: ItemTouchHelper? = null
+    private var removalSnackbar: Snackbar? = null
 
     private var queueVisible = false
     private var segmentsVisible = false
@@ -45,11 +50,42 @@ class PlayerQueueController(private val player: Player) {
     }
 
     fun disposeAdapters() {
+        dismissRemovalUndo()
         player.binding?.itemsListHeaderDuration?.clearQueue()
         queueAdapter?.let {
             it.unsetSelectedListener()
             it.dispose()
         }
+    }
+
+    fun removeWithUndo(queue: PlayQueue, index: Int, anchor: View) {
+        if (queue !== player.playQueue || !anchor.isAttachedToWindow) return
+        val item = queue.getItem(index) ?: return
+        val snackbar = Snackbar.make(anchor, R.string.play_queue_item_removed, Snackbar.LENGTH_LONG)
+        if (index == queue.index && !StreamTypeUtil.isLiveStream(item.streamType)) {
+            player.setRecovery()
+        }
+        val removal = queue.removeWithUndo(index) ?: return
+
+        dismissRemovalUndo()
+        removalSnackbar = snackbar
+        snackbar.setAction(R.string.undo) {
+            if (queue === player.playQueue) queue.undoRemoval(removal)
+        }.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(bar: Snackbar, event: Int) {
+                if (removalSnackbar === bar) removalSnackbar = null
+                if (queue.discardRemovalUndo(removal) && queue === player.playQueue &&
+                    queue.isEmpty && queue.isComplete && !queue.isDisposed
+                ) {
+                    player.onPlaybackShutdown()
+                }
+            }
+        }).show()
+    }
+
+    fun dismissRemovalUndo() {
+        removalSnackbar?.dismiss()
+        removalSnackbar = null
     }
 
     fun getPlayQueueAdapter(): PlayQueueAdapter? = queueAdapter
@@ -232,8 +268,8 @@ class PlayerQueueController(private val player: Player) {
         }
 
         override fun onSwiped(index: Int) {
-            if (index != -1) {
-                player.playQueue?.remove(index)
+            player.playQueue?.let { queue ->
+                removeWithUndo(queue, index, player.binding.queueUndoHost)
             }
         }
     }
@@ -247,9 +283,9 @@ class PlayerQueueController(private val player: Player) {
             val playQueue = player.playQueue ?: return
             if (playQueue.indexOf(item) != -1) {
                 QueueItemMenuUtil.openPopupMenu(
-                    playQueue, item, view, true,
+                    item, view, true,
                     player.parentActivity?.supportFragmentManager, player.context
-                )
+                ) { removeWithUndo(playQueue, playQueue.indexOf(item), player.binding.queueUndoHost) }
             }
         }
 

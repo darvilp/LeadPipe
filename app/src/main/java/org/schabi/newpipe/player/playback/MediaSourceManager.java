@@ -24,6 +24,7 @@ import org.schabi.newpipe.player.mediasource.ManagedMediaSourcePlaylist;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
+import org.schabi.newpipe.player.playqueue.events.InsertEvent;
 import org.schabi.newpipe.player.playqueue.events.RemoveEvent;
 import org.schabi.newpipe.player.playqueue.events.ReorderEvent;
 import org.schabi.newpipe.util.ServiceHelper;
@@ -234,7 +235,14 @@ public class MediaSourceManager {
 
     private void onPlayQueueChanged(final PlayQueueEvent event) {
         if (playQueue.isEmpty() && playQueue.isComplete()) {
-            playbackListener.onPlaybackShutdown();
+            if (playQueue.hasPendingRemovalUndo()) {
+                // Stop loading and release the removed source while the user can still undo.
+                maybeBlock();
+                playbackListener.onPlayQueueEdited();
+                playQueueReactor.request(1);
+            } else {
+                playbackListener.onPlaybackShutdown();
+            }
             return;
         }
 
@@ -245,6 +253,9 @@ public class MediaSourceManager {
                 maybeBlock();
             case APPEND:
                 populateSources();
+                break;
+            case INSERT:
+                playlist.insertPlaceholder(((InsertEvent) event).getIndex());
                 break;
             case SELECT:
                 maybeRenewCurrentIndex();
@@ -271,7 +282,7 @@ public class MediaSourceManager {
 
         // Loading and Syncing
         switch (event.type()) {
-            case INIT: case REORDER: case ERROR: case SELECT:
+            case INIT: case REORDER: case ERROR: case SELECT: case INSERT:
                 loadImmediate(); // low frequency, critical events
                 break;
             case APPEND: case REMOVE: case MOVE: case RECOVERY:
@@ -282,7 +293,7 @@ public class MediaSourceManager {
 
         // update ui and notification
         switch (event.type()) {
-            case APPEND: case REMOVE: case MOVE: case REORDER:
+            case APPEND: case INSERT: case REMOVE: case MOVE: case REORDER:
                 playbackListener.onPlayQueueEdited();
         }
 

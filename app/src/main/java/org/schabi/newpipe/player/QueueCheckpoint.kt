@@ -78,6 +78,8 @@ internal class QueueCheckpoint(private val player: Player) {
             return
         }
         DurableQueueStore.cancelLauncherRestore()
+        target.invalidateRemovalUndo()
+        player.queueController.dismissRemovalUndo()
         clearing = target
         main.removeCallbacks(capture)
         DurableQueueStore.write(player.context.applicationContext, QueueSnapshot.EMPTY) { saved ->

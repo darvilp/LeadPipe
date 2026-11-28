@@ -8,6 +8,7 @@ import org.schabi.newpipe.player.mediaitem.PlayerMediaItem;
 import org.schabi.newpipe.player.playqueue.events.AppendEvent;
 import org.schabi.newpipe.player.playqueue.events.ErrorEvent;
 import org.schabi.newpipe.player.playqueue.events.InitEvent;
+import org.schabi.newpipe.player.playqueue.events.InsertEvent;
 import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
 import org.schabi.newpipe.player.playqueue.events.RecoveryEvent;
@@ -74,6 +75,7 @@ public abstract class PlayQueue implements Serializable {
     private transient BehaviorSubject<PlayQueueEvent> eventBroadcast;
     private transient Flowable<PlayQueueEvent> broadcastReceiver;
     private transient boolean disposed = false;
+    private transient Removal pendingRemoval;
 
     PlayQueue(final int index, final List<PlayerMediaItem> startWith) {
         streams = new ArrayList<>(startWith);
@@ -167,6 +169,7 @@ public abstract class PlayQueue implements Serializable {
         eventBroadcast = null;
         broadcastReceiver = null;
         disposed = true;
+        pendingRemoval = null;
     }
 
     /**
@@ -447,6 +450,105 @@ public abstract class PlayQueue implements Serializable {
         }
         removeInternal(index);
         broadcast(new RemoveEvent(index, getIndex()));
+    }
+
+    /** Removes an entry and keeps only this removal available to Undo. */
+    @Nullable
+    public synchronized Removal removeWithUndo(final int index) {
+        if (disposed || index < 0 || index >= streams.size()) {
+            return null;
+        }
+        final PlayerMediaItem item = streams.get(index);
+        final QueueSlot displayed = new QueueSlot(streams, index);
+        final int originalIndex = backup == null ? -1 : backup.indexOf(item);
+        final QueueSlot original = originalIndex < 0 ? displayed : new QueueSlot(backup, originalIndex);
+        final Removal removal = new Removal(item, displayed, original, getRecoveryPosition(item),
+                item.getUuid().equals(autoQueuedUuid));
+        pendingRemoval = removal;
+        remove(index);
+        return removal;
+    }
+
+    public synchronized boolean undoRemoval(@NonNull final Removal removal) {
+        if (!discardRemovalUndo(removal) || disposed || streams.contains(removal.item)) {
+            return false;
+        }
+
+        final QueueSlot slot = backup == null ? removal.original : removal.displayed;
+        final int index = slot.insertionIndex(streams);
+        if (streams.isEmpty()) {
+            queueIndex.set(0);
+            history.add(removal.item);
+        } else if (index <= getIndex()) {
+            queueIndex.incrementAndGet();
+        }
+        streams.add(index, removal.item);
+        if (backup != null) {
+            backup.add(removal.original.insertionIndex(backup), removal.item);
+        }
+        if (removal.positionMs != RECOVERY_UNSET) {
+            recoveryPositions.put(removal.item.getUuid(), removal.positionMs);
+        }
+        if (removal.automatic && autoQueuedUuid == null && index == streams.size() - 1) {
+            autoQueuedUuid = removal.item.getUuid();
+        }
+
+        broadcast(new InsertEvent(index));
+        return true;
+    }
+
+    public synchronized boolean discardRemovalUndo(@NonNull final Removal removal) {
+        if (pendingRemoval != removal) {
+            return false;
+        }
+        invalidateRemovalUndo();
+        return true;
+    }
+
+    public synchronized boolean hasPendingRemovalUndo() {
+        return pendingRemoval != null;
+    }
+
+    public synchronized void invalidateRemovalUndo() {
+        pendingRemoval = null;
+    }
+
+    public static final class Removal {
+        private final PlayerMediaItem item;
+        private final QueueSlot displayed;
+        private final QueueSlot original;
+        private final long positionMs;
+        private final boolean automatic;
+
+        private Removal(final PlayerMediaItem item, final QueueSlot displayed,
+                        final QueueSlot original, final long positionMs, final boolean automatic) {
+            this.item = item;
+            this.displayed = displayed;
+            this.original = original;
+            this.positionMs = positionMs;
+            this.automatic = automatic;
+        }
+    }
+
+    private static final class QueueSlot {
+        @Nullable private final PlayerMediaItem before;
+        @Nullable private final PlayerMediaItem after;
+        private final int index;
+
+        private QueueSlot(final List<PlayerMediaItem> items, final int index) {
+            this.before = index > 0 ? items.get(index - 1) : null;
+            this.after = index + 1 < items.size() ? items.get(index + 1) : null;
+            this.index = index;
+        }
+
+        private int insertionIndex(final List<PlayerMediaItem> items) {
+            final int next = items.indexOf(after);
+            if (next >= 0) {
+                return next;
+            }
+            final int previous = items.indexOf(before);
+            return previous >= 0 ? previous + 1 : Math.min(index, items.size());
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -109,6 +110,38 @@ class DurableQueueRestartTest {
         await("Cold enqueue appended to the saved queue") {
             player.playQueue?.ids() == listOf("other", "duplicate", "original", "appended") &&
                 !player.playWhenReady
+        }
+    }
+
+    @Test
+    fun theLastQueueEntryCanBeRestoredWithTheSnackbarAction() {
+        requireProbe()
+        val entry = snapshot.entries.first { it.uuid == snapshot.selectedId }
+        assertTrue(file.write(snapshot.copy(entries = listOf(entry), originalOrder = null)))
+        cacheMedia()
+        launchMain()
+        val player = awaitPlayer()
+        await("Single entry prepared at the saved position") {
+            player.isPrepared && player.currentPosition == 5000L && !player.playWhenReady
+        }
+
+        val queue = checkNotNull(player.playQueue)
+        instrumentation.runOnMainSync {
+            player.queueController.onQueueClicked()
+            player.queueController.removeWithUndo(queue, 0, player.binding.queueUndoHost)
+        }
+        await("Last removal leaves a visible Undo action and keeps the service alive") {
+            val undo = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED)
+                .firstNotNullOfOrNull { activity ->
+                    activity.findViewById<View>(com.google.android.material.R.id.snackbar_action)
+                }
+            queue.isEmpty && PlayerHolder.getInstance().player === player &&
+                undo?.isShown == true && undo.performClick()
+        }
+        await("Undo restores the same entry paused at the original position") {
+            player.playQueue === queue && queue.ids() == listOf(entry.uuid) &&
+                player.isPrepared && player.currentPosition == 5000L && !player.playWhenReady
         }
     }
 

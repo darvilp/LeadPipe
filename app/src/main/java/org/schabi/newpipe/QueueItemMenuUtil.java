@@ -15,7 +15,6 @@ import org.schabi.newpipe.database.stream.model.StreamEntity;
 import org.schabi.newpipe.download.DownloadDialog;
 import org.schabi.newpipe.local.dialog.PlaylistDialog;
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem;
-import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.SparseItemUtil;
 
@@ -25,12 +24,12 @@ public final class QueueItemMenuUtil {
     private QueueItemMenuUtil() {
     }
 
-    public static void openPopupMenu(final PlayQueue playQueue,
-                                     final PlayerMediaItem item,
+    public static void openPopupMenu(final PlayerMediaItem item,
                                      final View view,
                                      final boolean hideDetails,
                                      @Nullable final FragmentManager fragmentManager,
-                                     final Context context) {
+                                     final Context context,
+                                     final Runnable onRemove) {
         final ContextThemeWrapper themeWrapper =
                 new ContextThemeWrapper(context, R.style.DarkPopupMenu);
 
@@ -49,8 +48,7 @@ public final class QueueItemMenuUtil {
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             if (menuItem.getItemId() == R.id.menu_item_remove) {
-                final int index = playQueue.indexOf(item);
-                playQueue.remove(index);
+                onRemove.run();
                 return true;
             } else if (menuItem.getItemId() == R.id.menu_item_details) {
                 NavigationHelper.openVideoDetail(context, item.getServiceId(),

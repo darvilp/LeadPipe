@@ -13,6 +13,7 @@ import org.schabi.newpipe.R;
 import org.schabi.newpipe.player.mediaitem.PlayerMediaItem;
 import org.schabi.newpipe.player.playqueue.events.AppendEvent;
 import org.schabi.newpipe.player.playqueue.events.ErrorEvent;
+import org.schabi.newpipe.player.playqueue.events.InsertEvent;
 import org.schabi.newpipe.player.playqueue.events.MoveEvent;
 import org.schabi.newpipe.player.playqueue.events.PlayQueueEvent;
 import org.schabi.newpipe.player.playqueue.events.RemoveEvent;
@@ -114,6 +115,9 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 final AppendEvent appendEvent = (AppendEvent) message;
                 notifyItemRangeInserted(playQueue.size(), appendEvent.getAmount());
                 break;
+            case INSERT:
+                notifyItemInserted(((InsertEvent) message).getIndex());
+                break;
             case ERROR:
                 final ErrorEvent errorEvent = (ErrorEvent) message;
                 notifyItemChanged(errorEvent.getErrorIndex());
@@ -122,7 +126,9 @@ public class PlayQueueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case REMOVE:
                 final RemoveEvent removeEvent = (RemoveEvent) message;
                 notifyItemRemoved(removeEvent.getRemoveIndex());
-                notifyItemChanged(removeEvent.getQueueIndex());
+                if (!playQueue.isEmpty()) {
+                    notifyItemChanged(removeEvent.getQueueIndex());
+                }
                 break;
             case MOVE:
                 final MoveEvent moveEvent = (MoveEvent) message;

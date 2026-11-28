@@ -77,6 +77,14 @@ public class ManagedMediaSourcePlaylist {
         append(PlaceholderMediaSource.COPY);
     }
 
+    public synchronized void insertPlaceholder(final int index) {
+        if (index < 0 || index > managedSources.size()) {
+            return;
+        }
+        internalSource.addMediaSource(index, PlaceholderMediaSource.COPY);
+        managedSources.add(index, PlaceholderMediaSource.COPY);
+    }
+
     /**
      * Appends a {@link ManagedMediaSource} to the end of {@link ConcatenatingMediaSource}.
      *

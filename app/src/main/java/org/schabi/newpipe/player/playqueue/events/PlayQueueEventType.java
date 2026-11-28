@@ -9,6 +9,9 @@ public enum PlayQueueEventType {
     // sent when more streams are added to the play queue
     APPEND,
 
+    // sent when one stream is inserted at a specific position
+    INSERT,
+
     // sent when a pending stream is removed from the play queue
     REMOVE,
 
