@@ -1,6 +1,7 @@
 package org.schabi.newpipe.player
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import org.schabi.newpipe.cast.CastDialogs
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.TooltipCompat
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import org.schabi.newpipe.R
@@ -38,6 +40,15 @@ class PlayerClickController(private val player: Player) :
     fun setup() {
         val binding = player.binding
 
+        binding.titleTextView.setOnClickListener {
+            if (player.isFullscreen && player.isModeSwitchReady) {
+                player.exitFullscreenLayoutOnly()
+                NavigationHelper.expandMainPlayer()
+            }
+        }
+        TooltipCompat.setTooltipText(
+            binding.titleTextView, player.context.getString(R.string.show_stream_details)
+        )
         binding.qualityTextView.setOnClickListener { v ->
             player.menuController.onQualityClicked(v)
         }
@@ -155,6 +166,13 @@ class PlayerClickController(private val player: Player) :
      */
     fun manageControlsAfterOnClick(v: View) {
         player.controlsVisibilityController.manageControlsAfterOnClick(v)
+    }
+
+    fun openPlayingVideoDetails(context: Context) {
+        if (!player.isModeSwitchReady) return
+        val item = player.currentItem ?: player.playQueue?.item ?: return
+        if (player.isFullscreen) player.exitFullscreenLayoutOnly()
+        NavigationHelper.openVideoDetail(context, item.serviceId, item.url, item.title, null, false)
     }
 
     override fun onLongClick(v: View): Boolean {

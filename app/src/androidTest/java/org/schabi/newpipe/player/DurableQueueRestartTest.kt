@@ -1,5 +1,6 @@
 package org.schabi.newpipe.player
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
@@ -11,8 +12,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.google.android.exoplayer2.Player as PlaybackPlayer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -32,6 +35,7 @@ import org.schabi.newpipe.player.playqueue.QueueFile
 import org.schabi.newpipe.player.playqueue.QueueSnapshot
 import org.schabi.newpipe.util.DeviceUtils
 import org.schabi.newpipe.util.InfoCache
+import org.schabi.newpipe.util.KEY_URL
 import org.schabi.newpipe.util.NavigationHelper
 import java.io.File
 import java.util.concurrent.FutureTask
@@ -158,27 +162,7 @@ class DurableQueueRestartTest {
                 item("next", second), item("moved", first)),
             "playing", 5000, RepeatMode.OFF.ordinal, null, null,
         )))
-        launchMain(launcher = false)
-        val fixtures = cacheMedia()
-        onMain {
-            ContextCompat.startForegroundService(context, NavigationHelper.getPlayerIntent(
-                context, DeviceUtils.getPlayerServiceClass(), initial, false, false,
-            ).putExtra(PlayerIntentConstants.PLAYER_TYPE, PlayerService.PlayerType.VIDEO.ordinal))
-        }
-        val player = awaitPlayer()
-        await("Requested queue is attached") { player.playQueue?.ids() == initial.ids() }
-        onMain {
-            fixtures.forEach { (url, info) ->
-                InfoCache.getInstance().putInfo(0, url, info, InfoType.STREAM)
-            }
-            if (!player.isPrepared || player.currentStreamInfo.isEmpty) {
-                player.reloadPlayQueueManager()
-            }
-        }
-        await("The offline fixture is ready") {
-            player.isPrepared && player.currentStreamInfo.isPresent &&
-                player.simpleExoPlayer.currentMediaItem?.mediaId == "playing"
-        }
+        val player = startOfflineQueue(initial, PlayerService.PlayerType.VIDEO)
         val screen = openFullQueue(player)
         val queue = onMain { checkNotNull(player.playQueue) }
         onMain {
@@ -235,6 +219,93 @@ class DurableQueueRestartTest {
                     it.selectedId == "moved"
             } == true
         }
+    }
+
+    @Test
+    fun playingTitlesRevealDetailsWithoutRestartingPlayback() {
+        requireProbe()
+        val player = startOfflineQueue(
+            checkNotNull(PlayQueue.restore(snapshot.copy(originalOrder = null))),
+            PlayerService.PlayerType.AUDIO
+        )
+        val screen = openFullQueue(player)
+        val queue = onMain { checkNotNull(player.playQueue) }
+        val item = onMain { checkNotNull(queue.item) }
+        val engine = onMain { player.simpleExoPlayer }
+        val queuePosition = onMain {
+            val position = player.currentPosition
+            assertTrue(screen.findViewById<View>(R.id.song_name).performClick())
+            position
+        }
+
+        var host: MainActivity? = null
+        await("Queue title opens the current video details") {
+            host = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+                .filterIsInstance<MainActivity>()
+                .firstOrNull { it.intent.getStringExtra(KEY_URL) == item.url && detailsAreExpanded(it) }
+            host != null
+        }
+        onMain {
+            assertSame(queue, player.playQueue)
+            assertSame(engine, player.simpleExoPlayer)
+            assertTrue(player.audioPlayerSelected())
+            assertFalse(player.playWhenReady)
+            assertEquals(queuePosition, player.currentPosition)
+            NavigationHelper.switchPlayerMode(
+                checkNotNull(host), player, PlayerService.PlayerType.VIDEO, true
+            )
+        }
+
+        await("Main player enters fullscreen") { player.isFullscreen && player.parentActivity != null }
+        onMain { player.showControls(0) }
+        await("Fullscreen title is visible") { player.binding.titleTextView.isShown }
+        val fullscreenPosition = onMain {
+            val position = player.currentPosition
+            assertTrue(player.binding.titleTextView.performClick())
+            position
+        }
+        await("Fullscreen title reveals the same video's details") {
+            !player.isFullscreen && player.parentActivity?.let(::detailsAreExpanded) == true
+        }
+        onMain {
+            assertSame(queue, player.playQueue)
+            assertSame(item, queue.item)
+            assertSame(engine, player.simpleExoPlayer)
+            assertFalse(player.playWhenReady)
+            assertEquals(fullscreenPosition, player.currentPosition)
+        }
+    }
+
+    private fun detailsAreExpanded(host: Activity): Boolean {
+        val sheet = host.findViewById<View>(R.id.fragment_player_holder) ?: return false
+        return BottomSheetBehavior.from(sheet).state == BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun startOfflineQueue(initial: PlayQueue, type: PlayerService.PlayerType): Player {
+        val ids = initial.ids()
+        val selectedId = checkNotNull(initial.item).uuid
+        launchMain(launcher = false)
+        val fixtures = cacheMedia()
+        onMain {
+            ContextCompat.startForegroundService(context, NavigationHelper.getPlayerIntent(
+                context, DeviceUtils.getPlayerServiceClass(), initial, false, false,
+            ).putExtra(PlayerIntentConstants.PLAYER_TYPE, type.ordinal))
+        }
+        val player = awaitPlayer()
+        await("Requested queue is attached") { player.playQueue?.ids() == ids }
+        onMain {
+            fixtures.forEach { (url, info) ->
+                InfoCache.getInstance().putInfo(0, url, info, InfoType.STREAM)
+            }
+            if (!player.isPrepared || player.currentStreamInfo.isEmpty) {
+                player.reloadPlayQueueManager()
+            }
+        }
+        await("The offline fixture is ready") {
+            player.isPrepared && player.currentStreamInfo.isPresent &&
+                player.simpleExoPlayer.currentMediaItem?.mediaId == selectedId
+        }
+        return player
     }
 
     private fun requireProbe() {
