@@ -14,9 +14,9 @@ class QueuePlaytimeTest {
 
         assertEquals(480L, playtime.totalSeconds)
         assertFalse(playtime.hasUnknownDurations)
-        assertEquals(QueuePlaytime.Elapsed(137, true), playtime.elapsed(17_900))
-        assertEquals(QueuePlaytime.Elapsed(125, true), playtime.elapsed(5_000))
-        assertEquals(QueuePlaytime.Elapsed(180, true), playtime.elapsed(80_000))
+        assertEquals(QueuePlaytime.Estimate(137, true), playtime.elapsed(17_900))
+        assertEquals(QueuePlaytime.Estimate(125, true), playtime.elapsed(5_000))
+        assertEquals(QueuePlaytime.Estimate(180, true), playtime.elapsed(80_000))
     }
 
     @Test
@@ -27,7 +27,7 @@ class QueuePlaytimeTest {
 
         assertEquals(selected, playtime.selected)
         assertEquals(210L, playtime.totalSeconds)
-        assertEquals(QueuePlaytime.Elapsed(5, true), playtime.elapsed(5_000))
+        assertEquals(QueuePlaytime.Estimate(5, true), playtime.elapsed(5_000))
     }
 
     @Test
@@ -43,9 +43,9 @@ class QueuePlaytimeTest {
 
         assertEquals(120L, duringLive.totalSeconds)
         assertTrue(duringLive.hasUnknownDurations)
-        assertEquals(QueuePlaytime.Elapsed(30, false), beforeLive.elapsed(30_000))
-        assertEquals(QueuePlaytime.Elapsed(120, false), duringLive.elapsed(30_000))
-        assertEquals(QueuePlaytime.Elapsed(150, false), unknownDuration.elapsed(30_000))
+        assertEquals(QueuePlaytime.Estimate(30, false), beforeLive.elapsed(30_000))
+        assertEquals(QueuePlaytime.Estimate(120, false), duringLive.elapsed(30_000))
+        assertEquals(QueuePlaytime.Estimate(150, false), unknownDuration.elapsed(30_000))
     }
 
     @Test
@@ -53,9 +53,9 @@ class QueuePlaytimeTest {
         val playtime = QueuePlaytime.calculate(listOf(item(120), item(60), item(0)), 1)
 
         assertTrue(playtime.hasUnknownDurations)
-        assertEquals(QueuePlaytime.Elapsed(135, true), playtime.elapsed(15_000))
-        assertEquals(QueuePlaytime.Elapsed(120, false), playtime.elapsed(null))
-        assertEquals(QueuePlaytime.Elapsed(120, false), playtime.elapsed(-1))
+        assertEquals(QueuePlaytime.Estimate(135, true), playtime.elapsed(15_000))
+        assertEquals(QueuePlaytime.Estimate(120, false), playtime.elapsed(null))
+        assertEquals(QueuePlaytime.Estimate(120, false), playtime.elapsed(-1))
     }
 
     @Test
@@ -64,7 +64,33 @@ class QueuePlaytimeTest {
         val playtime = QueuePlaytime.calculate(List(10_000) { longVideo }, 9_999)
 
         assertEquals(3_000_000L, playtime.totalSeconds)
-        assertEquals(QueuePlaytime.Elapsed(2_999_730L, true), playtime.elapsed(30_000))
+        assertEquals(QueuePlaytime.Estimate(2_999_730L, true), playtime.elapsed(30_000))
+        assertEquals(QueuePlaytime.Estimate(2_999_970L, true),
+            QueuePlaytime.calculate(List(10_000) { longVideo }, 0).remaining(30_000))
+    }
+
+    @Test
+    fun remainingCountsTheCurrentRemainderAndUpcomingEntriesOnly() {
+        val playtime = QueuePlaytime.calculate(listOf(item(0), item(60), item(300)), 1)
+
+        assertEquals(QueuePlaytime.Estimate(343, true), playtime.remaining(17_900))
+        assertEquals(QueuePlaytime.Estimate(355, true), playtime.remaining(5_000))
+        assertEquals(QueuePlaytime.Estimate(300, true), playtime.remaining(65_000))
+        assertEquals(QueuePlaytime.Estimate(300, false), playtime.remaining(null))
+        assertEquals(QueuePlaytime.Estimate(300, false), playtime.remaining(-1))
+    }
+
+    @Test
+    fun liveAndUnknownEntriesOnlyContributeKnownRemainingTime() {
+        val live = PlayerMediaItem.Builder().streamType(StreamType.LIVE_STREAM).duration(900).build()
+        val items = listOf(item(60), live, item(120), item(0))
+
+        assertEquals(QueuePlaytime.Estimate(170, false),
+            QueuePlaytime.calculate(items, 0).remaining(10_000))
+        assertEquals(QueuePlaytime.Estimate(120, false),
+            QueuePlaytime.calculate(items, 1).remaining(850_000))
+        assertEquals(QueuePlaytime.Estimate(0, false),
+            QueuePlaytime.calculate(items, 3).remaining(15_000))
     }
 
     @Test
@@ -73,7 +99,8 @@ class QueuePlaytimeTest {
 
         assertEquals(null, playtime.selected)
         assertEquals(0L, playtime.totalSeconds)
-        assertEquals(QueuePlaytime.Elapsed(0, true), playtime.elapsed(null))
+        assertEquals(QueuePlaytime.Estimate(0, true), playtime.elapsed(null))
+        assertEquals(QueuePlaytime.Estimate(0, true), playtime.remaining(null))
     }
 
     private fun item(duration: Long): PlayerMediaItem =

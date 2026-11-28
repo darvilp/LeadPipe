@@ -38,6 +38,13 @@ class PlayerQueueController(private val player: Player) {
 
     private var queueVisible = false
     private var segmentsVisible = false
+    internal var showRemainingQueueTime = false
+        private set
+
+    internal fun toggleQueueTime() {
+        showRemainingQueueTime = !showRemainingQueueTime
+        if (queueVisible) updateQueueTime()
+    }
 
     fun initAdapters() {
         val playQueue = player.playQueue ?: return

@@ -19,9 +19,21 @@ class QueuePlaytimeView(context: Context, attrs: AttributeSet?) : AppCompatTextV
     private var queueBroadcast: Flowable<PlayQueueEvent>? = null
     private var queueEvents: Disposable? = null
     private var exoPlayer: ExoPlayer? = null
+    private var queueController: PlayerQueueController? = null
     private var playtime: QueuePlaytime? = null
-    private var lastElapsed: QueuePlaytime.Elapsed? = null
+    private var lastTime: QueuePlaytime.Estimate? = null
+    private var lastShowingRemaining = false
+    private var fullyLoaded = true
     private var totalLabel = ""
+
+    init {
+        setOnClickListener {
+            queueController?.toggleQueueTime()
+            render()
+        }
+        isClickable = false
+        isFocusable = false
+    }
 
     private val playbackListener = object : PlaybackPlayer.Listener {
         override fun onEvents(player: PlaybackPlayer, events: PlaybackPlayer.Events) {
@@ -57,6 +69,7 @@ class QueuePlaytimeView(context: Context, attrs: AttributeSet?) : AppCompatTextV
             }
         }
         val currentPlayer = player?.simpleExoPlayer
+        queueController = player?.queueController
         if (currentPlayer !== exoPlayer) {
             exoPlayer?.removeListener(playbackListener)
             exoPlayer = currentPlayer
@@ -72,9 +85,13 @@ class QueuePlaytimeView(context: Context, attrs: AttributeSet?) : AppCompatTextV
         queueBroadcast = null
         exoPlayer?.removeListener(playbackListener)
         exoPlayer = null
+        queueController = null
         playtime = null
-        lastElapsed = null
+        lastTime = null
         text = null
+        contentDescription = null
+        isClickable = false
+        isFocusable = false
     }
 
     private fun refreshQueue(queue: PlayQueue) {
@@ -82,11 +99,12 @@ class QueuePlaytimeView(context: Context, attrs: AttributeSet?) : AppCompatTextV
             QueuePlaytime.calculate(queue.streams, queue.index)
         }
         playtime = snapshot
-        lastElapsed = null
+        lastTime = null
+        fullyLoaded = queue.isFullyLoaded
         totalLabel = if (snapshot.hasUnknownDurations && snapshot.totalSeconds == 0L) {
             context.getString(R.string.play_queue_total_unknown)
         } else {
-            val label = if (queue.isFullyLoaded) {
+            val label = if (fullyLoaded) {
                 R.string.play_queue_total_time
             } else {
                 R.string.play_queue_loaded_time
@@ -104,14 +122,35 @@ class QueuePlaytimeView(context: Context, attrs: AttributeSet?) : AppCompatTextV
         val positionMs = exoPlayer?.takeIf {
             selectedId != null && it.currentMediaItem?.mediaId == selectedId
         }?.currentPosition
-        val elapsed = snapshot.elapsed(positionMs)
-        if (elapsed != lastElapsed) {
-            val elapsedLabel = context.getString(
-                R.string.play_queue_elapsed_time, formatDuration(elapsed.seconds, elapsed.complete)
-            )
-            text = context.getString(R.string.play_queue_time_summary, elapsedLabel, totalLabel)
-            lastElapsed = elapsed
+        val canToggle = selectedId != null && queueController != null
+        isClickable = canToggle
+        isFocusable = canToggle
+        val showingRemaining = queueController?.showRemainingQueueTime == true
+        val time = if (showingRemaining) snapshot.remaining(positionMs) else snapshot.elapsed(positionMs)
+        if (time == lastTime && showingRemaining == lastShowingRemaining) return
+
+        val label = if (showingRemaining && !time.complete && time.seconds == 0L) {
+            context.getString(R.string.play_queue_remaining_unknown)
+        } else {
+            val labelRes = when {
+                !showingRemaining -> R.string.play_queue_elapsed_time
+                fullyLoaded -> R.string.play_queue_remaining_time
+                else -> R.string.play_queue_loaded_remaining_time
+            }
+            context.getString(labelRes, formatDuration(time.seconds, time.complete))
         }
+        val summary = context.getString(R.string.play_queue_time_summary, label, totalLabel)
+        text = summary
+        contentDescription = if (canToggle) {
+            context.getString(
+                if (showingRemaining) R.string.play_queue_show_elapsed
+                else R.string.play_queue_show_remaining, summary
+            )
+        } else {
+            null
+        }
+        lastTime = time
+        lastShowingRemaining = showingRemaining
     }
 
     private fun formatDuration(seconds: Long, complete: Boolean): String =

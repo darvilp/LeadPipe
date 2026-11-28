@@ -379,6 +379,11 @@
 <!-- Play Queue -->
 <string name="title_activity_play_queue">Play queue</string>
 <string name="play_queue_elapsed_time">Elapsed %1$s</string>
+<string name="play_queue_remaining_time">Remaining %1$s</string>
+<string name="play_queue_loaded_remaining_time">Loaded remaining %1$s</string>
+<string name="play_queue_remaining_unknown">Remaining unknown</string>
+<string name="play_queue_show_elapsed">%1$s. Show elapsed queue time.</string>
+<string name="play_queue_show_remaining">%1$s. Show remaining queue time.</string>
 <string name="play_queue_total_time">Total %1$s</string>
 <string name="play_queue_loaded_time">Loaded total %1$s</string>
 <string name="play_queue_total_unknown">Total unknown</string>
